@@ -6,7 +6,7 @@ Een README bestand is normaal gesproken bedoeld om mensen te informeren over de 
     * [Git met VSC](#Git-met-VSC)
     * [Gitpod](#Gitpod)
 * [Samenwerken via Git](#Samenwerken-via-git)
-    * [Git commando's](#Git-commando's)
+    * [Git commando's](#Git-commandos)
     * [Werken met branches](#Werken-met-branches)
         * [Master branch](#master)
         * [Ontwikkeling branch](#ontwikkeling)
@@ -47,7 +47,7 @@ Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code
         git init
         git remote add origin git@github.com:DylanSealy/PO-2D-games-maken.git
 
-9. [Fetch](#Git-commando's) alles van de server en Git is klaar voor gebruik.
+9. [Fetch](#Git-commandos) alles van de server en Git is klaar voor gebruik.
 
 ### Gitpod
 1. Ga naar de volgende [link](https://gitpod.io/#https://github.com/DylanSealy/PO-2D-games-maken).
@@ -89,16 +89,16 @@ GitHub heeft een functie waarbij je bekende problemen in de code kunt aangeven. 
 Hieronder kun je adviezen vinden en oplossingen vinden voor fouten in Git of in je code.
 
 ### Git
-1. In VSC kun je je wijzigingen bijhouden die nog niet gecommit zijn. Een M betekent dat het bestand is aangepast en een U betekent dat het bestand nog niet wordt gevolgd door Git. Je moet hiervoor het git add commando gebruiken. Zie [Git commando's](#Git-commando's). Een gele/groene kleur naast een regelnummer geeft aan dat het een nieuwe regel is. Een blauwe kleur geeft aan dat de regel is aangepast en een klein rood driehoekje geeft aan dat er een regel is verwijderd. Let op, het draait hier om de inhoud van de regel en niet om het regelnummer. Dus als alleen het regelnummer verandert en de inhoud van de regel niet dan is dat geen verandering.
+1. In VSC kun je je wijzigingen bijhouden die nog niet gecommit zijn. Een M betekent dat het bestand is aangepast en een U betekent dat het bestand nog niet wordt gevolgd door Git. Je moet hiervoor het git add commando gebruiken. Zie [Git commando's](#Git-commandos). Een gele/groene kleur naast een regelnummer geeft aan dat het een nieuwe regel is. Een blauwe kleur geeft aan dat de regel is aangepast en een klein rood driehoekje geeft aan dat er een regel is verwijderd. Let op, het draait hier om de inhoud van de regel en niet om het regelnummer. Dus als alleen het regelnummer verandert en de inhoud van de regel niet dan is dat geen verandering.
 2. Als er iets misgaat in Git dan kun je de inhoud van de map waarin je het project hebt opgeslagen verwijderen, inclusief de map .git. Met de commando's bij [Git met VSC](#Git-met-VSC) kun je dan Git weer instellen. Je gaat dan naar de situatie van de laatst gepubliceerde commit. Let op, alles wat nog niet gecommit en gepubliceerd is, gaat verloren. Dus commit dat en push dat naar de server of sla dit tijdelijk op in een andere locatie.
 3. Je kan in een situatie terechtkomen waarin meerdere mensen werken aan dezelfde code. Wanneer je dan een commit fetched en pulled van de server dan krijg je te maken met een merge conflict. Dit conflict moet zo snel mogelijk worden opgelost. Ga in VSC naar het bestand of de bestanden waar een C bij staat. VSC laat dan op de plaats waar het conflict is zien wat de huidige code is en wat de inkomende veranderingen zijn. Bepaal zelf welke verandering er behouden moet worden of overleg dit met degene die dat stukje code heeft geschreven. Na het oplossen van een merge conflict moet je deze meteen committen. Vaak is het commit bericht al ingevuld. Deze hoef je niet te veranderen, want er staat dan al iets in over een merge. Als dit echter er niet staat, benoem dan een merge conflict met de commit id in het commit bericht.
 4. Om het probleem in het bovenstaande punt te minimaliseren raad ik sterk aan om altijd als eerste te fetchen en dan te pullen, voordat je gaat coderen. Je beperkt dan de impact en daarmee de fouten die een merge conflict kan veroorzaken door jouw code up-to-date te houden met de server.
-5. Ik raad je aan om altijd code te committen en te pushen wanneer je die geschreven hebt. Ongeacht of dit stukje code doet wat je wilt. Zet dit dan in je commit bericht of maak een [issue](#issues). Dat hangt van de situatie af. Maar houd dus altijd code up to date voor jezelf en anderen. Dus wanneer je 's avonds een stukje gecodeerd hebt, maar dit nog niet klaar is, commit dit dan gewoon. Houd de code niet op je computer.
+5. Ik raad je aan om altijd code te committen en te pushen wanneer je die geschreven hebt. Ongeacht of dit stukje code doet wat je wilt. Zet dit dan in je commit bericht of maak een [issue](#Bekende-problemen). Dat hangt van de situatie af. Maar houd dus altijd code up to date voor jezelf en anderen. Dus wanneer je 's avonds een stukje gecodeerd hebt, maar dit nog niet klaar is, commit dit dan gewoon. Houd de code niet op je computer.
 6. Een commit bericht is nog niet zo makkelijk om op te stellen, daarom heb ik enkele regels die je kunnen helpen. Zie [hier](https://github.com/DylanSealy/Ganzenbord/commits/master) en [hier](https://github.com/pi-hole/pi-hole/commits/master) voor respectievelijk redelijke en goede voorbeelden van commit berichten.
     1. Houd een commit bericht kort. Je moet het zien als een titel waaraan anderen kunnen zien wat je hebt gedaan.
     2. Gebruik duidelijke taal in je commit bericht en refereer altijd naar een andere commit als die wat te maken heeft met deze verandering. Hierbij kun je denken aan een fout die je hebt opgelost die nadrukkelijk is veroorzaakt of ingevoerd in een andere commit.
     3. Probeer niet te veel code te committen in één keer. Hierdoor kun je minder makkelijk aangeven in het commit bericht wat je hebt gedaan. Dus houd de commit klein en zorg ervoor dat je dingen commit die met elkaar te maken hebben.
-7. Tijdens het coderen is het handig om GitHub erbij te hebben. In GitHub kun je namelijk veel dingen snel opzoeken zoals: [issues](#issues), commit id's en veranderingen die gemaakt zijn. Git log en de timeline drawer in VSC kun je hier ook voor gebruiken. Dat hangt van jouw voorkeur af. Voor [issues](#issues) moet je wel bij GitHub zijn.
+7. Tijdens het coderen is het handig om GitHub erbij te hebben. In GitHub kun je namelijk veel dingen snel opzoeken zoals: [issues](#Bekende-problemen), commit id's en veranderingen die gemaakt zijn. Git log en de timeline drawer in VSC kun je hier ook voor gebruiken. Dat hangt van jouw voorkeur af. Voor [issues](#Bekende-problemen) moet je wel bij GitHub zijn.
 
 ### JavaScript
 Jullie hebben genoeg ervaring met JavaScript. Toch zijn hier enkele adviezen:
