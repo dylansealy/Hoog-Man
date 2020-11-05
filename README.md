@@ -10,7 +10,7 @@ Een README bestand is normaal gesproken bedoeld om mensen te informeren over de 
     * [Werken met branches](#Werken-met-branches)
         * [Master branch](#master)
         * [Ontwikkeling branch](#ontwikkeling)
-        * [Opruim branch](#opruim)
+        * [Opruim branch](#opruiming)
     * [Bekende problemen](#Bekende-problemen)
 * [Git en codeer adviezen en fouten](#Git-en-codeer-adviezen-en-fouten)
     * [Git](#Git)
@@ -79,7 +79,7 @@ Dit is de hoofdbranch. Hierin komt de code waarvan we zeker weten dat het werkt.
 #### ontwikkeling
 Dit is de branch waarin wordt gewerkt aan nieuwe functies. Het is belangrijk dat je code commit die werkt, maar in deze branch heb je daarin meer vrijheid. Je zult daarom het meeste van de tijd in deze branch werken.
 
-#### opruim
+#### opruiming
 Dit is de branch waarin er fouten in de code worden verbeterd en waarin de code wordt aangepast om het netter te maken. Dus als er een fout in de code zit die je gecommit hebt dan moet je dat in deze branch aanpassen. Daarnaast zullen dus de andere branches vanuit deze branch geüpdate worden met verbeterde code.
 
 ### Bekende problemen
