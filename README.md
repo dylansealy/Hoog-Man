@@ -11,6 +11,7 @@ Een README-bestand is normaal gesproken bedoeld om mensen te informeren over de 
         * [Master branch](#master)
         * [Ontwikkeling branch](#ontwikkeling)
         * [Opruim branch](#opruiming)
+    * [Branch protection regels](#Branch-protection-regels)
 * [Git en codeer adviezen en fouten](#Git-en-codeer-adviezen-en-fouten)
     * [Git](#Git)
     * [JavaScript](#JavaScript)
@@ -75,13 +76,18 @@ Hieronder een overzicht van alle belangrijke Git commando's. Andere commando's z
 In Git kun je werken met verschillende branches. Dit is handige om code overzichtelijker te maken. Mijn idee is om met de 3 onderstaande branches te gaan werken. Het is soms lastig om te bepalen in welke branch je moet zitten. Daarom zijn het ook richtlijnen. Bij eventuele twijfel ga naar de opruim branch.
 
 #### master
-Dit is de hoofdbranch. Hierin komt de code waarvan we zeker weten dat het werkt. Je moet dit zien als de branch voor de stabiele versie van het project. De code uit deze branch wordt dus gebruikt voor het programma die de eindgebruiker gaat gebruiken. Je zult daarom eigenlijk nooit in deze branch werken.
+Dit is de hoofdbranch. Hierin komt de code waarvan we zeker weten dat het werkt. Je moet dit zien als de branch voor de stabiele versie van het project. De code uit deze branch wordt dus gebruikt voor het programma die de eindgebruiker gaat gebruiken. Je zult nooit in deze branch werken vanwege de [branch protection regels](#Branch-protection-regels).
 
 #### ontwikkeling
 Dit is de branch waarin wordt gewerkt aan nieuwe functies. Het is belangrijk dat je code commit die werkt, maar in deze branch heb je daarin meer vrijheid. Je zult daarom het meeste van de tijd in deze branch werken.
 
 #### opruiming
 Dit is de branch waarin er fouten in de code worden verbeterd en waarin de code wordt aangepast om het netter te maken. Dus als er een fout in de code zit die je gecommit hebt dan moet je dat in deze branch aanpassen. Daarnaast zullen dus de andere branches vanuit deze branch geüpdatet worden met verbeterde code.
+
+### Branch protection regels
+Voor de master branch zijn er enkele branch protection regels ingesteld. Deze regels zijn er om fouten te voorkomen. Je zult waarschijnlijk niet veel van deze regels merken, omdat ik me vooral met deze branch zal bezig houden. De regels houden in:
+1. Je kunt niet naar deze branch pushen dus zorg ervoor dat je nooit werkt in deze branch.
+2. Enkele geautomatiseerde checks moeten slagen voordat een pull request geaccepteerd kan worden. 
 
 ## Git en codeer adviezen en fouten
 Hieronder kun je adviezen vinden en oplossingen vinden voor fouten in Git of in je code.
