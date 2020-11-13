@@ -11,10 +11,11 @@ Een README-bestand is normaal gesproken bedoeld om mensen te informeren over de 
         * [Master branch](#master)
         * [Ontwikkeling branch](#ontwikkeling)
         * [Opruim branch](#opruiming)
-    * [Bekende problemen](#Bekende-problemen)
 * [Git en codeer adviezen en fouten](#Git-en-codeer-adviezen-en-fouten)
     * [Git](#Git)
     * [JavaScript](#JavaScript)
+* [Handige links en bronnen](#Handige-links-en-bronnen)
+* [Bekende problemen](#Bekende-problemen)
 
 ## Installatie en set-up
 Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code](#Git-met-VSC) (VSC) en op school van [Gitpod](#Gitpod).
@@ -82,9 +83,6 @@ Dit is de branch waarin wordt gewerkt aan nieuwe functies. Het is belangrijk dat
 #### opruiming
 Dit is de branch waarin er fouten in de code worden verbeterd en waarin de code wordt aangepast om het netter te maken. Dus als er een fout in de code zit die je gecommit hebt dan moet je dat in deze branch aanpassen. Daarnaast zullen dus de andere branches vanuit deze branch geüpdatet worden met verbeterde code.
 
-### Bekende problemen
-GitHub heeft een functie waarbij je bekende problemen in de code kunt aangeven. Dit is de [issues sectie](https://github.com/DylanSealy/PO-2D-games-maken/issues) in GitHub. Ik ben van plan om dit ook te gaan gebruiken, want hiermee kun je gemakkelijk bijhouden welke problemen er zijn en welke er zijn opgelost. Daarnaast kun je het oplossen van issues aan mensen toekennen. Dus als je een bekend probleem hebt in je code, maak hier dan een issue van.
-
 ## Git en codeer adviezen en fouten
 Hieronder kun je adviezen vinden en oplossingen vinden voor fouten in Git of in je code.
 
@@ -106,3 +104,9 @@ Jullie hebben genoeg ervaring met JavaScript. Toch zijn hier enkele adviezen:
 2. Voor het naamgeven van variabelen en functies gebruik Camel case. Dit houdt in dat elk nieuw woord begint met een hoofdletter, zoals aantalBommen en xHoogte.
 3. Zet een ; neer. In JavaScript is het niet vereist om een ; neer te zetten alleen het maakt je code overzichtelijker en makkelijker te lezen.
 4. In JavaScript wordt een punt gebruikt om een decimaal getal aan te geven en een , om dingen van elkaar te onderscheiden. Dus 0.5 en functie test(argument1, argument2).
+
+# Handige links en bronnen
+In het bestand [Bronnen.md](/Bronnen.md) kun je handige links en gebruikte bronnen terug vinden. Vul deze aan met alle bronnen die je gebruikt hebt!
+
+# Bekende problemen
+GitHub heeft een functie waarbij je bekende problemen in de code kunt aangeven. Dit is de [issues sectie](https://github.com/DylanSealy/PO-2D-games-maken/issues) in GitHub. Ik ben van plan om dit ook te gaan gebruiken, want hiermee kun je gemakkelijk bijhouden welke problemen er zijn en welke er zijn opgelost. Daarnaast kun je het oplossen van issues aan mensen toekennen. Dus als je een bekend probleem hebt in je code, maak hier dan een issue van.
