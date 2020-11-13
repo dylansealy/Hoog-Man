@@ -1,5 +1,5 @@
 # Praktische opdracht 2D games maken
-Een README bestand is normaal gesproken bedoeld om mensen te informeren over de repository en het project. Zie [hier](https://github.com/DylanSealy/Ganzenbord/blob/master/README.md) voor een voorbeeld. In eerste instantie gaan wij dit README bestand daar niet voor gebruiken. Wij gaan eerst dit bestand gebruiken als handleiding over Git en GitHub en in dit bestand kun je enkele adviezen vinden over hoe om te gaan met Git, GitHub en het samenwerken met anderen.
+Een README-bestand is normaal gesproken bedoeld om mensen te informeren over de repository en het project. Zie [hier](https://github.com/DylanSealy/Ganzenbord/blob/master/README.md) voor een voorbeeld. In eerste instantie gaan wij dit README-bestand daar niet voor gebruiken. Wij gaan eerst dit bestand gebruiken als handleiding over Git en GitHub en in dit bestand kun je enkele adviezen vinden over hoe om te gaan met Git, GitHub en het samenwerken met anderen.
 
 ## Inhoud
 * [Installatie en set-up](#Installatie-en-set-up)
@@ -11,10 +11,11 @@ Een README bestand is normaal gesproken bedoeld om mensen te informeren over de 
         * [Master branch](#master)
         * [Ontwikkeling branch](#ontwikkeling)
         * [Opruim branch](#opruiming)
-    * [Bekende problemen](#Bekende-problemen)
 * [Git en codeer adviezen en fouten](#Git-en-codeer-adviezen-en-fouten)
     * [Git](#Git)
     * [JavaScript](#JavaScript)
+* [Handige links en bronnen](#Handige-links-en-bronnen)
+* [Bekende problemen](#Bekende-problemen)
 
 ## Installatie en set-up
 Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code](#Git-met-VSC) (VSC) en op school van [Gitpod](#Gitpod).
@@ -68,7 +69,7 @@ Hieronder een overzicht van alle belangrijke Git commando's. Andere commando's z
 * git add . : Voegt alle bestanden in de huidige en onderliggende mappen toe om gecommit te worden.
 * git commit: Slaat alle veranderingen op.
 * git push: Uploadt alle nieuwe commits naar de server.
-* git reset --hard: Verwijderdt al jouw veranderingen die nog niet gecommit zijn. Let op, nieuwe bestanden worden niet verwijderd!
+* git reset --hard: Verwijdert al jouw veranderingen die nog niet gecommit zijn. Let op, nieuwe bestanden worden niet verwijderd!
 
 ### Werken met branches
 In Git kun je werken met verschillende branches. Dit is handige om code overzichtelijker te maken. Mijn idee is om met de 3 onderstaande branches te gaan werken. Het is soms lastig om te bepalen in welke branch je moet zitten. Daarom zijn het ook richtlijnen. Bij eventuele twijfel ga naar de opruim branch.
@@ -80,10 +81,7 @@ Dit is de hoofdbranch. Hierin komt de code waarvan we zeker weten dat het werkt.
 Dit is de branch waarin wordt gewerkt aan nieuwe functies. Het is belangrijk dat je code commit die werkt, maar in deze branch heb je daarin meer vrijheid. Je zult daarom het meeste van de tijd in deze branch werken.
 
 #### opruiming
-Dit is de branch waarin er fouten in de code worden verbeterd en waarin de code wordt aangepast om het netter te maken. Dus als er een fout in de code zit die je gecommit hebt dan moet je dat in deze branch aanpassen. Daarnaast zullen dus de andere branches vanuit deze branch geüpdate worden met verbeterde code.
-
-### Bekende problemen
-GitHub heeft een functie waarbij je bekende problemen in de code kunt aangeven. Dit is de [issues sectie](https://github.com/DylanSealy/PO-2D-games-maken/issues) in GitHub. Ik ben van plan om dit ook te gaan gebruiken, want hiermee kun je gemakkelijk bijhouden welke problemen er zijn en welke er zijn opgelost. Daarnaast kun je het oplossen van issues aan mensen toekennen. Dus als je een bekend probleem hebt in je code, maak hier dan een issue van.
+Dit is de branch waarin er fouten in de code worden verbeterd en waarin de code wordt aangepast om het netter te maken. Dus als er een fout in de code zit die je gecommit hebt dan moet je dat in deze branch aanpassen. Daarnaast zullen dus de andere branches vanuit deze branch geüpdatet worden met verbeterde code.
 
 ## Git en codeer adviezen en fouten
 Hieronder kun je adviezen vinden en oplossingen vinden voor fouten in Git of in je code.
@@ -102,7 +100,13 @@ Hieronder kun je adviezen vinden en oplossingen vinden voor fouten in Git of in 
 
 ### JavaScript
 Jullie hebben genoeg ervaring met JavaScript. Toch zijn hier enkele adviezen:
-1. Voor het declareren van variabelen gebruik let en const in plaats van var. Het verschil tussen let en const houdt in dat de waarde van een const variabele constant is en die van een let variabele niet. Bij voorkeur gebruik const. Hiermee zorg je er namelijk voor dat de waarde van een variabele niet wordt veranderd door een ander stukje code. Daarnaast is er met let en const nog een verandering in de scope. Zie [hier](https://www.w3schools.com/js/js_let.asp) voor een uitleg daarvan.v
+1. Voor het declareren van variabelen gebruik let en const in plaats van var. Het verschil tussen let en const houdt in dat de waarde van een const variabele constant is en die van een let variabele niet. Bij voorkeur gebruik const. Hiermee zorg je er namelijk voor dat de waarde van een variabele niet wordt veranderd door een ander stukje code. Daarnaast is er met let en const nog een verandering in de scope. Zie [hier](https://www.w3schools.com/js/js_let.asp) voor een uitleg daarvan.
 2. Voor het naamgeven van variabelen en functies gebruik Camel case. Dit houdt in dat elk nieuw woord begint met een hoofdletter, zoals aantalBommen en xHoogte.
 3. Zet een ; neer. In JavaScript is het niet vereist om een ; neer te zetten alleen het maakt je code overzichtelijker en makkelijker te lezen.
 4. In JavaScript wordt een punt gebruikt om een decimaal getal aan te geven en een , om dingen van elkaar te onderscheiden. Dus 0.5 en functie test(argument1, argument2).
+
+# Handige links en bronnen
+In het bestand [Bronnen.md](/Bronnen.md) kun je handige links en gebruikte bronnen terug vinden. Vul deze aan met alle bronnen die je gebruikt hebt!
+
+# Bekende problemen
+GitHub heeft een functie waarbij je bekende problemen in de code kunt aangeven. Dit is de [issues sectie](https://github.com/DylanSealy/PO-2D-games-maken/issues) in GitHub. Ik ben van plan om dit ook te gaan gebruiken, want hiermee kun je gemakkelijk bijhouden welke problemen er zijn en welke er zijn opgelost. Daarnaast kun je het oplossen van issues aan mensen toekennen. Dus als je een bekend probleem hebt in je code, maak hier dan een issue van.
