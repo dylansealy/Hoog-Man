@@ -1,10 +1,10 @@
 const staticCache = "staticCacheV1.0";
 const dynamicCache = "dynamicCacheV1.0";
 const cacheAssets = [
-"/",
-"/assets/css/index.css",
-"/assets/css/media.css",
-"/assets/js/index.js",
+"/PO-2D-games-maken/public/index.html",
+"/PO-2D-games-maken/public/assets/css/index.css",
+"/PO-2D-games-maken/public/assets/css/media.css",
+"/PO-2D-games-maken/public/assets/js/index.js",
 ];
 
 const limitCacheSize = (name, size) => {
