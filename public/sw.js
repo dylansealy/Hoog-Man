@@ -47,6 +47,6 @@ self.addEventListener("fetch", event => {
 					return fetchResponse;
 				});
 			});
-		}).catch(() => caches.match("/assets/html/fallback.html"))
+		}).catch(() => caches.match("/PO-2D-games-maken/public/assets/html/fallback.html"))
 	);
 });
