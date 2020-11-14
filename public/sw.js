@@ -5,6 +5,7 @@ const cacheAssets = [
 "/PO-2D-games-maken/public/assets/css/index.css",
 "/PO-2D-games-maken/public/assets/css/media.css",
 "/PO-2D-games-maken/public/assets/js/index.js",
+"/PO-2D-games-maken/public/assets/html/fallback.html"
 ];
 
 const limitCacheSize = (name, size) => {
