@@ -27,8 +27,12 @@ header {
     background-color: yellow
 }
 
-#mainContent {
+main {
     grid-area: 2 / 1 / 3 / 2;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
     background-color: #e6e6e6
 }
 
