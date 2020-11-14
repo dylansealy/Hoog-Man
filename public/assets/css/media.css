@@ -1,0 +1,3 @@
+@media only screen and (max-width: 505px) {
+	pwa-update::part(updateToast) {width: calc(100% - 2em); bottom: 0; right: 0}
+}

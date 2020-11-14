@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Base voor website -->
+    <!--<base href="https://dylansealy.github.io/PO-2D-games-maken/">-->
+    <!-- Base voor ontwikkeling -->
+	<base href="C:/Projects/PO 2D games/Public/">
+    <title>Offline</title>
+    <link rel="stylesheet" type="text/css" href="assets/css/index.css">
+    <link rel="stylesheet" type="text/css" href="assets/css/index.css">
+    <!-- Checkt of de browser een Service Worker ondersteunt en registreert deze. -->
+    <script>
+		if ("serviceWorker" in navigator) {
+			navigator.serviceWorker.register("sw.js")
+			.then(registration => console.log("ServiceWorker registration successful"))
+			.catch(error => console.log(error));
+		}
+    </script>
+    <!-- PWA web components om het werken met PWA's gemakkelijker te maken. -->
+    <script async type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate"></script>
+    <script async type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwainstall"></script>
+    
+    <script defer src="assets/js/index.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <h1>PAC-MAN</h1>
+    </header>
+    <!-- Frame voor het spel -->
+    <div id="mainContent"></div>
+    <!-- Footer -->
+    <footer></footer>
+    <!-- PWA Update web component -->
+    <pwa-update swpath="sw.js" updatemessage="Er is een update beschikbaar voor deze web app " offlineToastDuration="2500"></pwa-update>
+</body>
+</html>
