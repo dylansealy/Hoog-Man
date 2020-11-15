@@ -12,9 +12,10 @@ Een README-bestand is normaal gesproken bedoeld om mensen te informeren over de 
         * [Ontwikkeling branch](#ontwikkeling)
         * [Opruim branch](#opruiming)
     * [Branch protection regels](#Branch-protection-regels)
-* [Git en codeer adviezen en fouten](#Git-en-codeer-adviezen-en-fouten)
+* [Adviezen en fouten](#Adviezen-en-fouten)
     * [Git](#Git)
     * [JavaScript](#JavaScript)
+* [Belangrijke informatie](#Belangrijke-informatie)
 * [Handige links en bronnen](#Handige-links-en-bronnen)
 * [Bekende problemen](#Bekende-problemen)
 
@@ -38,7 +39,7 @@ Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code
     * Default
     * None
 4. Plaats jouw id_ed25519 bestand in jouw vergelijkbare "C:\Users\dylan\\.ssh" pad. Verander de bestandsnaam niet!
-5. Creëer ergens een lokale map op je computer. Doe dit niet in OneDrive!
+5. Creëer de map "Projects" in het pad "C:\" en creëer daarin de map "PO 2D games".
 6. Open deze map in VSC.
 7. Ga in VSC naar de terminal door linksonder te klikken.
 8. Voer de onderstaande regels code uit in PowerShell of Opdrachtprompt.
@@ -89,7 +90,7 @@ Voor de master branch zijn er enkele branch protection regels ingesteld. Deze re
 1. Je kunt niet naar deze branch pushen dus zorg ervoor dat je nooit werkt in deze branch.
 2. Enkele geautomatiseerde checks moeten slagen voordat een pull request geaccepteerd kan worden. 
 
-## Git en codeer adviezen en fouten
+## Adviezen en fouten
 Hieronder kun je adviezen vinden en oplossingen vinden voor fouten in Git of in je code.
 
 ### Git
@@ -110,6 +111,10 @@ Jullie hebben genoeg ervaring met JavaScript. Toch zijn hier enkele adviezen:
 2. Voor het naamgeven van variabelen en functies gebruik Camel case. Dit houdt in dat elk nieuw woord begint met een hoofdletter, zoals aantalBommen en xHoogte.
 3. Zet een ; neer. In JavaScript is het niet vereist om een ; neer te zetten alleen het maakt je code overzichtelijker en makkelijker te lezen.
 4. In JavaScript wordt een punt gebruikt om een decimaal getal aan te geven en een , om dingen van elkaar te onderscheiden. Dus 0.5 en functie test(argument1, argument2).
+5. Zet comments bij dingen die je doet. Dit zorgt ervoor dat anderen je code kunnen begrijpen.
+
+# Belangrijke informatie
+De website waarin de game verwerkt wordt, is een Progressive Web App (PWA). Dit houdt in dat het een soort van downloadbare app is die je offline kunt gebruiken. Deze functionaliteit werkt als het goed is al helemaal, maar dit zorgt er echter wel voor dat de website zich lokaal anders gedraagt dan op het internet. Als je lokaal bezig bent dan zul je niets merken, want dan werkt de PWA niet. Via [deze](https://dylansealy.github.io/PO-2D-games-maken/public/) link kun je de PWA proberen. Dit is ook de reden dat je tijdens het lokaal werken een andere base moet gebruiken.
 
 # Handige links en bronnen
 In het bestand [Bronnen.md](/Bronnen.md) kun je handige links en gebruikte bronnen terug vinden. Vul deze aan met alle bronnen die je gebruikt hebt!
