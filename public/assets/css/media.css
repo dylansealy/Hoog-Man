@@ -1,0 +1,4 @@
+/* Media queries zorgen ervoor dat je de style kan aanpassen op basis van eigenschappen van de client. */
+@media only screen and (max-width: 505px) {
+	pwa-update::part(updateToast) {width: calc(100% - 2em); bottom: 0; right: 0}
+}
