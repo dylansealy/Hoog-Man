@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Let goed op welke base je gebruikt! Gebruik de base voor ontwikkeling wanneer je bezig bent.
-    Verander deze naar de base voor GitHub wanneer je klaat bent en je veranderingen commit.-->
+    <!--
+    Let goed op welke base je gebruikt! Gebruik de base voor ontwikkeling wanneer je bezig bent.
+    Verander deze naar de base voor GitHub wanneer je klaat bent en je veranderingen commit.
+    -->
     <!-- Base voor GitHub -->
     <base href="https://dylansealy.github.io/PO-2D-games-maken/public/">
     <!-- Base voor ontwikkeling -->
@@ -23,16 +25,16 @@
     <!-- PWA web components om het werken met PWA's gemakkelijker te maken. -->
     <script async type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate"></script>
     <script async type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwainstall"></script>
-    
     <!-- p5 library -->
     <script async src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
-
+    <!-- Bestand voor alle JS. Deze wordt als laatste uitgevoerd (defer). -->
     <script defer src="assets/js/index.js"></script>
 </head>
 <body>
     <!-- Header -->
     <header>
-        <h1>PAC-MAN</h1>
+        <h1>PAC-MAN offline</h1>
+        <img src="assets/images/socials/github.png" alt="Link naar GitHub repository." id="social">
     </header>
     <!-- Frame voor het spel -->
     <main></main>
