@@ -25,11 +25,16 @@ header {
     align-items: center; /* Centreert individuele items in de breedte van de flexbox. */
     justify-content: center; /* Centreert de content in de lengte van de flexbox. */
     gap: 1rem; /* Specificeert de ruimte tussen individuele items. */
-    background-color: yellow
+    font-size: 1.5rem;
+    background-color: #ffff00
+}
+
+header > * {
+    font-weight: normal
 }
 
 #social {
-    width: 24px;
+    width: 37px;
     cursor: pointer /* Zet de style van de cursor */
 }
 
@@ -39,7 +44,7 @@ main {
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
-    background-color: #e6e6e6
+    background-color: #d8b1b1
 }
 
 footer {
@@ -48,8 +53,13 @@ footer {
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    background-color: orange
+    font-size: 0.87rem;
+    background-color: #ffa500
+}
+
+#copyright {
+    width: 95%;
+    text-align: center
 }
 
 /* Styling PWA update web component */

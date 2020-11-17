@@ -1,4 +1,14 @@
 /* Media queries zorgen ervoor dat je de style kan aanpassen op basis van eigenschappen van de client. */
+@media only screen and (max-width: 390px) {
+	body {
+		grid: 70px 1fr 54px / 100%
+	}
+}
+
 @media only screen and (max-width: 505px) {
-	pwa-update::part(updateToast) {width: calc(100% - 2em); bottom: 0; right: 0}
+	pwa-update::part(updateToast) {
+		width: calc(100% - 2em);
+		bottom: 0;
+		right: 0
+	}
 }
