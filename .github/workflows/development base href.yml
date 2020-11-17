@@ -24,7 +24,6 @@ jobs:
           author_name: "Dylan Sealy"
           author_email: dylansealy2004@hotmail.nl
           message: "GitHub action: development base href"
-          remove: node_modules
           push: true
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN }}
