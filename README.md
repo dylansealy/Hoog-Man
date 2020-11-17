@@ -114,7 +114,7 @@ Jullie hebben genoeg ervaring met JavaScript. Toch zijn hier enkele adviezen:
 5. Zet comments bij dingen die je doet. Dit zorgt ervoor dat anderen je code kunnen begrijpen.
 
 # Belangrijke informatie
-De website waarin de game verwerkt wordt, is een Progressive Web App (PWA). Dit houdt in dat het een soort van downloadbare app is die je offline kunt gebruiken. Deze functionaliteit werkt als het goed is al helemaal, maar dit zorgt er echter wel voor dat de website zich lokaal anders gedraagt dan op het internet. Als je lokaal bezig bent dan zul je niets merken, want dan werkt de PWA niet. Via [deze](https://dylansealy.github.io/PO-2D-games-maken/public/) link kun je de PWA proberen. Dit is ook de reden dat je tijdens het lokaal werken een andere base moet gebruiken.
+De website waarin de game verwerkt wordt, is een Progressive Web App (PWA). Dit houdt in dat het een soort van downloadbare app is die je offline kunt gebruiken. Deze functionaliteit werkt als het goed is al helemaal, maar dit zorgt er echter wel voor dat de website zich lokaal anders gedraagt dan op het internet. Als je lokaal bezig bent dan zul je niets merken, want dan werkt de PWA niet. Via [deze](https://dylansealy.github.io/PO-2D-games-maken/public/) link kun je de PWA proberen. Doormiddel van een GitHub action hoef je echter de base href niet telkens te veranderen. Deze wordt namelijk automatisch aangepast voor elke branch nadat de code is veranderd.
 
 # Handige links en bronnen
 In het bestand [Bronnen.md](/Bronnen.md) kun je handige links en gebruikte bronnen terug vinden. Vul deze aan met alle bronnen die je gebruikt hebt!
