@@ -1,0 +1,19 @@
+{
+  "name": "hoog-man",
+  "version": "0.1.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DylanSealy/PO-2D-games-maken.git"
+  },
+  "author": "Dylan Sealy",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/DylanSealy/PO-2D-games-maken/issues"
+  },
+  "homepage": "https://github.com/DylanSealy/PO-2D-games-maken#readme",
+  "dependencies": {
+    "@actions/core": "^1.2.6",
+    "@actions/github": "^4.0.0",
+    "@actions/glob": "^0.1.1"
+  }
+}

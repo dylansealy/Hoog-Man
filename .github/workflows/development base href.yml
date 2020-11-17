@@ -1,0 +1,30 @@
+name: Development_base_href
+on:
+  push:
+    branches: [ontwikkeling]
+  pull_request:
+    branches: [ontwikkeling]
+jobs:
+  Change_base_href:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12 
+      - name: Install dependencies
+        run: npm install
+      - name: Update base href
+        run: node scripts/dev.js
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v5
+        with:
+          author_name: "Dylan Sealy"
+          author_email: dylansealy2004@hotmail.nl
+          message: "GitHub action: development base href"
+          remove: node_modules
+          push: true
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN }}
