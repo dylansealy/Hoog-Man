@@ -22,7 +22,7 @@ jobs:
         uses: EndBug/add-and-commit@v5
         with:
           author_name: "Dylan Sealy"
-          author_email: dylansealy2004@hotmail.nl
+          author_email: 66305635+DylanSealy@users.noreply.github.com
           message: "GitHub action: deployment base href"
           push: true
         env:
