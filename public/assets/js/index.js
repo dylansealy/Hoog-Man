@@ -9,16 +9,26 @@ const footerText = () => {
     year = year.getFullYear();
     copyright.innerText = `© ${year} Nynke van der Eems, Martijn Huls, Jitse Ritskes, Dylan Sealy, Alida Terwisscha van Scheltinga, Jelte Venema`;
 }
+
+// p5 preload functie
+function preload() {
+    loadFont("assets/fonts/Roboto-Light.ttf");
+}
+
 // p5 setup functie
 function setup() {
     createCanvas(400, 400);
     noStroke();
+    frameRate(60);
+    textFont("Roboto");
+    textSize(20);
     background("#b1d8d8");
 }
 // p5 draw functie
 function draw() {
     fill("green");
     rect(100, 100, 200, 200);
+    text("Text", 20, 20);
 }
 
 footerText();
