@@ -7,7 +7,7 @@ social.addEventListener("click", () => window.location.href = "https://github.co
 const footerText = () => {
     let year = new Date;
     year = year.getFullYear();
-    copyright.innerText = `© ${year} Nynke van der Eems, Martijn Huls, Jitse Ritskes, Dylan Sealy, Alida Terwisscha van Scheltinga, Jelte Venema`;
+    copyright.innerText = `© ${year} HOOG-MAN`;
 }
 
 // p5 preload functie
