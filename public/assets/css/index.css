@@ -20,7 +20,7 @@ body {
     font-size: 16px;
     font-family: "Roboto", sans-serif, Arial;
     display: grid; /* Grid is een 2D manier om vakken te creëren waar content in kan. Zie Chrome developer tools en bij elements hover en/of klik op body. */
-    grid: 70px 1fr 37px / 100% /* Specificeert de grid vakken. */
+    grid: 60px 1fr 30px / 100%; /* Specificeert de grid vakken. */
 }
 
 header {
@@ -39,7 +39,7 @@ header > * {
 }
 
 #social {
-    width: 37px;
+    width: 36px;
     cursor: pointer /* Zet de style van de cursor */
 }
 
@@ -60,11 +60,6 @@ footer {
     justify-content: center;
     font-size: 0.87rem;
     background-color: #ffa500
-}
-
-#copyright {
-    width: 95%;
-    text-align: center
 }
 
 /* Styling PWA update web component */
