@@ -2,8 +2,6 @@ name: Development_base_href
 on:
   push:
     branches: [ontwikkeling]
-  pull_request:
-    branches: [ontwikkeling]
 jobs:
   Change_base_href:
     runs-on: ubuntu-latest
@@ -22,7 +20,7 @@ jobs:
         uses: EndBug/add-and-commit@v5
         with:
           author_name: "Dylan Sealy"
-          author_email: dylansealy2004@hotmail.nl
+          author_email: 66305635+DylanSealy@users.noreply.github.com
           message: "GitHub action: development base href"
           push: true
         env:
