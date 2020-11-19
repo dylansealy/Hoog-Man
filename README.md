@@ -51,6 +51,10 @@ Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code
         git remote add origin git@github.com:DylanSealy/PO-2D-games-maken.git
 
 9. [Fetch](#Git-commandos) alles van de server en Git is klaar voor gebruik.
+10. Ga naar je bureaublad en voeg een nieuwe shortcut toe.
+11. In het dialoogvenster voer het volgende in: "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --disable-gpu --user-data-dir=~/chromeTemp
+12. Je moet Chrome een paar keer opstarten met deze snelkoppeling voordat het werkt. Bij deze snelkoppeling worden sommige beveiligingsmaatregelen uitgeschakeld zoals 
+Cross-Origin Resource Sharing (CORS) dus gebruik deze alleen voor het PO.
 
 ### Gitpod
 1. Ga naar de volgende [link](https://gitpod.io/#https://github.com/DylanSealy/PO-2D-games-maken).
