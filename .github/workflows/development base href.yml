@@ -2,8 +2,6 @@ name: Development_base_href
 on:
   push:
     branches: [ontwikkeling]
-  pull_request:
-    branches: [ontwikkeling]
 jobs:
   Change_base_href:
     runs-on: ubuntu-latest

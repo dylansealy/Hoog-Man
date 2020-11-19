@@ -1,8 +1,6 @@
 name: Deployment_base_href
 on:
   push:
-    branches: [opruiming]
-  pull_request:
     branches: [master, opruiming]
 jobs:
   Change_base_href:
