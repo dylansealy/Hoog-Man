@@ -21,19 +21,19 @@ const vars = {}
 const initializeVars = () => {
     // - 1 om ervoor te zorgen dat er geen scrollbars komen.
     vars.canvasDimension = getMainDimensions() - 1;
+    // Startpunten van de buitenlijnen van het bord.
+    vars.xOuter = vars.canvasDimension / 60;
+    vars.yOuter = vars.xOuter;
+    vars.xInner = vars.xOuter * 2;
+    vars.yInner = vars.xInner;
     // Hoogtes en breedtes van het spelbord.
-    vars.outerHeight = vars.canvasDimension - 40;
-    vars.outerWidth = vars.canvasDimension - 10;
-    vars.innerHeight = vars.canvasDimension - 50;
-    vars.innerWidth = vars.canvasDimension - 20;
+    vars.outerHeight = vars.canvasDimension - vars.yOuter * 6;
+    vars.outerWidth = vars.canvasDimension - vars.xOuter * 2;
+    vars.innerHeight = vars.canvasDimension - vars.yInner * 4;
+    vars.innerWidth = vars.canvasDimension - vars.yInner * 2;
     // Dimensie eenheden van het spelbord.
     vars.heightUnit = vars.innerHeight / 14;
     vars.widthUnit = vars.innerWidth / 17;
-    // Startpunten van de buitenlijnen van het bord.
-    vars.xOuter = 5;
-    vars.yOuter = 5;
-    vars.xInner = 10;
-    vars.yInner = 10;
 }
 // p5 preload functie
 function preload() {
@@ -49,20 +49,21 @@ function setup() {
     textFont("Roboto");
     textSize(20);
     background("black");
-    noFill();
-    strokeWeight(3);
 }
 // p5 draw functie
 function draw() {
+    noFill();
     stroke("#2121DE");
+    strokeWeight(3);
     // Eerste vorm altijd buitenste.
-    rect(vars.xOuter, vars.yOuter, canvas.width - 10, canvas.height - 40, 10);
-    rect(vars.xInner, vars.yInner, canvas.width - 20, canvas.height - 50, 6.5);
+    rect(vars.xOuter, vars.yOuter, vars.outerWidth, vars.outerHeight, 10);
+    rect(vars.xInner, vars.yInner, vars.innerWidth, vars.innerHeight, 4);
     stroke("black");
-    line(vars.widthUnit, vars.xOuter, vars.widthUnit * 2, vars.yOuter);
-    line(vars.widthUnit, vars.xInner, vars.widthUnit * 2, vars.yInner);
-    line(vars.widthUnit, vars.xOuter + vars.outerHeight, vars.widthUnit * 2, vars.yOuter + vars.outerHeight);
-    line(vars.widthUnit, vars.xInner + vars.innerHeight, vars.widthUnit * 2, vars.yInner + vars.innerHeight);
+    strokeWeight(4);
+    rect(vars.xOuter + vars.widthUnit, vars.yOuter, vars.widthUnit, 0);
+    rect(vars.xOuter + vars.widthUnit, vars.yInner, vars.widthUnit, 0);
+    rect(vars.xOuter + vars.widthUnit, vars.yOuter + vars.outerHeight, vars.widthUnit, 0);
+    rect(vars.xOuter + vars.widthUnit, vars.yInner + vars.innerHeight, vars.widthUnit, 0);
 }
 // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de client.
 // Doorsturen naar GitHub
