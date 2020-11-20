@@ -21,6 +21,19 @@ const vars = {}
 const initializeVars = () => {
     // - 1 om ervoor te zorgen dat er geen scrollbars komen.
     vars.canvasDimension = getMainDimensions() - 1;
+    // Hoogtes en breedtes van het spelbord.
+    vars.outerHeight = vars.canvasDimension - 40;
+    vars.outerWidth = vars.canvasDimension - 10;
+    vars.innerHeight = vars.canvasDimension - 50;
+    vars.innerWidth = vars.canvasDimension - 20;
+    // Dimensie eenheden van het spelbord.
+    vars.heightUnit = vars.innerHeight / 14;
+    vars.widthUnit = vars.innerWidth / 17;
+    // Startpunten van de buitenlijnen van het bord.
+    vars.xOuter = 5;
+    vars.yOuter = 5;
+    vars.xInner = 10;
+    vars.yInner = 10;
 }
 // p5 preload functie
 function preload() {
@@ -37,13 +50,19 @@ function setup() {
     textSize(20);
     background("black");
     noFill();
-    stroke("#2121DE");
     strokeWeight(3);
 }
 // p5 draw functie
 function draw() {
-    rect(5, 5, canvas.height - 10, canvas.width - 40, 10);
-    rect(10, 10, canvas.height - 20, canvas.width - 50, 6.5);
+    stroke("#2121DE");
+    // Eerste vorm altijd buitenste.
+    rect(vars.xOuter, vars.yOuter, canvas.width - 10, canvas.height - 40, 10);
+    rect(vars.xInner, vars.yInner, canvas.width - 20, canvas.height - 50, 6.5);
+    stroke("black");
+    line(vars.widthUnit, vars.xOuter, vars.widthUnit * 2, vars.yOuter);
+    line(vars.widthUnit, vars.xInner, vars.widthUnit * 2, vars.yInner);
+    line(vars.widthUnit, vars.xOuter + vars.outerHeight, vars.widthUnit * 2, vars.yOuter + vars.outerHeight);
+    line(vars.widthUnit, vars.xInner + vars.innerHeight, vars.widthUnit * 2, vars.yInner + vars.innerHeight);
 }
 // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de client.
 // Doorsturen naar GitHub
