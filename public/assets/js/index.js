@@ -17,9 +17,10 @@ const getMainDimensions = () => {
 }
 // Declareert benodigde variabelen voor de game.
 // vars is een object. Binnen een object hebben je key/value pairs.
-let vars = {}
+const vars = {}
 const initializeVars = () => {
-    vars.canvasDimension = getMainDimensions();
+    // - 1 om ervoor te zorgen dat er geen scrollbars komen.
+    vars.canvasDimension = getMainDimensions() - 1;
 }
 // p5 preload functie
 function preload() {
@@ -28,19 +29,21 @@ function preload() {
 }
 // p5 setup functie
 function setup() {
-    // vars.canvasDimension - 1 om ervoor te zorgen dat er geen scrollbars komen.
-    createCanvas(vars.canvasDimension - 1, vars.canvasDimension - 1);
+    canvas = createCanvas(vars.canvasDimension, vars.canvasDimension);
+    colorMode(RGB, 255);
     noStroke();
     frameRate(60);
     textFont("Roboto");
     textSize(20);
-    background("#b1d8d8");
+    background("black");
+    noFill();
+    stroke("#2121DE");
+    strokeWeight(3);
 }
 // p5 draw functie
 function draw() {
-    fill("green");
-    rect(100, 100, 200, 200);
-    text("Text", 20, 20);
+    rect(5, 5, canvas.height - 10, canvas.width - 40, 10);
+    rect(10, 10, canvas.height - 20, canvas.width - 50, 6.5);
 }
 // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de client.
 // Doorsturen naar GitHub
