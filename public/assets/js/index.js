@@ -52,18 +52,38 @@ function setup() {
 }
 // p5 draw functie
 function draw() {
+    // Eerste vorm altijd buitenste.
+
     noFill();
     stroke("#2121DE");
     strokeWeight(3);
-    // Eerste vorm altijd buitenste.
+    // Buitenlijnen
     rect(vars.xOuter, vars.yOuter, vars.outerWidth, vars.outerHeight, 10);
     rect(vars.xInner, vars.yInner, vars.innerWidth, vars.innerHeight, 4);
     stroke("black");
     strokeWeight(4);
-    rect(vars.xOuter + vars.widthUnit, vars.yOuter, vars.widthUnit, 0);
-    rect(vars.xOuter + vars.widthUnit, vars.yInner, vars.widthUnit, 0);
-    rect(vars.xOuter + vars.widthUnit, vars.yOuter + vars.outerHeight, vars.widthUnit, 0);
-    rect(vars.xOuter + vars.widthUnit, vars.yInner + vars.innerHeight, vars.widthUnit, 0);
+    // Buitenlijnen doorgangen
+    rect(vars.xInner + vars.widthUnit, vars.yOuter, vars.widthUnit, 0);
+    rect(vars.xInner + vars.widthUnit, vars.yInner, vars.widthUnit, 0);
+    rect(vars.xInner + vars.widthUnit, vars.yOuter + vars.outerHeight, vars.widthUnit, 0);
+    rect(vars.xInner + vars.widthUnit, vars.yInner + vars.innerHeight, vars.widthUnit, 0);
+    stroke("yellow");
+    strokeWeight(2);
+    fill("yellow");
+    for (let i = 0; i < 14; i++) {
+        circle(vars.xInner + vars.widthUnit * 0.5, vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.25);
+        for (let j = 0; j < 17; j++) {
+            circle(vars.xInner + vars.widthUnit * (0.5 + j), vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.25);
+        }
+    }
+    //
+    stroke("#2121DE");
+    strokeWeight(2);
+    fill("black");
+    rect(vars.xInner + vars.widthUnit, vars.yInner + vars.heightUnit, vars.widthUnit * 2, vars.heightUnit * 3, 4);
+    rect(vars.xInner, vars.yInner + vars.heightUnit * 5, vars.widthUnit, vars.heightUnit * 3, 4);
+    rect(vars.xInner + vars.widthUnit, vars.yInner + vars.heightUnit * 9, vars.widthUnit * 2, vars.heightUnit * 4, 4);
+
 }
 // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de client.
 // Doorsturen naar GitHub
