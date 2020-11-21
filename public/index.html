@@ -18,8 +18,9 @@
     <!-- PWA web components om het werken met PWA's gemakkelijker te maken. -->
     <script async type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate"></script>
     <script async type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwainstall"></script>
-    <!-- p5 library -->
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js"></script>
+    <!-- p5 library niet verkleinde versie vanwege het verschil in functionaliteit. -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.js" integrity="sha512-rMaqGbYalDaQz0lWNF2L8DHPtf4NW+gSZomExS0LcsNyRS4Rmj21+dt97XfXCZE/E569eX72Bh//Jt1EpStgiA==" crossorigin="anonymous"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.js" integrity="sha512-KxzVm+IqxNNq0+SzT/zzd5PHxY4LPrN+v5gZJ6+JKqjeU3Cr4y/djAg5eNlKDWurn1SeKZpql/yeOMWblMSzOg==" crossorigin="anonymous"></script>
     <!-- Bestand voor alle JS. Deze wordt als laatste uitgevoerd (defer). -->
     <script defer src="assets/js/index.js"></script>
 </head>

@@ -61,7 +61,6 @@ const candy = () => {
     stroke("yellow");
     fill("yellow");
     for (let i = 0; i < 14; i++) {
-        circle(vars.xInner + vars.widthUnit * 0.5, vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.25);
         for (let j = 0; j < 17; j++) {
             circle(vars.xInner + vars.widthUnit * (0.5 + j), vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.25);
         }
@@ -143,7 +142,7 @@ const obstacles = () => {
 function preload() {
     initializeVars();
     loadFont("assets/fonts/Roboto-Light.ttf");
-    loadSound();
+    // loadSound("assets/music/PacMan.mp3");
 }
 // p5 setup functie
 function setup() {
