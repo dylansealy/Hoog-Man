@@ -184,8 +184,15 @@ const footerText = () => {
     footer.innerText = `© ${year} HOOG-MAN`;
 }
 // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
-// Creëert nieuwe AudioContext.
+// Creëert nieuwe AudioContext en maakt de game fullscreen.
 startGame.addEventListener("click", () => {
+    const main = document.querySelector("main");
+    main.style.height = "100%";
+    main.style.width = "100%";
+    main.style.position = "absolute";
+    main.style.top = "0";
+    main.style.left = "0";
+    main.style.backgroundColor = "black";
     vars.game = new p5(sketch);
     const gameStartupContainer = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
