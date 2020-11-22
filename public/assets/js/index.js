@@ -29,6 +29,12 @@ const initializeVars = () => {
     vars.widthUnit = vars.innerWidth / 17;
 }
 // Functie voor het tekenen van de buitenlijnen.
+const playIntroSound = (p, introSound) => {
+    p.push();
+    p.noLoop();
+    introSound.play();
+    p.pop();
+}
 const outerLines = p => {
     p.push();
     p.strokeWeight(3);
@@ -139,8 +145,9 @@ const sketch = p => {
     // Functie voor het preloaden van game assets in p5.
     p.preload = () => {
         initializeVars();
+        p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
-        // p.loadSound("assets/music/PacMan.mp3");
+        introSound = p.loadSound("assets/music/PacMan.mp3");
     }
     // Functie voor de setup van de game in p5.
     p.setup = () => {
@@ -156,6 +163,7 @@ const sketch = p => {
         p.noFill();
         p.strokeWeight(2);
         p.stroke("#2121DE");
+        playIntroSound(p, introSound);
         outerLines(p);
         outerLinesGap(p);
         candy(p);

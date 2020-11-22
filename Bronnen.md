@@ -8,4 +8,5 @@ Dit document heeft als doel om alle gebruikte bronnen bij te houden. Dus zet all
 * [JS key code](http://keycode.info/)
 
 ## Bronnen
+* [PAC-MAN sound, textures etc.](https://www.classicgaming.cc/classics/pac-man/sounds)
 * [p5 sketch](https://www.youtube.com/watch?v=Su792jEauZg&feature=youtu.be)
