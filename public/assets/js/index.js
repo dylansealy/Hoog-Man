@@ -146,7 +146,7 @@ function preload() {
 }
 // p5 setup functie
 function setup() {
-    canvas = createCanvas(vars.canvasDimension, vars.canvasDimension);
+    createCanvas(vars.canvasDimension, vars.canvasDimension);
     colorMode(RGB, 255);
     frameRate(60);
     textFont("Roboto");
@@ -166,7 +166,14 @@ function draw() {
 // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de client.
 // Doorsturen naar GitHub
 social.addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken");
-// Pagina herladen nadat de dimensie is veranderd.
-window.addEventListener("resize", () => location.reload());
+// Formaat van het canvas wijzigen nadat het formaat van de window is gewijzgid.
+window.addEventListener("resize", () => {
+    const canvas = document.querySelector("#defaultCanvas0");
+    canvas.setAttribute("tabindex", "1");
+    initializeVars();
+    setup();
+    // Focus om het canvas in het scherm te houden in landscape modus.
+    canvas.focus();
+})
 
 footerText();
