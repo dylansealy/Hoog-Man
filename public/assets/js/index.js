@@ -1,4 +1,5 @@
-// Creëert constante van HTML element.
+// Creëert constanten van HTML element.
+const gameStartupContainer = document.querySelector("#gameStartupContainer");
 const social = document.querySelector("#social");
 // Functie voor het correcte copyright jaar.
 const footerText = () => {
@@ -164,6 +165,12 @@ function draw() {
     obstacles();
 }
 // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de client.
+// Creëren nieuwe AudioContext. 
+startGame.addEventListener("click", () => {
+    const gameStartupContainer = document.querySelector("#gameStartupContainer");
+    gameStartupContainer.style.display = "none";
+    let audio = new AudioContext;
+})
 // Doorsturen naar GitHub
 social.addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken");
 // Formaat van het canvas wijzigen nadat het formaat van de window is gewijzgid.

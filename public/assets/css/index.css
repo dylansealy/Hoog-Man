@@ -15,12 +15,50 @@ html {
 }
 
 body {
-    min-height: 100%;
+    height: 100%;
     width: 100%;
     font-size: 16px;
-    font-family: "Roboto", sans-serif, Arial;
+    font-family: "Roboto", sans-serif, Arial
+}
+
+#gameStartupContainer {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    color: rgb(255, 255, 255);
+    z-index: 1
+}
+
+#gameStartupBackground {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: rgb(0, 0, 0, 0.7)
+}
+
+#gameStartup {
+    height: 50%;
+    width: 50%;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    z-index: 2;
+}
+
+#container {
+    min-height: 100%;
     display: grid; /* Grid is een 2D manier om vakken te creëren waar content in kan. Zie Chrome developer tools en bij elements hover en/of klik op body. */
-    grid: 60px 1fr 30px / 100%; /* Specificeert de grid vakken. */
+    grid: 60px 1fr 30px / 100% /* Specificeert de grid vakken. */
 }
 
 header {
