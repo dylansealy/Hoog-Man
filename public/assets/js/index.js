@@ -184,7 +184,7 @@ const footerText = () => {
     footer.innerText = `© ${year} HOOG-MAN`;
 }
 // Functie voor het fullscreenen van de game.
-const gameStartup = () => {
+const gameStartupScreen = () => {
     const main = document.querySelector("main");
     main.style.height = "100%";
     main.style.width = "100%";
@@ -196,7 +196,7 @@ const gameStartup = () => {
 // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
 // Creëert nieuwe AudioContext en maakt de game fullscreen.
 startGame.addEventListener("click", () => {
-    gameStartup();
+    gameStartupScreen();
     vars.game = new p5(sketch);
     const gameStartupContainer = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";

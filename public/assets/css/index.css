@@ -49,6 +49,7 @@ main {
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
+    transition: all 1s ease-in;
     background-color: #d8b1b1
 }
 
