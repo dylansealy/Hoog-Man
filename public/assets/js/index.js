@@ -27,6 +27,15 @@ const initializeVars = () => {
     // Definieert de dimensie eenheden van het spelbord.
     vars.heightUnit = vars.innerHeight / 14;
     vars.widthUnit = vars.innerWidth / 17;
+    // definieert de positie en grootte van pacman 
+    vars.xPacman = 100;
+    vars.yPacman = 150;
+    vars.rPacman = 50;
+    // Zorgt voor het vasthouden van een kant op gaan van pacman
+    vars.linksPac = false;
+    vars.rechtsPac = false;
+    vars.bovenPac = false;
+    vars.onderPac = false;
 }
 // Functie voor het tekenen van de buitenlijnen.
 // const playIntroSound = (p, introSound) => {
@@ -136,6 +145,62 @@ const obstacles = p => {
     p.rect(vars.xInner + vars.widthUnit * 15, vars.yInner + vars.heightUnit * 12, vars.widthUnit, vars.heightUnit, 4);
     p.pop();
 }
+const beweegPac = p => {
+    if (p.keyIsDown(p.LEFT_ARROW)) {
+        vars.linksPac = true;
+        vars.rechtsPac = false;
+        vars.bovenPac = false;
+        vars.onderPac = false;
+      }
+      if (p.keyIsDown(p.RIGHT_ARROW)) {
+        vars.linksPac = false;
+        vars.rechtsPac = true;
+        vars.bovenPac = false;
+        vars.onderPac = false;
+      }
+      if (p.keyIsDown(p.UP_ARROW)) {
+        vars.linksPac = false;
+        vars.rechtsPac = false;
+       vars.bovenPac = true;
+        vars.onderPac = false;
+      }
+      if (p.keyIsDown(p.DOWN_ARROW)) {
+        vars.linksPac = false;
+        vars.rechtsPac = false;
+        vars.bovenPac = false;
+        vars.onderPac = true;
+      }
+  if (vars.linksPac == true) { 
+    vars.xPacman -= 5;
+	}
+	
+ if (vars.rechtsPac == true) { 
+    vars.xPacman += 5;
+	}
+	
+if (vars.bovenPac == true) { 
+    vars.yPacman -= 5;
+	}
+	
+if (vars.onderPac == true) { 
+    vars.yPacman += 5;
+    }
+}
+
+const tekenPac = p => {
+  Pacman(p,vars.xPacman, vars.yPacman, vars.rPacman);
+  //tekent pacman
+  vars.xPacman = p.constrain(vars.xPacman, vars.rPacman/2, vars.innerWidth - vars.rPacman/2);
+  vars.yPacman = p.constrain(vars.yPacman, vars.rPacman/2, vars.innerHeight - vars.rPacman/2);
+  //buitenste rand
+}
+
+function Pacman (p,x,y,s) {
+    p.push();
+    p.fill('yellow');
+    p.ellipse(x,y,s);
+    p.pop();
+    }
 /*
 Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
 Deze modus heeft voor deze game als belangrijkste doel om de game te kunnen starten via een JavaScript functie.
@@ -168,6 +233,8 @@ const sketch = p => {
         outerLinesGap(p);
         candy(p);
         obstacles(p);
+        beweegPac(p);
+        tekenPac(p);
     }
 }
 
