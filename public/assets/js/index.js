@@ -27,23 +27,26 @@ const initializeVars = () => {
     // Definieert de dimensie eenheden van het spelbord.
     vars.heightUnit = vars.innerHeight / 14;
     vars.widthUnit = vars.innerWidth / 17;
-    // definieert de positie en grootte van pacman 
-    vars.xPacman = 100;
-    vars.yPacman = 150;
-    vars.rPacman = 50;
-    // Zorgt voor het vasthouden van een kant op gaan van pacman
-    vars.linksPac = false;
-    vars.rechtsPac = false;
-    vars.bovenPac = false;
-    vars.onderPac = false;
+    // Definieert de positie en grootte van Hoog-Man.
+    vars.xHoogMan = vars.xInner + vars.widthUnit * 0.5;
+    vars.yHoogMan = vars.yInner + vars.heightUnit * 0.5;
+    vars.dHoogMan = vars.heightUnit / 2;
+    // Definieert de richtingen waarin Hoog-Man blijft bewegen.
+    vars.bovenHoogMan = false;
+    vars.rechtsHoogMan = false;
+    vars.onderHoogMan = false;
+    vars.linksHoogMan = false;
+    // Definieert de snelheid van Hoog-Man.
+    vars.hoogManSpeed = (88 / 60) / 811.2 * vars.innerHeight;
 }
-// Functie voor het tekenen van de buitenlijnen.
+// Functie voor het afspelen van het intro liedje.
 // const playIntroSound = (p, introSound) => {
 //     p.push();
 //     p.noLoop();
 //     introSound.play();
 //     p.pop();
 // }
+// Functie voor het tekenen van de buitenlijnen.
 const outerLines = p => {
     p.push();
     p.strokeWeight(3);
@@ -60,18 +63,6 @@ const outerLinesGap = p => {
     p.rect(vars.xInner + vars.widthUnit, vars.yInner, vars.widthUnit, 0);
     p.rect(vars.xInner + vars.widthUnit, vars.yOuter + vars.outerHeight, vars.widthUnit, 0);
     p.rect(vars.xInner + vars.widthUnit, vars.yInner + vars.innerHeight, vars.widthUnit, 0);
-    p.pop();
-}
-// Functie voor het tekenen van de gele bolletjes.
-const candy = p => {
-    p.push();
-    p.stroke("yellow");
-    p.fill("yellow");
-    for (let i = 0; i < 14; i++) {
-        for (let j = 0; j < 17; j++) {
-            p.circle(vars.xInner + vars.widthUnit * (0.5 + j), vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.25);
-        }
-    }
     p.pop();
 }
 // Functie voor het tekenen van alle barrières.
@@ -145,62 +136,47 @@ const obstacles = p => {
     p.rect(vars.xInner + vars.widthUnit * 15, vars.yInner + vars.heightUnit * 12, vars.widthUnit, vars.heightUnit, 4);
     p.pop();
 }
-const beweegPac = p => {
-    if (p.keyIsDown(p.LEFT_ARROW)) {
-        vars.linksPac = true;
-        vars.rechtsPac = false;
-        vars.bovenPac = false;
-        vars.onderPac = false;
-      }
-      if (p.keyIsDown(p.RIGHT_ARROW)) {
-        vars.linksPac = false;
-        vars.rechtsPac = true;
-        vars.bovenPac = false;
-        vars.onderPac = false;
-      }
-      if (p.keyIsDown(p.UP_ARROW)) {
-        vars.linksPac = false;
-        vars.rechtsPac = false;
-       vars.bovenPac = true;
-        vars.onderPac = false;
-      }
-      if (p.keyIsDown(p.DOWN_ARROW)) {
-        vars.linksPac = false;
-        vars.rechtsPac = false;
-        vars.bovenPac = false;
-        vars.onderPac = true;
-      }
-  if (vars.linksPac == true) { 
-    vars.xPacman -= 5;
-	}
-	
- if (vars.rechtsPac == true) { 
-    vars.xPacman += 5;
-	}
-	
-if (vars.bovenPac == true) { 
-    vars.yPacman -= 5;
-	}
-	
-if (vars.onderPac == true) { 
-    vars.yPacman += 5;
-    }
-}
-
-const tekenPac = p => {
-  Pacman(p,vars.xPacman, vars.yPacman, vars.rPacman);
-  //tekent pacman
-  vars.xPacman = p.constrain(vars.xPacman, vars.rPacman/2, vars.innerWidth - vars.rPacman/2);
-  vars.yPacman = p.constrain(vars.yPacman, vars.rPacman/2, vars.innerHeight - vars.rPacman/2);
-  //buitenste rand
-}
-
-function Pacman (p,x,y,s) {
+// Functie voor het tekenen van de gele bolletjes.
+const candy = p => {
     p.push();
-    p.fill('yellow');
-    p.ellipse(x,y,s);
-    p.pop();
+    p.stroke("yellow");
+    p.fill("yellow");
+    for (let i = 0; i < 14; i++) {
+        for (let j = 0; j < 17; j++) {
+            p.circle(vars.xInner + vars.widthUnit * (0.5 + j), vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.15);
+        }
     }
+    p.pop();
+}
+// Functie voor het resetten van Hoog-Mans bewegingsrichting.
+const resetDirection = () => {
+    vars.bovenHoogMan = false;
+    vars.rechtsHoogMan = false;
+    vars.onderHoogMan = false;
+    vars.linksHoogMan = false;
+}
+// Functie voor het tekenen en besturen van Hoog-Man.
+const hoogMan = p => {
+    // Zorgt ervoor dat Hoog-Man getekend wordt.
+    p.push();
+    p.noStroke();
+    p.fill("yellow");
+    p.ellipse(vars.xHoogMan, vars.yHoogMan, vars.dHoogMan);
+    p.pop();
+    // Zorgt ervoor dat Hoog-Man niet buiten het spelbord gaat.
+    vars.xHoogMan = p.constrain(vars.xHoogMan, vars.xInner + vars.widthUnit * 0.5, vars.xInner + vars.innerWidth - vars.widthUnit * 0.5);
+    vars.yHoogMan = p.constrain(vars.yHoogMan, vars.yInner + vars.heightUnit * 0.5, vars.yInner + vars.innerHeight - vars.heightUnit * 0.5);
+    // Zorgt ervoor dat Hoog-Man beweegt met de gespecificeerde snelheid.
+    if (vars.bovenHoogMan) {vars.yHoogMan -= vars.hoogManSpeed;}
+    else if (vars.rechtsHoogMan) {vars.xHoogMan += vars.hoogManSpeed;}
+    else if (vars.onderHoogMan) {vars.yHoogMan += vars.hoogManSpeed;}
+    else if (vars.linksHoogMan) {vars.xHoogMan -= vars.hoogManSpeed;}
+    // Test barrière
+    if ((vars.xHoogMan + vars.dHoogMan) >= (vars.xInner + vars.widthUnit) && vars.xHoogMan <= (vars.widthUnit * 2) && vars.rechtsHoogMan) {
+        resetDirection();
+        vars.xHoogMan -= 1;
+    }
+}
 /*
 Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
 Deze modus heeft voor deze game als belangrijkste doel om de game te kunnen starten via een JavaScript functie.
@@ -209,22 +185,23 @@ In plaats van dat p5 automatisch start. Het argument p van de sketch functie is 
 const sketch = p => {
     // Functie voor het preloaden van game assets in p5.
     p.preload = () => {
-        initializeVars();
         p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
         // introSound = p.loadSound("assets/music/PacMan.mp3");
     }
     // Functie voor de setup van de game in p5.
     p.setup = () => {
+        initializeVars();
         p.createCanvas(vars.canvasDimension, vars.canvasDimension);
         p.colorMode(p.RGB, 255);
         p.frameRate(60);
         p.textFont("Roboto");
         p.textSize(20);
-        p.background("black");
+        p.noCursor();
     }
     // Functie voor het tekenen van de game in p5.
     p.draw = () => {
+        p.background("black");
         p.noFill();
         p.strokeWeight(2);
         p.stroke("#2121DE");
@@ -233,8 +210,26 @@ const sketch = p => {
         outerLinesGap(p);
         candy(p);
         obstacles(p);
-        beweegPac(p);
-        tekenPac(p);
+        hoogMan(p);
+    }
+    // Functie voor het checken welke knop is ingedrukt in p5 en dus het besturen van Hoog-Man.
+    p.keyPressed = () => {
+        if (p.keyCode === p.UP_ARROW) {
+            resetDirection();
+            vars.bovenHoogMan = true;
+        }
+        else if (p.keyCode === p.RIGHT_ARROW) {
+            resetDirection();
+            vars.rechtsHoogMan = true;
+        }
+        else if (p.keyCode === p.DOWN_ARROW) {
+            resetDirection();
+            vars.onderHoogMan = true;
+        }
+        else if (p.keyCode === p.LEFT_ARROW) {
+            resetDirection();
+            vars.linksHoogMan = true;
+        }
     }
 }
 
