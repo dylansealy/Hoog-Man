@@ -29,12 +29,12 @@ const initializeVars = () => {
     vars.widthUnit = vars.innerWidth / 17;
 }
 // Functie voor het tekenen van de buitenlijnen.
-const playIntroSound = (p, introSound) => {
-    p.push();
-    p.noLoop();
-    introSound.play();
-    p.pop();
-}
+// const playIntroSound = (p, introSound) => {
+//     p.push();
+//     p.noLoop();
+//     introSound.play();
+//     p.pop();
+// }
 const outerLines = p => {
     p.push();
     p.strokeWeight(3);
@@ -147,7 +147,7 @@ const sketch = p => {
         initializeVars();
         p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
-        introSound = p.loadSound("assets/music/PacMan.mp3");
+        // introSound = p.loadSound("assets/music/PacMan.mp3");
     }
     // Functie voor de setup van de game in p5.
     p.setup = () => {
@@ -163,7 +163,7 @@ const sketch = p => {
         p.noFill();
         p.strokeWeight(2);
         p.stroke("#2121DE");
-        playIntroSound(p, introSound);
+        // playIntroSound(p, introSound);
         outerLines(p);
         outerLinesGap(p);
         candy(p);
@@ -183,9 +183,8 @@ const footerText = () => {
     year = year.getFullYear();
     footer.innerText = `© ${year} HOOG-MAN`;
 }
-// Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
-// Creëert nieuwe AudioContext en maakt de game fullscreen.
-startGame.addEventListener("click", () => {
+// Functie voor het fullscreenen van de game.
+const gameStartup = () => {
     const main = document.querySelector("main");
     main.style.height = "100%";
     main.style.width = "100%";
@@ -193,6 +192,11 @@ startGame.addEventListener("click", () => {
     main.style.top = "0";
     main.style.left = "0";
     main.style.backgroundColor = "black";
+}
+// Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
+// Creëert nieuwe AudioContext en maakt de game fullscreen.
+startGame.addEventListener("click", () => {
+    gameStartup();
     vars.game = new p5(sketch);
     const gameStartupContainer = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
