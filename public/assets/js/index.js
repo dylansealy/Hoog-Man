@@ -36,8 +36,10 @@ const initializeVars = () => {
     vars.rechtsHoogMan = false;
     vars.onderHoogMan = false;
     vars.linksHoogMan = false;
+    vars.xMovement = false;
+    vars.yMovement = false;
     // Definieert de snelheid van Hoog-Man.
-    vars.hoogManSpeed = (88 / 60) / 811.2 * vars.innerHeight;
+    vars.hoogManSpeed = (88 / 60) / 650 * vars.innerHeight;
 }
 // Functie voor het afspelen van het intro liedje.
 // const playIntroSound = (p, introSound) => {
@@ -66,7 +68,7 @@ const outerLinesGap = p => {
     p.pop();
 }
 // Functie voor het tekenen van alle barrières.
-const obstacles = p => {
+const visualObstacles = p => {
     p.push();
     p.fill("black");
     // Voor de volgorde zie maps 1.jpg.
@@ -154,6 +156,21 @@ const resetDirection = () => {
     vars.rechtsHoogMan = false;
     vars.onderHoogMan = false;
     vars.linksHoogMan = false;
+    vars.xMovement = false;
+}
+// Functie voor het constrainen van Hoog-Man voor alle assen. Dit zorgt ervoor dat Hoog-Man in elke bewegingsrichting een vaste x of y positie heeft.
+const constrainPostion = p => {
+    if (vars.linksHoogMan || vars.rechtsHoogMan) {vars.xMovement = true;}
+    else if (vars.bovenHoogMan || vars.onderHoogMan) {vars.yMovement = true;}
+    if (vars.xMovement) {
+        for (let i = 0; i < 14; i++) {
+            if (vars.yHoogMan > vars.yInner + vars.heightUnit * i && vars.yHoogMan < vars.yInner + vars.heightUnit * (i + 1)) {vars.yHoogMan = vars.yInner + vars.heightUnit * (i + 0.5);}
+        }
+    } else if (vars.yMovement) {
+        for (let i = 0; i < 17; i++) {
+            if (vars.xHoogMan > vars.xInner + vars.widthUnit * i && vars.xHoogMan < vars.xInner + vars.widthUnit * (i + 1)) {vars.xHoogMan = vars.xInner + vars.widthUnit * (i + 0.5);}
+        }
+    }
 }
 // Functie voor het tekenen en besturen van Hoog-Man.
 const hoogMan = p => {
@@ -172,10 +189,10 @@ const hoogMan = p => {
     else if (vars.onderHoogMan) {vars.yHoogMan += vars.hoogManSpeed;}
     else if (vars.linksHoogMan) {vars.xHoogMan -= vars.hoogManSpeed;}
     // Test barrière
-    if ((vars.xHoogMan + vars.dHoogMan) >= (vars.xInner + vars.widthUnit) && vars.xHoogMan <= (vars.widthUnit * 2) && vars.rechtsHoogMan) {
-        resetDirection();
-        vars.xHoogMan -= 1;
-    }
+    // if ((vars.xHoogMan + vars.dHoogMan) >= (vars.xInner + vars.widthUnit) && vars.xHoogMan <= (vars.widthUnit * 2) && vars.rechtsHoogMan) {
+    //     resetDirection();
+    //     vars.xHoogMan -= 1;
+    // }
 }
 /*
 Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
@@ -209,7 +226,7 @@ const sketch = p => {
         outerLines(p);
         outerLinesGap(p);
         candy(p);
-        obstacles(p);
+        visualObstacles(p);
         hoogMan(p);
     }
     // Functie voor het checken welke knop is ingedrukt in p5 en dus het besturen van Hoog-Man.
@@ -217,18 +234,22 @@ const sketch = p => {
         if (p.keyCode === p.UP_ARROW) {
             resetDirection();
             vars.bovenHoogMan = true;
+            constrainPostion();
         }
         else if (p.keyCode === p.RIGHT_ARROW) {
             resetDirection();
             vars.rechtsHoogMan = true;
+            constrainPostion();
         }
         else if (p.keyCode === p.DOWN_ARROW) {
             resetDirection();
             vars.onderHoogMan = true;
+            constrainPostion();
         }
         else if (p.keyCode === p.LEFT_ARROW) {
             resetDirection();
             vars.linksHoogMan = true;
+            constrainPostion();
         }
     }
 }

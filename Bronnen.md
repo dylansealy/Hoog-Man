@@ -11,3 +11,4 @@ Dit document heeft als doel om alle gebruikte bronnen bij te houden. Dus zet all
 * [Pac-Man sound, textures etc.](https://www.classicgaming.cc/classics/pac-man/sounds)
 * [p5 sketch](https://www.youtube.com/watch?v=Su792jEauZg&feature=youtu.be)
 * [Pac-Man design](https://www.slideshare.net/grimlockt/pac-man-6561257)
+* [Pac-Man p5 voorbeeld](https://coursescript.com/notes/interactivecomputing/game/pacman/sketch.js)
