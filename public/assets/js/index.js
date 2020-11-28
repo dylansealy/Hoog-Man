@@ -150,6 +150,16 @@ const candy = p => {
     }
     p.pop();
 }
+const checkCollision = nextMovement => {
+    if (vars.xMovement) {
+        if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit && nextMovement === "up") {return false;}
+        else if (vars.yHoogMan > vars.yInner + vars.heightUnit * 13 && vars.yHoogMan < vars.yInner + vars.heightUnit * 14 && nextMovement === "down") {return false;}
+    } else if (vars.yMovement) {
+        if (vars.xHoogMan > vars.xInner && vars.xHoogMan < vars.xInner + vars.widthUnit && nextMovement === "left") {return false;}
+        else if (vars.xHoogMan > vars.xInner + vars.widthUnit * 16 && vars.xHoogMan < vars.xInner + vars.widthUnit * 17 && nextMovement === "right") {return false;}
+    }
+    return true;
+}
 // Functie voor het resetten van Hoog-Mans bewegingsrichting.
 const resetDirection = () => {
     vars.bovenHoogMan = false;
@@ -157,9 +167,10 @@ const resetDirection = () => {
     vars.onderHoogMan = false;
     vars.linksHoogMan = false;
     vars.xMovement = false;
+    vars.yMovement = false;
 }
 // Functie voor het constrainen van Hoog-Man voor alle assen. Dit zorgt ervoor dat Hoog-Man in elke bewegingsrichting een vaste x of y positie heeft.
-const constrainPostion = p => {
+const constrainPostion = () => {
     if (vars.linksHoogMan || vars.rechtsHoogMan) {vars.xMovement = true;}
     else if (vars.bovenHoogMan || vars.onderHoogMan) {vars.yMovement = true;}
     if (vars.xMovement) {
@@ -232,24 +243,32 @@ const sketch = p => {
     // Functie voor het checken welke knop is ingedrukt in p5 en dus het besturen van Hoog-Man.
     p.keyPressed = () => {
         if (p.keyCode === p.UP_ARROW) {
-            resetDirection();
-            vars.bovenHoogMan = true;
-            constrainPostion();
+            if (checkCollision("up")) {
+                resetDirection();
+                vars.bovenHoogMan = true;
+                constrainPostion();
+            }
         }
         else if (p.keyCode === p.RIGHT_ARROW) {
-            resetDirection();
-            vars.rechtsHoogMan = true;
-            constrainPostion();
+            if (checkCollision("right")) {
+                resetDirection();
+                vars.rechtsHoogMan = true;
+                constrainPostion();
+            }
         }
         else if (p.keyCode === p.DOWN_ARROW) {
-            resetDirection();
-            vars.onderHoogMan = true;
-            constrainPostion();
+            if (checkCollision("down")) {
+                resetDirection();
+                vars.onderHoogMan = true;
+                constrainPostion();
+            }
         }
         else if (p.keyCode === p.LEFT_ARROW) {
-            resetDirection();
-            vars.linksHoogMan = true;
-            constrainPostion();
+            if (checkCollision("left")) {
+                resetDirection();
+                vars.linksHoogMan = true;
+                constrainPostion();
+            }
         }
     }
 }
