@@ -27,14 +27,28 @@ const initializeVars = () => {
     // Definieert de dimensie eenheden van het spelbord.
     vars.heightUnit = vars.innerHeight / 14;
     vars.widthUnit = vars.innerWidth / 17;
+    // Definieert de positie en grootte van Hoog-Man.
+    vars.xHoogMan = vars.xInner + vars.widthUnit * 0.5;
+    vars.yHoogMan = vars.yInner + vars.heightUnit * 0.5;
+    vars.dHoogMan = vars.heightUnit / 2;
+    // Definieert de richtingen waarin Hoog-Man blijft bewegen.
+    vars.bovenHoogMan = false;
+    vars.rechtsHoogMan = false;
+    vars.onderHoogMan = false;
+    vars.linksHoogMan = false;
+    vars.xMovement = false;
+    vars.yMovement = false;
+    // Definieert de snelheid van Hoog-Man.
+    vars.hoogManSpeed = (88 / 60) / 650 * vars.innerHeight;
 }
+// Functie voor het afspelen van het intro liedje.
+// const playIntroSound = (p, introSound) => {
+//     p.push();
+//     p.noLoop();
+//     introSound.play();
+//     p.pop();
+// }
 // Functie voor het tekenen van de buitenlijnen.
-const playIntroSound = (p, introSound) => {
-    p.push();
-    p.noLoop();
-    introSound.play();
-    p.pop();
-}
 const outerLines = p => {
     p.push();
     p.strokeWeight(3);
@@ -53,20 +67,8 @@ const outerLinesGap = p => {
     p.rect(vars.xInner + vars.widthUnit, vars.yInner + vars.innerHeight, vars.widthUnit, 0);
     p.pop();
 }
-// Functie voor het tekenen van de gele bolletjes.
-const candy = p => {
-    p.push();
-    p.stroke("yellow");
-    p.fill("yellow");
-    for (let i = 0; i < 14; i++) {
-        for (let j = 0; j < 17; j++) {
-            p.circle(vars.xInner + vars.widthUnit * (0.5 + j), vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.25);
-        }
-    }
-    p.pop();
-}
 // Functie voor het tekenen van alle barrières.
-const obstacles = p => {
+const visualObstacles = p => {
     p.push();
     p.fill("black");
     // Voor de volgorde zie maps 1.jpg.
@@ -136,6 +138,74 @@ const obstacles = p => {
     p.rect(vars.xInner + vars.widthUnit * 15, vars.yInner + vars.heightUnit * 12, vars.widthUnit, vars.heightUnit, 4);
     p.pop();
 }
+// Functie voor het tekenen van de gele bolletjes.
+const candy = p => {
+    p.push();
+    p.stroke("yellow");
+    p.fill("yellow");
+    for (let i = 0; i < 14; i++) {
+        for (let j = 0; j < 17; j++) {
+            p.circle(vars.xInner + vars.widthUnit * (0.5 + j), vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.15);
+        }
+    }
+    p.pop();
+}
+// Functie voor het checken of er na een verandering in de bewegingsrichting een botsing ontstaat.
+const checkCollision = nextMovement => {
+    if (vars.xMovement) {
+        if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit && nextMovement === "up") {return false;}
+        else if (vars.yHoogMan > vars.yInner + vars.heightUnit * 13 && vars.yHoogMan < vars.yInner + vars.heightUnit * 14 && nextMovement === "down") {return false;}
+    } else if (vars.yMovement) {
+        if (vars.xHoogMan > vars.xInner && vars.xHoogMan < vars.xInner + vars.widthUnit && nextMovement === "left") {return false;}
+        else if (vars.xHoogMan > vars.xInner + vars.widthUnit * 16 && vars.xHoogMan < vars.xInner + vars.widthUnit * 17 && nextMovement === "right") {return false;}
+    }
+    return true;
+}
+// Functie voor het resetten van Hoog-Mans bewegingsrichting.
+const resetDirection = () => {
+    vars.bovenHoogMan = false;
+    vars.rechtsHoogMan = false;
+    vars.onderHoogMan = false;
+    vars.linksHoogMan = false;
+    vars.xMovement = false;
+    vars.yMovement = false;
+}
+// Functie voor het constrainen van Hoog-Man voor alle assen. Dit zorgt ervoor dat Hoog-Man in elke bewegingsrichting een vaste x of y positie heeft.
+const constrainPostion = () => {
+    if (vars.linksHoogMan || vars.rechtsHoogMan) {vars.xMovement = true;}
+    else if (vars.bovenHoogMan || vars.onderHoogMan) {vars.yMovement = true;}
+    if (vars.xMovement) {
+        for (let i = 0; i < 14; i++) {
+            if (vars.yHoogMan > vars.yInner + vars.heightUnit * i && vars.yHoogMan < vars.yInner + vars.heightUnit * (i + 1)) {vars.yHoogMan = vars.yInner + vars.heightUnit * (i + 0.5);}
+        }
+    } else if (vars.yMovement) {
+        for (let i = 0; i < 17; i++) {
+            if (vars.xHoogMan > vars.xInner + vars.widthUnit * i && vars.xHoogMan < vars.xInner + vars.widthUnit * (i + 1)) {vars.xHoogMan = vars.xInner + vars.widthUnit * (i + 0.5);}
+        }
+    }
+}
+// Functie voor het tekenen en besturen van Hoog-Man.
+const hoogMan = p => {
+    // Zorgt ervoor dat Hoog-Man getekend wordt.
+    p.push();
+    p.noStroke();
+    p.fill("yellow");
+    p.ellipse(vars.xHoogMan, vars.yHoogMan, vars.dHoogMan);
+    p.pop();
+    // Zorgt ervoor dat Hoog-Man niet buiten het spelbord gaat.
+    vars.xHoogMan = p.constrain(vars.xHoogMan, vars.xInner + vars.widthUnit * 0.5, vars.xInner + vars.innerWidth - vars.widthUnit * 0.5);
+    vars.yHoogMan = p.constrain(vars.yHoogMan, vars.yInner + vars.heightUnit * 0.5, vars.yInner + vars.innerHeight - vars.heightUnit * 0.5);
+    // Zorgt ervoor dat Hoog-Man beweegt met de gespecificeerde snelheid.
+    if (vars.bovenHoogMan) {vars.yHoogMan -= vars.hoogManSpeed;}
+    else if (vars.rechtsHoogMan) {vars.xHoogMan += vars.hoogManSpeed;}
+    else if (vars.onderHoogMan) {vars.yHoogMan += vars.hoogManSpeed;}
+    else if (vars.linksHoogMan) {vars.xHoogMan -= vars.hoogManSpeed;}
+    // Test barrière
+    // if ((vars.xHoogMan + vars.dHoogMan) >= (vars.xInner + vars.widthUnit) && vars.xHoogMan <= (vars.widthUnit * 2) && vars.rechtsHoogMan) {
+    //     resetDirection();
+    //     vars.xHoogMan -= 1;
+    // }
+}
 /*
 Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
 Deze modus heeft voor deze game als belangrijkste doel om de game te kunnen starten via een JavaScript functie.
@@ -144,30 +214,63 @@ In plaats van dat p5 automatisch start. Het argument p van de sketch functie is 
 const sketch = p => {
     // Functie voor het preloaden van game assets in p5.
     p.preload = () => {
-        initializeVars();
         p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
-        introSound = p.loadSound("assets/music/PacMan.mp3");
+        // introSound = p.loadSound("assets/music/PacMan.mp3");
     }
     // Functie voor de setup van de game in p5.
     p.setup = () => {
+        initializeVars();
         p.createCanvas(vars.canvasDimension, vars.canvasDimension);
         p.colorMode(p.RGB, 255);
         p.frameRate(60);
         p.textFont("Roboto");
         p.textSize(20);
-        p.background("black");
+        p.noCursor();
     }
     // Functie voor het tekenen van de game in p5.
     p.draw = () => {
+        p.background("black");
         p.noFill();
         p.strokeWeight(2);
         p.stroke("#2121DE");
-        playIntroSound(p, introSound);
+        // playIntroSound(p, introSound);
         outerLines(p);
         outerLinesGap(p);
         candy(p);
-        obstacles(p);
+        visualObstacles(p);
+        hoogMan(p);
+    }
+    // Functie voor het checken welke knop is ingedrukt in p5 en dus het besturen van Hoog-Man.
+    p.keyPressed = () => {
+        if (p.keyCode === p.UP_ARROW) {
+            if (checkCollision("up")) {
+                resetDirection();
+                vars.bovenHoogMan = true;
+                constrainPostion();
+            }
+        }
+        else if (p.keyCode === p.RIGHT_ARROW) {
+            if (checkCollision("right")) {
+                resetDirection();
+                vars.rechtsHoogMan = true;
+                constrainPostion();
+            }
+        }
+        else if (p.keyCode === p.DOWN_ARROW) {
+            if (checkCollision("down")) {
+                resetDirection();
+                vars.onderHoogMan = true;
+                constrainPostion();
+            }
+        }
+        else if (p.keyCode === p.LEFT_ARROW) {
+            if (checkCollision("left")) {
+                resetDirection();
+                vars.linksHoogMan = true;
+                constrainPostion();
+            }
+        }
     }
 }
 
@@ -183,13 +286,24 @@ const footerText = () => {
     year = year.getFullYear();
     footer.innerText = `© ${year} HOOG-MAN`;
 }
+// Functie voor het fullscreenen van de game.
+const gameStartupScreen = () => {
+    const main = document.querySelector("main");
+    main.style.height = "100%";
+    main.style.width = "100%";
+    main.style.position = "absolute";
+    main.style.top = "0";
+    main.style.left = "0";
+    main.style.backgroundColor = "black";
+}
 // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
-// Creëert nieuwe AudioContext.
+// Creëert nieuwe AudioContext en maakt de game fullscreen.
 startGame.addEventListener("click", () => {
+    gameStartupScreen();
     vars.game = new p5(sketch);
     const gameStartupContainer = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
-    const audio = new AudioContext;
+    new AudioContext;
 });
 // Stuurt gebruiker door naar GitHub repository.
 social.addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken");

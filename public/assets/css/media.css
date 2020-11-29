@@ -6,3 +6,13 @@
 		right: 0
 	}
 }
+
+@media only screen and (max-width: 459px) {
+	header {
+		font-size: 1rem
+	}
+
+	main {
+		font-size: 0.9rem
+	}
+}
