@@ -150,6 +150,7 @@ const candy = p => {
     }
     p.pop();
 }
+// Functie voor het checken of er na een verandering in de bewegingsrichting een botsing ontstaat.
 const checkCollision = nextMovement => {
     if (vars.xMovement) {
         if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit && nextMovement === "up") {return false;}

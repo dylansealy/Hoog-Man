@@ -23,6 +23,17 @@ body {
     font-family: "Roboto", sans-serif, Arial
 }
 
+a {
+    color: #000000;
+    text-decoration: underline
+}
+a:hover {
+    color: #ffff00
+}
+a:active {
+    text-decoration: underline
+}
+
 header {
     grid-area: 1 / 1 / 2 / 2; /* Geeft aan welk grid vak het element tot zijn beschikking heeft. */
     display: flex; /*Flexbox is een 1D variant van grid. Hiermee kun je gemakkelijk content alignen. */
@@ -30,7 +41,7 @@ header {
     align-items: center; /* Centreert individuele items in de breedte van de flexbox. */
     justify-content: center; /* Centreert de content in de lengte van de flexbox. */
     gap: 1rem; /* Specificeert de ruimte tussen individuele items. */
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     background-color: #ffff00
 }
 
