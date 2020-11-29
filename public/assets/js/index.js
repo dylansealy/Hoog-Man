@@ -303,7 +303,7 @@ startGame.addEventListener("click", () => {
     vars.game = new p5(sketch);
     const gameStartupContainer = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
-    const audio = new AudioContext;
+    new AudioContext;
 });
 // Stuurt gebruiker door naar GitHub repository.
 social.addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken");
