@@ -11,7 +11,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2.1.2
         with:
-          node-version: 12 
+          node-version: 12
       - name: Install dependencies
         run: npm install
       - name: Update base href
@@ -24,4 +24,4 @@ jobs:
           message: "GitHub action: development base href"
           push: true
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
