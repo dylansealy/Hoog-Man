@@ -40,6 +40,10 @@ const initializeVars = () => {
     vars.yMovement = false;
     // Definieert de snelheid van Hoog-Man.
     vars.hoogManSpeed = (88 / 60) / 650 * vars.innerHeight;
+    // Definieert de barrières van het spelbord.
+    vars.obstacles = [
+        [vars.xInner + vars.widthUnit, vars.yInner + vars.heightUnit, vars.xInner + vars.widthUnit * 3, vars.yInner + vars.heightUnit * 4],
+    ]
 }
 // Functie voor het afspelen van het intro liedje.
 // const playIntroSound = (p, introSound) => {
@@ -151,7 +155,7 @@ const candy = p => {
     p.pop();
 }
 // Functie voor het checken of er na een verandering in de bewegingsrichting een botsing ontstaat.
-const checkCollision = nextMovement => {
+const checkCollisionOuterLines = nextMovement => {
     if (vars.xMovement) {
         if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit && nextMovement === "up") {return false;}
         else if (vars.yHoogMan > vars.yInner + vars.heightUnit * 13 && vars.yHoogMan < vars.yInner + vars.heightUnit * 14 && nextMovement === "down") {return false;}
@@ -160,6 +164,17 @@ const checkCollision = nextMovement => {
         else if (vars.xHoogMan > vars.xInner + vars.widthUnit * 16 && vars.xHoogMan < vars.xInner + vars.widthUnit * 17 && nextMovement === "right") {return false;}
     }
     return true;
+}
+// Functie voor het checken of er een botsing plaatsvindt met een barrière.
+const checkCollision = () => {
+    for (obstacle in vars.obstacles) {
+        if (
+            vars.xHoogMan + vars.widthUnit * 0.5 - 1 > vars.obstacles[obstacle][0] &&
+            vars.yHoogMan + vars.heightUnit * 0.5 - 1> vars.obstacles[obstacle][1] &&
+            vars.xHoogMan - vars.widthUnit * 0.5 + 1 < vars.obstacles[obstacle][2] &&
+            vars.yHoogMan - vars.heightUnit * 0.5 + 1 < vars.obstacles[obstacle][3]
+        ) {resetDirection();}
+    }
 }
 // Functie voor het resetten van Hoog-Mans bewegingsrichting.
 const resetDirection = () => {
@@ -200,11 +215,6 @@ const hoogMan = p => {
     else if (vars.rechtsHoogMan) {vars.xHoogMan += vars.hoogManSpeed;}
     else if (vars.onderHoogMan) {vars.yHoogMan += vars.hoogManSpeed;}
     else if (vars.linksHoogMan) {vars.xHoogMan -= vars.hoogManSpeed;}
-    // Test barrière
-    // if ((vars.xHoogMan + vars.dHoogMan) >= (vars.xInner + vars.widthUnit) && vars.xHoogMan <= (vars.widthUnit * 2) && vars.rechtsHoogMan) {
-    //     resetDirection();
-    //     vars.xHoogMan -= 1;
-    // }
 }
 /*
 Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
@@ -240,32 +250,33 @@ const sketch = p => {
         candy(p);
         visualObstacles(p);
         hoogMan(p);
+        checkCollision();
     }
     // Functie voor het checken welke knop is ingedrukt in p5 en dus het besturen van Hoog-Man.
     p.keyPressed = () => {
         if (p.keyCode === p.UP_ARROW) {
-            if (checkCollision("up")) {
+            if (checkCollisionOuterLines("up")) {
                 resetDirection();
                 vars.bovenHoogMan = true;
                 constrainPostion();
             }
         }
         else if (p.keyCode === p.RIGHT_ARROW) {
-            if (checkCollision("right")) {
+            if (checkCollisionOuterLines("right")) {
                 resetDirection();
                 vars.rechtsHoogMan = true;
                 constrainPostion();
             }
         }
         else if (p.keyCode === p.DOWN_ARROW) {
-            if (checkCollision("down")) {
+            if (checkCollisionOuterLines("down")) {
                 resetDirection();
                 vars.onderHoogMan = true;
                 constrainPostion();
             }
         }
         else if (p.keyCode === p.LEFT_ARROW) {
-            if (checkCollision("left")) {
+            if (checkCollisionOuterLines("left")) {
                 resetDirection();
                 vars.linksHoogMan = true;
                 constrainPostion();
