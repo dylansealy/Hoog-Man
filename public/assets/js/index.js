@@ -170,20 +170,21 @@ const checkCollision = () => {
     for (obstacle in vars.obstacles) {
         if (
             vars.xHoogMan + vars.widthUnit * 0.5 - 1 > vars.obstacles[obstacle][0] &&
-            vars.yHoogMan + vars.heightUnit * 0.5 - 1> vars.obstacles[obstacle][1] &&
+            vars.yHoogMan + vars.heightUnit * 0.5 - 1 > vars.obstacles[obstacle][1] &&
             vars.xHoogMan - vars.widthUnit * 0.5 + 1 < vars.obstacles[obstacle][2] &&
             vars.yHoogMan - vars.heightUnit * 0.5 + 1 < vars.obstacles[obstacle][3]
-        ) {resetDirection();}
+        ) {return resetDirection(true);}
     }
 }
 // Functie voor het resetten van Hoog-Mans bewegingsrichting.
-const resetDirection = () => {
+const resetDirection = afterCollision => {
     vars.bovenHoogMan = false;
     vars.rechtsHoogMan = false;
     vars.onderHoogMan = false;
     vars.linksHoogMan = false;
     vars.xMovement = false;
     vars.yMovement = false;
+    if (afterCollision) {constrainPostion(true);}
 }
 // Functie voor het constrainen van Hoog-Man voor alle assen. Dit zorgt ervoor dat Hoog-Man in elke bewegingsrichting een vaste x of y positie heeft.
 const constrainPostion = () => {
@@ -191,11 +192,28 @@ const constrainPostion = () => {
     else if (vars.bovenHoogMan || vars.onderHoogMan) {vars.yMovement = true;}
     if (vars.xMovement) {
         for (let i = 0; i < 14; i++) {
-            if (vars.yHoogMan > vars.yInner + vars.heightUnit * i && vars.yHoogMan < vars.yInner + vars.heightUnit * (i + 1)) {vars.yHoogMan = vars.yInner + vars.heightUnit * (i + 0.5);}
+            if (vars.yHoogMan > vars.yInner + vars.heightUnit * i && vars.yHoogMan < vars.yInner + vars.heightUnit * (i + 1)) {
+                return vars.yHoogMan = vars.yInner + vars.heightUnit * (i + 0.5);
+            }
         }
     } else if (vars.yMovement) {
         for (let i = 0; i < 17; i++) {
-            if (vars.xHoogMan > vars.xInner + vars.widthUnit * i && vars.xHoogMan < vars.xInner + vars.widthUnit * (i + 1)) {vars.xHoogMan = vars.xInner + vars.widthUnit * (i + 0.5);}
+            if (vars.xHoogMan > vars.xInner + vars.widthUnit * i && vars.xHoogMan < vars.xInner + vars.widthUnit * (i + 1)) {
+                return vars.xHoogMan = vars.xInner + vars.widthUnit * (i + 0.5);
+            }
+        }
+    } else {
+        for (let i = 0; i < 14; i++) {
+            if (vars.yHoogMan > vars.yInner + vars.heightUnit * i && vars.yHoogMan < vars.yInner + vars.heightUnit * (i + 1)) {
+                vars.yHoogMan = vars.yInner + vars.heightUnit * (i + 0.5);
+                break;
+            }
+        }
+        for (let i = 0; i < 17; i++) {
+            if (vars.xHoogMan > vars.xInner + vars.widthUnit * i && vars.xHoogMan < vars.xInner + vars.widthUnit * (i + 1)) {
+                vars.xHoogMan = vars.xInner + vars.widthUnit * (i + 0.5);
+                break;
+            }
         }
     }
 }
