@@ -32,16 +32,16 @@ const initializeVars = () => {
     vars.yHoogMan = vars.yInner + vars.heightUnit * 0.5;
     vars.dHoogMan = vars.heightUnit / 2;
     // Definieert de richtingen waarin Hoog-Man blijft bewegen.
-    vars.bovenHoogMan = false;
-    vars.rechtsHoogMan = false;
-    vars.onderHoogMan = false;
-    vars.linksHoogMan = false;
+    vars.upHoogMan = false;
+    vars.rightHoogMan = false;
+    vars.downHoogMan = false;
+    vars.leftHoogMan = false;
     vars.xMovement = false;
     vars.yMovement = false;
     // Definieert de snelheid van Hoog-Man.
     vars.hoogManSpeed = (88 / 60) / 650 * vars.innerHeight;
     // Definieert de barrières van het spelbord. Zie /maps/1.jpg voor volgorde.
-    vars.obstacles = []
+    vars.obstacles = [];
     /* 1 */ createObstacle(1, 1, 3, 4); /* 2 */ createObstacle(4, 0, 5, 4); /* 3 */ createObstacle(6, 1, 8, 4);
     /* 4 */ createObstacle(9, 0, 10, 3); /* 5 */ createObstacle(11, 1, 13, 3); /* 6 */ createObstacle(14, 0, 17, 2);
     /* 7 */ createObstacle(0, 5, 1, 8); /* 8 */ createObstacle(2, 5, 4, 8); /* 9 */ createObstacle(5, 5, 7, 6);
@@ -53,6 +53,15 @@ const initializeVars = () => {
     /* 25 */ createObstacle(8, 12, 9, 13); /* 26 */ createObstacle(12, 9, 13, 12); /* 27 */ createObstacle(14, 9, 17, 10);
     /* 28 */ createObstacle(4, 13, 7, 14); /* 29 */ createObstacle(10, 12, 11, 14); /* 30 */ createObstacle(11, 13, 14, 14);
     /* 31 */ createObstacle(14, 11, 16, 12); /* 32 */ createObstacle(15, 12, 16, 13);
+    // Definieert de pellets van het spelbord.
+    vars.pellets = [];
+    for (let yGrid = 0; yGrid < 14; yGrid++) {
+        for (let xGrid = 0; xGrid < 17; xGrid++) {
+            if (!collision(xGrid, yGrid)) {vars.pellets.push([xGrid, yGrid]);}
+        }
+    }
+    // Definieert de score in de game.
+    vars.points = 0;
 }
 // Functie voor het creëren van een barrière.
 const createObstacle = (xMin, yMin, xMax, yMax) => {
@@ -69,8 +78,8 @@ const createObstacle = (xMin, yMin, xMax, yMax) => {
 //     introSound.play();
 //     p.pop();
 // }
-// Functie voor het tekenen van de buitenlijnen.
-const outerLines = p => {
+// Functie voor het tekenen van elementen van het bord.
+const boardElements = p => {
     p.push();
     // Zorgt voor het tekenen van de buitenlijnen.
     p.strokeWeight(3);
@@ -83,16 +92,33 @@ const outerLines = p => {
     p.rect(vars.xInner + vars.widthUnit, vars.yInner, vars.widthUnit, 0);
     p.rect(vars.xInner + vars.widthUnit, vars.yOuter + vars.outerHeight, vars.widthUnit, 0);
     p.rect(vars.xInner + vars.widthUnit, vars.yInner + vars.innerHeight, vars.widthUnit, 0);
+    // Zorgt voor het weergeven van de score.
+    p.fill("white");
+    p.text(`Score ${vars.points}`, vars.xInner, vars.canvasDimension - (vars.canvasDimension - vars.outerHeight) / 2.5);
     p.pop();
 }
-// Functie voor het tekenen van de gele bolletjes.
-const candy = p => {
+// Functie voor het tekenen van alle pellets.
+const pellet = p => {
+    // Zorgt ervoor dat de pellets getekend worden.
     p.push();
     p.stroke("yellow");
     p.fill("yellow");
-    for (let i = 0; i < 14; i++) {
-        for (let j = 0; j < 17; j++) {
-            p.circle(vars.xInner + vars.widthUnit * (0.5 + j), vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.15);
+    for (gamePellet in vars.pellets) {
+        p.circle(
+            vars.xInner + vars.widthUnit * (0.5 + vars.pellets[gamePellet][0]),
+            vars.yInner + vars.heightUnit * (0.5 + vars.pellets[gamePellet][1]),
+            vars.widthUnit * 0.15
+        )
+        // Checkt of Hoog-Man interactie heeft met een pallet.
+        if (
+            // 0.1 als marge tussen Hoog-Man en een pallet.
+            vars.xHoogMan + vars.widthUnit * 0.2 > vars.xInner + vars.widthUnit * (0.5 + vars.pellets[gamePellet][0])  &&
+            vars.xHoogMan - vars.widthUnit * 0.2 < vars.xInner + vars.widthUnit * (0.5 + vars.pellets[gamePellet][0]) &&
+            vars.yHoogMan + vars.heightUnit * 0.2 > vars.yInner + vars.heightUnit * (0.5 + vars.pellets[gamePellet][1]) &&
+            vars.yHoogMan - vars.heightUnit * 0.2 < vars.yInner + vars.heightUnit * (0.5 + vars.pellets[gamePellet][1])
+        ) {
+            vars.points += 100;
+            vars.pellets.splice(gamePellet, 1);
         }
     }
     p.pop();
@@ -121,22 +147,33 @@ const hoogMan = p => {
     vars.xHoogMan = p.constrain(vars.xHoogMan, vars.xInner + vars.widthUnit * 0.5, vars.xInner + vars.innerWidth - vars.widthUnit * 0.5);
     vars.yHoogMan = p.constrain(vars.yHoogMan, vars.yInner + vars.heightUnit * 0.5, vars.yInner + vars.innerHeight - vars.heightUnit * 0.5);
     // Zorgt ervoor dat Hoog-Man beweegt in de goede bewegingsrichting met de gespecificeerde snelheid.
-    if (vars.bovenHoogMan) {vars.yHoogMan -= vars.hoogManSpeed;}
-    else if (vars.rechtsHoogMan) {vars.xHoogMan += vars.hoogManSpeed;}
-    else if (vars.onderHoogMan) {vars.yHoogMan += vars.hoogManSpeed;}
-    else if (vars.linksHoogMan) {vars.xHoogMan -= vars.hoogManSpeed;}
+    if (vars.upHoogMan) {vars.yHoogMan -= vars.hoogManSpeed;}
+    else if (vars.rightHoogMan) {vars.xHoogMan += vars.hoogManSpeed;}
+    else if (vars.downHoogMan) {vars.yHoogMan += vars.hoogManSpeed;}
+    else if (vars.leftHoogMan) {vars.xHoogMan -= vars.hoogManSpeed;}
 }
 // Functie voor het checken of er een botsing plaatsvindt met een barrière.
-const collision = () => {
+const collision = (xIndex, yIndex) => {
     for (obstacle in vars.obstacles) {
-        if (
+        // Checkt of een pellet botst met een barrière.
+        if (typeof xIndex != "undefined" && typeof yIndex != "undefined") {
+            if (
+                vars.xInner + vars.widthUnit * (0.5 + xIndex) > vars.obstacles[obstacle][0] &&
+                vars.xInner + vars.widthUnit * (0.5 + xIndex) < vars.obstacles[obstacle][2] &&
+                vars.yInner + vars.heightUnit * (0.5 + yIndex) > vars.obstacles[obstacle][1] &&
+                vars.yInner + vars.heightUnit * (0.5 + yIndex) < vars.obstacles[obstacle][3]
+            ) {return true;}
+        }
+        // Checkt of Hoog-Man botst met een barrière.
+        else if (
             // -1 als marge tussen Hoog-Man en een barrière. Anders is deze statement altijd waar.
             vars.xHoogMan + vars.widthUnit * 0.5 - 1 > vars.obstacles[obstacle][0] &&
-            vars.yHoogMan + vars.heightUnit * 0.5 - 1 > vars.obstacles[obstacle][1] &&
             vars.xHoogMan - vars.widthUnit * 0.5 + 1 < vars.obstacles[obstacle][2] &&
+            vars.yHoogMan + vars.heightUnit * 0.5 - 1 > vars.obstacles[obstacle][1] &&
             vars.yHoogMan - vars.heightUnit * 0.5 + 1 < vars.obstacles[obstacle][3]
         ) {return resetDirection(true);}
     }
+    return false;
 }
 // Functie voor het checken of er een botsing plaatsvindt met een barrière of een buitenlijn na een key input.
 const collisionInput = nextMovement => {
@@ -149,8 +186,9 @@ const collisionInput = nextMovement => {
                 vars.yHoogMan > vars.yInner &&
                 vars.yHoogMan < vars.yInner + vars.heightUnit
             ) {vars.yHoogMan = vars.yInner + vars.innerHeight;}
-            // Checkt of er een botsing plaatsvindt met een buitenlijn.
+            // Checkt of Hoog-Man botst met een buitelijn.
             else if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit) {return true;}
+            // Checkt of Hoog-Man bots met een barrière.
             else if (
                 // Verschil tussen vermenigvuldigingsfactor en 0.5 om ervoor te zorgen dat deze statements minder snel waar zijn.
                 // Positie links van de barrière.
@@ -198,10 +236,10 @@ const collisionInput = nextMovement => {
 }
 // Functie voor het resetten van Hoog-Mans bewegingsrichting.
 const resetDirection = afterCollision => {
-    vars.bovenHoogMan = false;
-    vars.rechtsHoogMan = false;
-    vars.onderHoogMan = false;
-    vars.linksHoogMan = false;
+    vars.upHoogMan = false;
+    vars.rightHoogMan = false;
+    vars.downHoogMan = false;
+    vars.leftHoogMan = false;
     vars.xMovement = false;
     vars.yMovement = false;
     // Zorgt ervoor dat Hoog-Man weer gecentreerd staat na een stop.
@@ -209,8 +247,8 @@ const resetDirection = afterCollision => {
 }
 // Functie voor het beperken van Hoog-Man zodat hij altijd een vaste x of y positie heeft.
 const constrainPostion = () => {
-    if (vars.linksHoogMan || vars.rechtsHoogMan) {vars.xMovement = true;}
-    else if (vars.bovenHoogMan || vars.onderHoogMan) {vars.yMovement = true;}
+    if (vars.leftHoogMan || vars.rightHoogMan) {vars.xMovement = true;}
+    else if (vars.upHoogMan || vars.downHoogMan) {vars.yMovement = true;}
     if (vars.xMovement) {
         for (let i = 0; i < 14; i++) {
             if (vars.yHoogMan > vars.yInner + vars.heightUnit * i && vars.yHoogMan < vars.yInner + vars.heightUnit * (i + 1)) {
@@ -243,28 +281,28 @@ const upPress = () => {
     // Checkt of er geen botsing plaatsvindt.
     if (!collisionInput("up")) {
         resetDirection();
-        vars.bovenHoogMan = true;
+        vars.upHoogMan = true;
         constrainPostion();
     }
 }
 const rightPress = () => {
     if (!collisionInput("right")) {
         resetDirection();
-        vars.rechtsHoogMan = true;
+        vars.rightHoogMan = true;
         constrainPostion();
     }
 }
 const downPress = () => {
     if (!collisionInput("down")) {
         resetDirection();
-        vars.onderHoogMan = true;
+        vars.downHoogMan = true;
         constrainPostion();
     }
 }
 const leftPress = () => {
     if (!collisionInput("left")) {
         resetDirection();
-        vars.linksHoogMan = true;
+        vars.leftHoogMan = true;
         constrainPostion();
     }
 }
@@ -286,8 +324,9 @@ const sketch = p => {
         p.createCanvas(vars.canvasDimension, vars.canvasDimension);
         p.colorMode(p.RGB, 255);
         p.textFont("Roboto");
-        p.textSize(20);
+        p.textSize(vars.widthUnit / 1.5);
         p.noCursor();
+        p.textAlign(p.LEFT, p.CENTER);
     }
     // Functie voor het tekenen van de game in p5.
     p.draw = () => {
@@ -296,8 +335,8 @@ const sketch = p => {
         p.strokeWeight(2);
         p.stroke("#2121DE");
         // playIntroSound(p, introSound);
-        outerLines(p);
-        candy(p);
+        boardElements(p);
+        pellet(p);
         visualObstacles(p);
         hoogMan(p);
         collision();
