@@ -8,32 +8,38 @@ const cacheAssets = [
 "/PO-2D-games-maken/public/assets/html/fallback.html"
 ];
 
-const limitCacheSize = (name, size) => {
-	caches.open(name).then(cache => {
-		cache.keys().then(keys => {
-			if (keys.length > size) {
-				cache.delete(keys[0]).then(limitCacheSize(name, size));
-			}
-		});
-	});
+const limitCacheSize = async (name, size) => {
+	try {
+		const cache = await caches.open(name);
+		const keys = await cache.keys();
+		if (keys.length > size) {
+			await cache.delete(keys[0]);
+			limitCacheSize(name, size);
+		}
+	} catch (error) {console.log(error);}
 }
 
 self.addEventListener("install", event => {
-	event.waitUntil(
-		caches.open(staticCache).then(cache => {
-			cache.addAll(cacheAssets);
-		})
-	);
-}); 
+	const initialCacheAssets = async () => {
+		try {
+			const cache = await caches.open(staticCache);
+			await cache.addAll(cacheAssets);
+		} catch (error) {console.log(error);}
+	}
+	event.waitUntil(initialCacheAssets());
+});
 
 self.addEventListener("activate", event => {
-	event.waitUntil(
-		caches.keys().then(keys => {
-			return Promise.all(keys
-				.filter(key => key !== staticCache && key !== dynamicCache).map(key => caches.delete(key))
-			)
-		})
-	);
+	const cacheVersionCheck = async () => {
+		try {
+			const keys = await caches.keys();
+			const deletions = keys
+			.filter(key => key !== staticCache && key !== dynamicCache)
+			.map(key => caches.delete(key));
+			for (const success of deletions) {await success;}
+		} catch (error) {console.log(error);}
+	}
+	event.waitUntil(cacheVersionCheck());
 });
 
 self.addEventListener("message", event => {if (event.data && event.data.type === "SKIP_WAITING") {self.skipWaiting();}});
