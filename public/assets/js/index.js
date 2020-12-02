@@ -142,7 +142,15 @@ const collision = () => {
 const collisionInput = nextMovement => {
     for (obstacle in vars.obstacles) {
         if (nextMovement === "up") {
-            if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit) {return true;}
+            // Checkt of Hoog-Man door een gat in de buitenlijnen gaat.
+            if (
+                vars.xHoogMan > vars.xInner + vars.widthUnit &&
+                vars.xHoogMan < vars.xInner + vars.widthUnit * 2 &&
+                vars.yHoogMan > vars.yInner &&
+                vars.yHoogMan < vars.yInner + vars.heightUnit
+            ) {vars.yHoogMan = vars.yInner + vars.innerHeight;}
+            // Checkt of er een botsing plaatsvindt met een buitenlijn.
+            else if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit) {return true;}
             else if (
                 // Verschil tussen vermenigvuldigingsfactor en 0.5 om ervoor te zorgen dat deze statements minder snel waar zijn.
                 // Positie links van de barrière.
@@ -163,7 +171,13 @@ const collisionInput = nextMovement => {
                 vars.yHoogMan - vars.heightUnit * 0.45 <= vars.obstacles[obstacle][3]                
             ) {return true;}
         } else if (nextMovement === "down") {
-            if (vars.yHoogMan > vars.yInner + vars.heightUnit * 13 && vars.yHoogMan < vars.yInner + vars.heightUnit * 14) {return true;}
+            if (
+                vars.xHoogMan > vars.xInner + vars.widthUnit &&
+                vars.xHoogMan < vars.xInner + vars.widthUnit * 2 &&
+                vars.yHoogMan > vars.yInner + vars.heightUnit * 13 &&
+                vars.yHoogMan < vars.yInner + vars.heightUnit * 14
+            ) {vars.yHoogMan = vars.yInner;}
+            else if (vars.yHoogMan > vars.yInner + vars.heightUnit * 13 && vars.yHoogMan < vars.yInner + vars.heightUnit * 14) {return true;}
             else if (
                 vars.xHoogMan + vars.widthUnit * 0.45 >= vars.obstacles[obstacle][0] &&
                 vars.xHoogMan - vars.widthUnit * 0.45 <= vars.obstacles[obstacle][2] &&
