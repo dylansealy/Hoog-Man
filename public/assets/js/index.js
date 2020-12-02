@@ -201,27 +201,38 @@ const collisionInput = nextMovement => {
     for (obstacle in vars.obstacles) {
         if (nextMovement === "up") {
             if (
-                vars.xHoogMan + vars.widthUnit * 0.4 >= vars.obstacles[obstacle][0] &&
-                vars.xHoogMan - vars.widthUnit * 0.4 <= vars.obstacles[obstacle][2] &&
-                vars.yHoogMan + vars.heightUnit * 0.5 >= vars.obstacles[obstacle][1] &&
+                // Positie links van de barrière.
+                vars.xHoogMan + vars.widthUnit * 0.45 >= vars.obstacles[obstacle][0] &&
+                // Positie rechts van de barrière.
+                vars.xHoogMan - vars.widthUnit * 0.45 <= vars.obstacles[obstacle][2] &&
+                // Positie boven de barrière.
+                vars.yHoogMan + vars.heightUnit * 0.45 >= vars.obstacles[obstacle][1] &&
+                // Positie onder de barrière.
                 vars.yHoogMan - vars.heightUnit * 0.5 <= vars.obstacles[obstacle][3]
             ) {return true;}
-        } //else if (nextMovement === "right") {
-        //     if (
-        //         vars.xHoogMan + vars.widthUnit * 0.5 >= vars.obstacles[obstacle][0] &&
-        //         vars.xHoogMan - vars.widthUnit * 0.5 <= vars.obstacles[obstacle][2] &&
-        //         vars.yHoogMan + vars.heightUnit * 0.4 >= vars.obstacles[obstacle][1] &&
-        //         vars.yHoogMan - vars.heightUnit * 0.4 <= vars.obstacles[obstacle][3]
-        //     ) {return true;}
-        // }
+        } else if (nextMovement === "right") {
+            if (
+                vars.xHoogMan + vars.widthUnit * 0.5 >= vars.obstacles[obstacle][0] &&
+                vars.xHoogMan - vars.widthUnit * 0.45 <= vars.obstacles[obstacle][2] &&
+                vars.yHoogMan + vars.heightUnit * 0.45 >= vars.obstacles[obstacle][1] &&
+                vars.yHoogMan - vars.heightUnit * 0.45 <= vars.obstacles[obstacle][3]                
+            ) {return true;}
+        } else if (nextMovement === "down") {
+            if (
+                vars.xHoogMan + vars.widthUnit * 0.45 >= vars.obstacles[obstacle][0] &&
+                vars.xHoogMan - vars.widthUnit * 0.45 <= vars.obstacles[obstacle][2] &&
+                vars.yHoogMan + vars.heightUnit * 0.5 >= vars.obstacles[obstacle][1] &&
+                vars.yHoogMan - vars.heightUnit * 0.45 <= vars.obstacles[obstacle][3]                
+            ) {return true;}
+        } else if (nextMovement === "left") {
+            if (
+                vars.xHoogMan + vars.widthUnit * 0.45 >= vars.obstacles[obstacle][0] &&
+                vars.xHoogMan - vars.widthUnit * 0.5 <= vars.obstacles[obstacle][2] &&
+                vars.yHoogMan + vars.heightUnit * 0.45 >= vars.obstacles[obstacle][1] &&
+                vars.yHoogMan - vars.heightUnit * 0.45 <= vars.obstacles[obstacle][3]                
+            ) {return true;}
+        }
     }
-
-    // else if (nextMovement === "down") {
-
-    // }
-    // else if (nextMovement === "left") {
-
-    // }
     return false;
 }
 // Functie voor het resetten van Hoog-Mans bewegingsrichting.
@@ -296,6 +307,13 @@ const leftPress = () => {
         constrainPostion();
     }
 }
+
+const testCollisionLines = p => {
+    for (obstacle in vars.obstacles) {
+        p.line(vars.obstacles[obstacle][0], vars.obstacles[obstacle][1], vars.obstacles[obstacle][2], vars.obstacles[obstacle][3])
+    }
+}
+
 /*
 Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
 Deze modus heeft voor deze game als belangrijkste doel om de game te kunnen starten via een JavaScript functie,
@@ -331,6 +349,7 @@ const sketch = p => {
         visualObstacles(p);
         hoogMan(p);
         collision();
+        testCollisionLines(p);
         // Checkt of een knop ingedrukt wordt.
         if (p.keyIsDown(p.UP_ARROW)) {upPress();}
         else if (p.keyIsDown(p.RIGHT_ARROW)) {rightPress();}
