@@ -72,14 +72,11 @@ const createObstacle = (xMin, yMin, xMax, yMax) => {
 // Functie voor het tekenen van de buitenlijnen.
 const outerLines = p => {
     p.push();
+    // Zorgt voor het tekenen van de buitenlijnen.
     p.strokeWeight(3);
     p.rect(vars.xOuter, vars.yOuter, vars.outerWidth, vars.outerHeight, 10);
     p.rect(vars.xInner, vars.yInner, vars.innerWidth, vars.innerHeight, 4);
-    p.pop();
-}
-// Functie voor het tekenen van de buitenlijn doorgangen.
-const outerLinesGap = p => {
-    p.push();
+    // Zorgt voor het tekenen van de buitenlijn doorgangen.
     p.stroke("black");
     p.strokeWeight(4);
     p.rect(vars.xInner + vars.widthUnit, vars.yOuter, vars.widthUnit, 0);
@@ -141,19 +138,12 @@ const collision = () => {
         ) {return resetDirection(true);}
     }
 }
-// Functie voor het checken of er na een verandering in de bewegingsrichting een botsing ontstaat met de buitenlijnen.
-const collisionOuterLines = nextMovement => {
-    if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit && nextMovement === "up") {return true;}
-    else if (vars.yHoogMan > vars.yInner + vars.heightUnit * 13 && vars.yHoogMan < vars.yInner + vars.heightUnit * 14 && nextMovement === "down") {return true;}
-    else if (vars.xHoogMan > vars.xInner && vars.xHoogMan < vars.xInner + vars.widthUnit && nextMovement === "left") {return true;}
-    else if (vars.xHoogMan > vars.xInner + vars.widthUnit * 16 && vars.xHoogMan < vars.xInner + vars.widthUnit * 17 && nextMovement === "right") {return true;}
-    return false;
-}
-// Functie voor het checken of er een botsing plaatsvindt met een barrière na een key input.
+// Functie voor het checken of er een botsing plaatsvindt met een barrière of een buitenlijn na een key input.
 const collisionInput = nextMovement => {
     for (obstacle in vars.obstacles) {
         if (nextMovement === "up") {
-            if (
+            if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit) {return true;}
+            else if (
                 // Verschil tussen vermenigvuldigingsfactor en 0.5 om ervoor te zorgen dat deze statements minder snel waar zijn.
                 // Positie links van de barrière.
                 vars.xHoogMan + vars.widthUnit * 0.45 >= vars.obstacles[obstacle][0] &&
@@ -165,21 +155,24 @@ const collisionInput = nextMovement => {
                 vars.yHoogMan - vars.heightUnit * 0.55 <= vars.obstacles[obstacle][3]
             ) {return true;}
         } else if (nextMovement === "right") {
-            if (
+            if (vars.xHoogMan > vars.xInner + vars.widthUnit * 16 && vars.xHoogMan < vars.xInner + vars.widthUnit * 17) {return true;}
+            else if (
                 vars.xHoogMan + vars.widthUnit * 0.55 >= vars.obstacles[obstacle][0] &&
                 vars.xHoogMan - vars.widthUnit * 0.45 <= vars.obstacles[obstacle][2] &&
                 vars.yHoogMan + vars.heightUnit * 0.45 >= vars.obstacles[obstacle][1] &&
                 vars.yHoogMan - vars.heightUnit * 0.45 <= vars.obstacles[obstacle][3]                
             ) {return true;}
         } else if (nextMovement === "down") {
-            if (
+            if (vars.yHoogMan > vars.yInner + vars.heightUnit * 13 && vars.yHoogMan < vars.yInner + vars.heightUnit * 14) {return true;}
+            else if (
                 vars.xHoogMan + vars.widthUnit * 0.45 >= vars.obstacles[obstacle][0] &&
                 vars.xHoogMan - vars.widthUnit * 0.45 <= vars.obstacles[obstacle][2] &&
                 vars.yHoogMan + vars.heightUnit * 0.55 >= vars.obstacles[obstacle][1] &&
                 vars.yHoogMan - vars.heightUnit * 0.45 <= vars.obstacles[obstacle][3]                
             ) {return true;}
         } else if (nextMovement === "left") {
-            if (
+            if (vars.xHoogMan > vars.xInner && vars.xHoogMan < vars.xInner + vars.widthUnit) {return true;}
+            else if (
                 vars.xHoogMan + vars.widthUnit * 0.45 >= vars.obstacles[obstacle][0] &&
                 vars.xHoogMan - vars.widthUnit * 0.55 <= vars.obstacles[obstacle][2] &&
                 vars.yHoogMan + vars.heightUnit * 0.45 >= vars.obstacles[obstacle][1] &&
@@ -234,40 +227,33 @@ const constrainPostion = () => {
 // Functies voor het aanroepen van andere functies zodat Hoog-Man beweegt en alles wat daar mee te maken heeft.
 const upPress = () => {
     // Checkt of er geen botsing plaatsvindt.
-    if (!collisionOuterLines("up") && !collisionInput("up")) {
+    if (!collisionInput("up")) {
         resetDirection();
         vars.bovenHoogMan = true;
         constrainPostion();
     }
 }
 const rightPress = () => {
-    if (!collisionOuterLines("right") && !collisionInput("right")) {
+    if (!collisionInput("right")) {
         resetDirection();
         vars.rechtsHoogMan = true;
         constrainPostion();
     }
 }
 const downPress = () => {
-    if (!collisionOuterLines("down") && !collisionInput("down")) {
+    if (!collisionInput("down")) {
         resetDirection();
         vars.onderHoogMan = true;
         constrainPostion();
     }
 }
 const leftPress = () => {
-    if (!collisionOuterLines("left") && !collisionInput("left")) {
+    if (!collisionInput("left")) {
         resetDirection();
         vars.linksHoogMan = true;
         constrainPostion();
     }
 }
-
-const testCollisionLines = p => {
-    for (obstacle in vars.obstacles) {
-        p.line(vars.obstacles[obstacle][0], vars.obstacles[obstacle][1], vars.obstacles[obstacle][2], vars.obstacles[obstacle][3])
-    }
-}
-
 /*
 Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
 Deze modus heeft voor deze game als belangrijkste doel om de game te kunnen starten via een JavaScript functie,
@@ -285,7 +271,6 @@ const sketch = p => {
         initializeVars();
         p.createCanvas(vars.canvasDimension, vars.canvasDimension);
         p.colorMode(p.RGB, 255);
-        p.frameRate(60);
         p.textFont("Roboto");
         p.textSize(20);
         p.noCursor();
@@ -298,12 +283,10 @@ const sketch = p => {
         p.stroke("#2121DE");
         // playIntroSound(p, introSound);
         outerLines(p);
-        outerLinesGap(p);
         candy(p);
         visualObstacles(p);
         hoogMan(p);
         collision();
-        testCollisionLines(p);
         // Checkt of een knop ingedrukt wordt.
         if (p.keyIsDown(p.UP_ARROW)) {upPress();}
         else if (p.keyIsDown(p.RIGHT_ARROW)) {rightPress();}
