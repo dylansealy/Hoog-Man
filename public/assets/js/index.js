@@ -41,41 +41,26 @@ const initializeVars = () => {
     // Definieert de snelheid van Hoog-Man.
     vars.hoogManSpeed = (88 / 60) / 650 * vars.innerHeight;
     // Definieert de barrières van het spelbord. Zie /maps/1.jpg voor volgorde.
-    vars.obstacles = [
-        // Volgorde: xMin, yMin, xMax, yMax.
-        /* 1 */ [vars.xInner + vars.widthUnit, vars.yInner + vars.heightUnit, vars.xInner + vars.widthUnit * 3, vars.yInner + vars.heightUnit * 4],
-        /* 2 */ [vars.xInner + vars.widthUnit * 4, vars.yInner, vars.xInner + vars.widthUnit * 5, vars.yInner + vars.heightUnit * 4],
-        /* 3 */ [vars.xInner + vars.widthUnit * 6, vars.yInner + vars.heightUnit, vars.xInner + vars.widthUnit * 8, vars.yInner + vars.heightUnit * 4],
-        /* 4 */ [vars.xInner + vars.widthUnit * 9, vars.yInner, vars.xInner + vars.widthUnit * 10, vars.yInner + vars.heightUnit * 3],
-        /* 5 */ [vars.xInner + vars.widthUnit * 11, vars.yInner + vars.heightUnit, vars.xInner + vars.widthUnit * 13, vars.yInner + vars.heightUnit * 3],
-        /* 6 */ [vars.xInner + vars.widthUnit * 14, vars.yInner, vars.xInner + vars.widthUnit * 17, vars.yInner + vars.heightUnit * 2],
-        /* 7 */ [vars.xInner, vars.yInner + vars.heightUnit * 5, vars.xInner + vars.widthUnit, vars.xInner + vars.heightUnit * 8],
-        /* 8 */ [vars.xInner + vars.widthUnit * 2, vars.yInner + vars.heightUnit * 5, vars.xInner + vars.widthUnit * 4, vars.yInner + vars.heightUnit * 8],
-        /* 9 */ [vars.xInner + vars.widthUnit * 5, vars.yInner + vars.heightUnit * 5, vars.xInner + vars.widthUnit * 7, vars.yInner + vars.heightUnit * 6],
-        /* 10 */ [vars.xInner + vars.widthUnit * 8, vars.yInner + vars.heightUnit * 5, vars.xInner + vars.widthUnit * 9, vars.yInner + vars.heightUnit * 6],
-        /* 11 */ [vars.xInner + vars.widthUnit * 9, vars.yInner + vars.heightUnit * 4, vars.xInner + vars.widthUnit * 10, vars.yInner + vars.heightUnit * 7],
-        /* 12 */ [vars.xInner + vars.widthUnit * 11, vars.yInner + vars.heightUnit * 5, vars.xInner + vars.widthUnit * 12, vars.yInner + vars.heightUnit * 6],
-        /* 13 */ [vars.xInner + vars.widthUnit * 11, vars.yInner + vars.heightUnit * 4, vars.xInner + vars.widthUnit * 16, vars.yInner + vars.heightUnit * 5],
-        /* 14 */ [vars.xInner + vars.widthUnit * 14, vars.yInner + vars.heightUnit * 3, vars.xInner + vars.widthUnit * 16, vars.yInner + vars.heightUnit * 4],
-        /* 15 */ [vars.xInner + vars.widthUnit * 5, vars.yInner + vars.heightUnit * 7, vars.xInner + vars.widthUnit * 6, vars.yInner + vars.heightUnit * 8],
-        /* 16 */ [vars.xInner + vars.widthUnit * 7, vars.yInner + vars.heightUnit * 7, vars.xInner + vars.widthUnit * 8, vars.yInner + vars.heightUnit * 10],
-        /* 17 */ [vars.xInner + vars.widthUnit * 9, vars.yInner + vars.heightUnit * 8, vars.xInner + vars.widthUnit * 10, vars.yInner + vars.heightUnit * 10],
-        /* 18 */ [vars.xInner + vars.widthUnit * 10, vars.yInner + vars.heightUnit * 9, vars.xInner + vars.widthUnit * 11, vars.yInner + vars.heightUnit * 11],
-        /* 19 */ [vars.xInner + vars.widthUnit * 11, vars.yInner + vars.heightUnit * 7, vars.xInner + vars.widthUnit * 14, vars.yInner + vars.heightUnit * 8],
-        /* 20 */ [vars.xInner + vars.widthUnit * 13, vars.yInner + vars.heightUnit * 6, vars.xInner + vars.widthUnit * 14, vars.yInner + vars.heightUnit * 7],
-        /* 21 */ [vars.xInner + vars.widthUnit * 15, vars.yInner + vars.heightUnit * 6, vars.xInner + vars.widthUnit * 16, vars.yInner + vars.heightUnit * 8],
-        /* 22 */ [vars.xInner + vars.widthUnit, vars.yInner + vars.heightUnit * 9, vars.xInner + vars.widthUnit * 3, vars.yInner + vars.heightUnit * 13],
-        /* 23 */ [vars.xInner + vars.widthUnit * 4, vars.yInner + vars.heightUnit * 9, vars.xInner + vars.widthUnit * 6, vars.yInner + vars.heightUnit * 12],
-        /* 24 */ [vars.xInner + vars.widthUnit * 7, vars.yInner + vars.heightUnit * 11, vars.xInner + vars.widthUnit * 9, vars.yInner + vars.heightUnit * 12],
-        /* 25 */ [vars.xInner + vars.widthUnit * 8, vars.yInner + vars.heightUnit * 12, vars.xInner + vars.widthUnit * 9, vars.yInner + vars.heightUnit * 13],
-        /* 26 */ [vars.xInner + vars.widthUnit * 12, vars.yInner + vars.heightUnit * 9, vars.xInner + vars.widthUnit * 13, vars.yInner + vars.heightUnit * 12],
-        /* 27 */ [vars.xInner + vars.widthUnit * 14, vars.yInner + vars.heightUnit * 9, vars.xInner + vars.widthUnit * 17, vars.yInner + vars.heightUnit * 10],
-        /* 28 */ [vars.xInner + vars.widthUnit * 4, vars.yInner + vars.heightUnit * 13, vars.xInner + vars.widthUnit * 7, vars.yInner + vars.heightUnit * 14],
-        /* 29 */ [vars.xInner + vars.widthUnit * 10, vars.yInner + vars.heightUnit * 12, vars.xInner + vars.widthUnit * 11, vars.yInner + vars.heightUnit * 14],
-        /* 30 */ [vars.xInner + vars.widthUnit * 11, vars.yInner + vars.heightUnit * 13, vars.xInner + vars.widthUnit * 14, vars.yInner + vars.heightUnit * 14],
-        /* 31 */ [vars.xInner + vars.widthUnit * 14, vars.yInner + vars.heightUnit * 11, vars.xInner + vars.widthUnit * 16, vars.yInner + vars.heightUnit * 12],
-        /* 32 */ [vars.xInner + vars.widthUnit * 15, vars.yInner + vars.heightUnit * 12, vars.xInner + vars.widthUnit * 16, vars.yInner + vars.heightUnit * 13]
-    ]
+    vars.obstacles = []
+    /* 1 */ createObstacle(1, 1, 3, 4); /* 2 */ createObstacle(4, 0, 5, 4); /* 3 */ createObstacle(6, 1, 8, 4);
+    /* 4 */ createObstacle(9, 0, 10, 3); /* 5 */ createObstacle(11, 1, 13, 3); /* 6 */ createObstacle(14, 0, 17, 2);
+    /* 7 */ createObstacle(0, 5, 1, 8); /* 8 */ createObstacle(2, 5, 4, 8); /* 9 */ createObstacle(5, 5, 7, 6);
+    /* 10 */ createObstacle(8, 5, 9, 6); /* 11 */ createObstacle(9, 4, 10, 7); /* 12 */ createObstacle(11, 5, 12, 6);
+    /* 13 */ createObstacle(11, 4, 16, 5); /* 14 */ createObstacle(14, 3, 16, 4); /* 15 */ createObstacle(5, 7, 6, 8);
+    /* 16 */ createObstacle(7, 7, 8, 10); /* 17 */ createObstacle(9, 8, 10, 10); /* 18 */ createObstacle(10, 9, 11, 11);
+    /* 19 */ createObstacle(11, 7, 14, 8); /* 20 */ createObstacle(13, 6, 14, 7); /* 21 */ createObstacle(15, 6, 16, 8);
+    /* 22 */ createObstacle(1, 9, 3, 13); /* 23 */ createObstacle(4, 9, 6, 12); /* 24 */ createObstacle(7, 11, 9, 12);
+    /* 25 */ createObstacle(8, 12, 9, 13); /* 26 */ createObstacle(12, 9, 13, 12); /* 27 */ createObstacle(14, 9, 17, 10);
+    /* 28 */ createObstacle(4, 13, 7, 14); /* 29 */ createObstacle(10, 12, 11, 14); /* 30 */ createObstacle(11, 13, 14, 14);
+    /* 31 */ createObstacle(14, 11, 16, 12); /* 32 */ createObstacle(15, 12, 16, 13);
+}
+// Functie voor het creëren van een barrière.
+const createObstacle = (xMin, yMin, xMax, yMax) => {
+    const obstacle = [
+        vars.xInner + vars.widthUnit * xMin, vars.yInner + vars.heightUnit * yMin,
+        vars.xInner + vars.widthUnit * xMax, vars.yInner + vars.heightUnit * yMax
+    ];
+    vars.obstacles.push(obstacle);
 }
 // Functie voor het afspelen van het intro liedje.
 // const playIntroSound = (p, introSound) => {
