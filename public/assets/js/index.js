@@ -77,6 +77,18 @@ const outerLinesGap = p => {
     p.rect(vars.xInner + vars.widthUnit, vars.yInner + vars.innerHeight, vars.widthUnit, 0);
     p.pop();
 }
+// Functie voor het tekenen van de gele bolletjes.
+const candy = p => {
+    p.push();
+    p.stroke("yellow");
+    p.fill("yellow");
+    for (let i = 0; i < 14; i++) {
+        for (let j = 0; j < 17; j++) {
+            p.circle(vars.xInner + vars.widthUnit * (0.5 + j), vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.15);
+        }
+    }
+    p.pop();
+}
 // Functie voor het tekenen van alle barrières.
 const visualObstacles = p => {
     p.push();
@@ -148,25 +160,22 @@ const visualObstacles = p => {
     p.rect(vars.xInner + vars.widthUnit * 15, vars.yInner + vars.heightUnit * 12, vars.widthUnit, vars.heightUnit, 4);
     p.pop();
 }
-// Functie voor het tekenen van de gele bolletjes.
-const candy = p => {
+// Functie voor het tekenen van Hoog-Man.
+const hoogMan = p => {
+    // Zorgt ervoor dat Hoog-Man getekend wordt.
     p.push();
-    p.stroke("yellow");
+    p.noStroke();
     p.fill("yellow");
-    for (let i = 0; i < 14; i++) {
-        for (let j = 0; j < 17; j++) {
-            p.circle(vars.xInner + vars.widthUnit * (0.5 + j), vars.yInner + vars.heightUnit * (0.5 + i), vars.widthUnit * 0.15);
-        }
-    }
+    p.ellipse(vars.xHoogMan, vars.yHoogMan, vars.dHoogMan);
     p.pop();
-}
-// Functie voor het checken of er na een verandering in de bewegingsrichting een botsing ontstaat met de buitenlijnen.
-const collisionOuterLines = nextMovement => {
-    if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit && nextMovement === "up") {return true;}
-    else if (vars.yHoogMan > vars.yInner + vars.heightUnit * 13 && vars.yHoogMan < vars.yInner + vars.heightUnit * 14 && nextMovement === "down") {return true;}
-    else if (vars.xHoogMan > vars.xInner && vars.xHoogMan < vars.xInner + vars.widthUnit && nextMovement === "left") {return true;}
-    else if (vars.xHoogMan > vars.xInner + vars.widthUnit * 16 && vars.xHoogMan < vars.xInner + vars.widthUnit * 17 && nextMovement === "right") {return true;}
-    return false;
+    // Zorgt ervoor dat Hoog-Man niet buiten het spelbord gaat.
+    vars.xHoogMan = p.constrain(vars.xHoogMan, vars.xInner + vars.widthUnit * 0.5, vars.xInner + vars.innerWidth - vars.widthUnit * 0.5);
+    vars.yHoogMan = p.constrain(vars.yHoogMan, vars.yInner + vars.heightUnit * 0.5, vars.yInner + vars.innerHeight - vars.heightUnit * 0.5);
+    // Zorgt ervoor dat Hoog-Man beweegt in de goede bewegingsrichting met de gespecificeerde snelheid.
+    if (vars.bovenHoogMan) {vars.yHoogMan -= vars.hoogManSpeed;}
+    else if (vars.rechtsHoogMan) {vars.xHoogMan += vars.hoogManSpeed;}
+    else if (vars.onderHoogMan) {vars.yHoogMan += vars.hoogManSpeed;}
+    else if (vars.linksHoogMan) {vars.xHoogMan -= vars.hoogManSpeed;}
 }
 // Functie voor het checken of er een botsing plaatsvindt met een barrière.
 const collision = () => {
@@ -178,6 +187,14 @@ const collision = () => {
             vars.yHoogMan - vars.heightUnit * 0.5 + 1 < vars.obstacles[obstacle][3]
         ) {return resetDirection(true);}
     }
+}
+// Functie voor het checken of er na een verandering in de bewegingsrichting een botsing ontstaat met de buitenlijnen.
+const collisionOuterLines = nextMovement => {
+    if (vars.yHoogMan > vars.yInner && vars.yHoogMan < vars.yInner + vars.heightUnit && nextMovement === "up") {return true;}
+    else if (vars.yHoogMan > vars.yInner + vars.heightUnit * 13 && vars.yHoogMan < vars.yInner + vars.heightUnit * 14 && nextMovement === "down") {return true;}
+    else if (vars.xHoogMan > vars.xInner && vars.xHoogMan < vars.xInner + vars.widthUnit && nextMovement === "left") {return true;}
+    else if (vars.xHoogMan > vars.xInner + vars.widthUnit * 16 && vars.xHoogMan < vars.xInner + vars.widthUnit * 17 && nextMovement === "right") {return true;}
+    return false;
 }
 // Functie voor het checken of er een botsing plaatsvindt met een barrière na een key input.
 const collisionInput = nextMovement => {
@@ -248,23 +265,6 @@ const constrainPostion = () => {
             }
         }
     }
-}
-// Functie voor het tekenen van Hoog-Man.
-const hoogMan = p => {
-    // Zorgt ervoor dat Hoog-Man getekend wordt.
-    p.push();
-    p.noStroke();
-    p.fill("yellow");
-    p.ellipse(vars.xHoogMan, vars.yHoogMan, vars.dHoogMan);
-    p.pop();
-    // Zorgt ervoor dat Hoog-Man niet buiten het spelbord gaat.
-    vars.xHoogMan = p.constrain(vars.xHoogMan, vars.xInner + vars.widthUnit * 0.5, vars.xInner + vars.innerWidth - vars.widthUnit * 0.5);
-    vars.yHoogMan = p.constrain(vars.yHoogMan, vars.yInner + vars.heightUnit * 0.5, vars.yInner + vars.innerHeight - vars.heightUnit * 0.5);
-    // Zorgt ervoor dat Hoog-Man beweegt in de goede bewegingsrichting met de gespecificeerde snelheid.
-    if (vars.bovenHoogMan) {vars.yHoogMan -= vars.hoogManSpeed;}
-    else if (vars.rechtsHoogMan) {vars.xHoogMan += vars.hoogManSpeed;}
-    else if (vars.onderHoogMan) {vars.yHoogMan += vars.hoogManSpeed;}
-    else if (vars.linksHoogMan) {vars.xHoogMan -= vars.hoogManSpeed;}
 }
 // Functies voor het aanroepen van andere functies zodat Hoog-Man beweegt en alles wat daar mee te maken heeft.
 const upPress = () => {
