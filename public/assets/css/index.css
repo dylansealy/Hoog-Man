@@ -27,12 +27,8 @@ a {
     color: #000000;
     text-decoration: underline
 }
-a:hover {
-    color: #ffff00
-}
-a:active {
-    text-decoration: underline
-}
+a:hover {color: #ffff00}
+a:active {text-decoration: underline}
 
 header {
     grid-area: 1 / 1 / 2 / 2; /* Geeft aan welk grid vak het element tot zijn beschikking heeft. */
@@ -45,9 +41,7 @@ header {
     background-color: #ffff00
 }
 
-header > * {
-    font-weight: normal
-}
+header > * {font-weight: normal}
 
 #social {
     width: 36px;
@@ -60,7 +54,7 @@ main {
     flex-flow: column nowrap;
     align-items: center;
     justify-content: center;
-    transition: all 1s ease-in;
+    transition: all 1s ease-in; /* Specificeert een transitie wanneer een style element verandert. */
     background-color: #d8b1b1
 }
 
@@ -81,6 +75,48 @@ main {
     font-family: inherit;
     font-size: inherit;
     font-weight: inherit
+}
+
+#touchControlsContainer {
+    display: none;
+    position: absolute;
+    left: 0;
+    place-items: center center;
+    place-content: center center
+}
+
+.containerLandscape {
+    height: 100%;
+    top: 0;
+    flex-flow: column nowrap
+}
+
+.containerPortrait {
+    width: 100%;
+    bottom: 0;
+    flex-flow: row nowrap
+}
+
+.touchControls {
+    display: flex;
+    flex-flow: row;
+    place-items: center center;
+    place-content: center center;
+    color: white
+}
+
+.touchLandscape {
+    height: 15%;
+    width: 100%;
+    font-size: 5vw;
+    margin: 5%
+}
+
+.touchPortrait {
+    height: 100%;
+    width: 15%;
+    font-size: 7vh;
+    margin: 5%
 }
 
 footer {
