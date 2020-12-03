@@ -1,5 +1,4 @@
 // p5 specifieke JavaScript.
-
 // Functie voor het bepalen van de dimensie van het main element en de oriëntatie van ce client.
 const getMainDimensions = () => {
     // Checkt de dimensie van het main element.
@@ -251,6 +250,7 @@ const resetDirection = afterCollision => {
     vars.leftHoogMan = false;
     vars.xMovement = false;
     vars.yMovement = false;
+    vars.touchMovement = null;
     // Zorgt ervoor dat Hoog-Man weer gecentreerd staat na een stop.
     if (afterCollision) {constrainPostion();}
 }
@@ -258,19 +258,24 @@ const resetDirection = afterCollision => {
 const constrainPostion = () => {
     if (vars.leftHoogMan || vars.rightHoogMan) {vars.xMovement = true;}
     else if (vars.upHoogMan || vars.downHoogMan) {vars.yMovement = true;}
+    // Zorgt voor een vaste positie van Hoog-Man ten opzichte van de y-as.
     if (vars.xMovement) {
         for (let i = 0; i < 14; i++) {
             if (vars.yHoogMan > vars.yInner + vars.heightUnit * i && vars.yHoogMan < vars.yInner + vars.heightUnit * (i + 1)) {
                 return vars.yHoogMan = vars.yInner + vars.heightUnit * (i + 0.5);
             }
         }
-    } else if (vars.yMovement) {
+    }
+    // Zorgt voor een vaste positie van Hoog-Man ten opzichte van de x-as.
+    else if (vars.yMovement) {
         for (let i = 0; i < 17; i++) {
             if (vars.xHoogMan > vars.xInner + vars.widthUnit * i && vars.xHoogMan < vars.xInner + vars.widthUnit * (i + 1)) {
                 return vars.xHoogMan = vars.xInner + vars.widthUnit * (i + 0.5);
             }
         }
-    } else {
+    }
+    // Zorgt voor een vaste positie van Hoog-Man ten opzichte van de x- en y-as.
+    else {
         for (let i = 0; i < 14; i++) {
             if (vars.yHoogMan > vars.yInner + vars.heightUnit * i && vars.yHoogMan < vars.yInner + vars.heightUnit * (i + 1)) {
                 vars.yHoogMan = vars.yInner + vars.heightUnit * (i + 0.5);
@@ -318,6 +323,8 @@ const leftPress = () => {
 // Functie voor het besturen van Hoog-Man doormiddel van touch.
 const touchControls = () => {
     const upTouch = document.querySelector("#upTouch");
+    // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
+    // Checkt of er op een besturingselement wordt gedrukt.
     upTouch.addEventListener("touchstart", () => vars.touchMovement = "up");
     const rightTouch = document.querySelector("#rightTouch");
     rightTouch.addEventListener("touchstart", () => vars.touchMovement = "right");
@@ -325,6 +332,7 @@ const touchControls = () => {
     downTouch.addEventListener("touchstart", () => vars.touchMovement = "down");
     const leftTouch = document.querySelector("#leftTouch");
     leftTouch.addEventListener("touchstart", () => vars.touchMovement = "left");
+    // Simulatie van wanneer je een toetsenbordknop ingedrukt houdt.
     switch (vars.touchMovement) {
         case "up": upPress(); break;
         case "right": rightPress(); break;
@@ -367,6 +375,7 @@ const sketch = p => {
         visualObstacles(p);
         hoogMan(p);
         collision();
+        // Checkt welke input wordt gebruikt.
         if (vars.gameInput === "keyboard") {
             // Checkt of een knop ingedrukt wordt.
             if (p.keyIsDown(p.UP_ARROW)) {upPress();}
@@ -378,7 +387,6 @@ const sketch = p => {
 }
 
 // Pagina specifieke JavaScript.
-
 // Creëert constanten van HTML elementen.
 const startGame = document.querySelector("#startGame");
 const social = document.querySelector("#social");
@@ -387,7 +395,7 @@ const footerText = () => {
     const footer = document.querySelector("footer");
     let year = new Date;
     year = year.getFullYear();
-    footer.innerText = `© ${year} HOOG-MAN`;
+    footer.innerText = `© ${year} Hoog-Man`;
 }
 // Functie voor het semi-fullscreenen van de game.
 const gameStartupScreen = () => {
@@ -413,6 +421,7 @@ const setupTouchControls = () => {
     const touchControlsContainer = document.getElementById("touchControlsContainer");
     const touchControls = document.getElementsByClassName("touchControls");
     touchControlsContainer.style.display = "flex";
+    // Zorgt ervoor dat de touch besturingselementen worden aangepast voor een landscape client.
     if (vars.orientation === "landscape") {
         const htmlWidth = document.querySelector("html").offsetWidth;
         const touchElementWidth = (htmlWidth - vars.canvasDimension) / 2;
@@ -424,7 +433,9 @@ const setupTouchControls = () => {
             touchControls[i].classList.remove("touchPortrait");
             touchControls[i].classList.add("touchLandscape");
         }
-    } else if (vars.orientation === "portrait") {
+    }
+    // Zorgt ervoor dat de touch besturingselementen worden aangepast voor een portrait client.
+    else if (vars.orientation === "portrait") {
         const htmlHeight = document.querySelector("html").offsetHeight;
         const touchElementHeight = (htmlHeight - vars.canvasDimension) / 2;
         touchControlsContainer.style.height = `${touchElementHeight}px`;
@@ -437,7 +448,6 @@ const setupTouchControls = () => {
         }
     }
 }
-// Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
 // Initialiseert de game.
 startGame.addEventListener("click", () => {
     gameStartupScreen();
@@ -451,7 +461,7 @@ startGame.addEventListener("click", () => {
 });
 // Stuurt gebruiker door naar GitHub repository.
 social.addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken");
-// Wijzigt het formaat van het canvas nadat het formaat van de window is veranderd.
+// Zorgt ervoor dat er een nieuwe game wordt geladen, nadat de venstergrootte is veranderd.
 window.addEventListener("resize", () => {
     vars.game.remove();
     vars.game = new p5(sketch);
