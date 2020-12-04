@@ -2,18 +2,15 @@
     font-family: "Roboto";
     src: url("../fonts/Roboto-Light.ttf")
 }
-
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box
 }
-
 html {
     height: 100%;
     width: 100%
 }
-
 body {
     min-height: 100%;
     width: 100%;
@@ -22,14 +19,12 @@ body {
     font-size: 16px;
     font-family: "Roboto", sans-serif, Arial
 }
-
 a {
     color: #000000;
     text-decoration: underline
 }
 a:hover {color: #ffff00}
 a:active {text-decoration: underline}
-
 header {
     grid-area: 1 / 1 / 2 / 2; /* Geeft aan welk grid vak het element tot zijn beschikking heeft. */
     display: flex; /*Flexbox is een 1D variant van grid. Hiermee kun je gemakkelijk content alignen. */
@@ -40,14 +35,12 @@ header {
     font-size: 1.3rem;
     background-color: #ffff00
 }
-
+/* Past de style aan van de directe dochterelementen. */
 header > * {font-weight: normal}
-
 #social {
     width: 36px;
     cursor: pointer /* Zet de style van de cursor */
 }
-
 main {
     grid-area: 2 / 1 / 3 / 2;
     display: flex;
@@ -57,7 +50,6 @@ main {
     transition: all 1s ease-in; /* Specificeert een transitie wanneer een style element verandert. */
     background-color: #d8b1b1
 }
-
 #gameStartupContainer {
     height: 100%;
     width: 100%;
@@ -67,7 +59,9 @@ main {
     justify-content: center;
     gap: 1rem
 }
-
+/* Past de style aan van het eerste of laatste directe dochterelement. */
+#gameStartupContainer > :first-child {margin-top: 1rem}
+#gameStartupContainer > :last-child {margin-bottom: 1rem}
 #gameStartupContainer button {
     background-color: #ffff00;
     border: 1px solid #adff2f;
@@ -76,7 +70,6 @@ main {
     font-size: inherit;
     font-weight: inherit
 }
-
 #touchControlsContainer {
     display: none;
     position: absolute;
@@ -84,42 +77,35 @@ main {
     place-items: center center;
     place-content: center center
 }
-
 .containerLandscape {
     height: 100%;
     top: 0;
     flex-flow: column nowrap
 }
-
 .containerPortrait {
     width: 100%;
     bottom: 0;
     flex-flow: row nowrap
 }
-
 .touchControls {
     display: flex;
     flex-flow: row;
     place-items: center center;
     place-content: center center;
     color: white;
-    transition: all 1s ease-in
+    transition: all 1s ease-in;
+    margin: 5%
 }
-
 .touchLandscape {
     height: 15%;
     width: 100%;
-    font-size: 5vw;
-    margin: 5%
+    font-size: 7vw
 }
-
 .touchPortrait {
     height: 100%;
     width: 15%;
-    font-size: 7vh;
-    margin: 5%
+    font-size: 7vh
 }
-
 footer {
     grid-area: 3 / 1 / 4 / 2;
     display: flex;
@@ -129,8 +115,7 @@ footer {
     font-size: 0.87rem;
     background-color: #ffa500
 }
-
-/* Styling PWA update web component */
+/* Styling PWA update web component. */
 pwa-update::part(updateToast) {
     min-width: 0;
     font-family: inherit

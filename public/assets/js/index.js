@@ -1,24 +1,71 @@
 // p5 specifieke JavaScript.
-// Functie voor het bepalen van de dimensie van het main element en de oriëntatie van ce client.
-const getMainDimensions = () => {
-    // Checkt de dimensie van het main element.
-    const main = document.querySelector("main");
-    const height = main.offsetHeight;
-    const width = main.offsetWidth;
-    // Checkt de oriëntatie van de client. 
-    if (width > height) {
-        vars.orientation = "landscape";
-        return height;
+/*
+Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
+Deze modus heeft voor deze game als belangrijkste doel om de game te kunnen starten via een JavaScript functie,
+in plaats van dat p5 automatisch start. Het argument p van de sketch functie is er om de functies en variabelen te koppelen aan p5.
+*/
+const sketch = p => {
+    // Functie voor het preloaden van game assets in p5.
+    p.preload = () => {
+        p.soundFormats("mp3");
+        p.loadFont("assets/fonts/Roboto-Light.ttf");
+        // introSound = p.loadSound("assets/music/PacMan.mp3");
     }
-    else {
-        vars.orientation = "portrait";
-        return width;
+    // Functie voor de setup van de game in p5.
+    p.setup = () => {
+        initializeVars();
+        inputMethod();
+        p.createCanvas(vars.canvasDimension, vars.canvasDimension);
+        p.colorMode(p.RGB, 255);
+        p.textFont("Roboto");
+        p.textSize(vars.widthUnit / 1.5);
+        p.noCursor();
+        p.textAlign(p.LEFT, p.CENTER);
+    }
+    // Functie voor het tekenen van de game in p5.
+    p.draw = () => {
+        p.background("black");
+        p.noFill();
+        p.strokeWeight(2);
+        p.stroke("#2121DE");
+        // playIntroSound(p, introSound);
+        boardElements(p);
+        pellet(p);
+        visualObstacles(p);
+        hoogMan(p);
+        collision();
+        // Checkt welke input wordt gebruikt.
+        if (vars.gameInput === "keyboard") {
+            // Checkt of een knop op het toetsenbord ingedrukt wordt.
+            if (p.keyIsDown(p.UP_ARROW)) {vars.hoogManMovement = "up";}
+            else if (p.keyIsDown(p.RIGHT_ARROW)) {vars.hoogManMovement = "right";}
+            else if (p.keyIsDown(p.DOWN_ARROW)) {vars.hoogManMovement = "down";}
+            else if (p.keyIsDown(p.LEFT_ARROW)) {vars.hoogManMovement = "left";}
+        } else if (vars.gameInput === "touch") {touchControls();}
+        else {gestureControls();}
+        directionHoogMan();
     }
 }
 // vars is een object. Binnen een object hebben je key/value pairs.
 const vars = {}
-// Declareert benodigde variabelen voor de game.
+// Functie voor het declareren van de benodigde variabelen voor de game.
 const initializeVars = () => {
+    // Functie voor het bepalen van de dimensie van het main element en de oriëntatie van de client.
+    const getMainDimensions = () => {
+        // Creëert een constante van een HTML element en checkt de dimensie daarvan.
+        const main = document.querySelector("main");
+        const height = main.offsetHeight;
+        const width = main.offsetWidth;
+        // Checkt de oriëntatie van de client. 
+        if (width > height) {
+            vars.orientation = "landscape";
+            return height;
+        }
+        else {
+            vars.orientation = "portrait";
+            return width;
+        }
+    }
     // Definieert de dimensie van het canvas. - 1 om ervoor te zorgen dat er geen scrollbars komen.
     vars.canvasDimension = getMainDimensions() - 1;
     // Definieert de startpunten van de buitenlijnen van het spelbord.
@@ -45,11 +92,19 @@ const initializeVars = () => {
     vars.leftHoogMan = false;
     vars.xMovement = false;
     vars.yMovement = false;
-    vars.touchMovement = null;
+    vars.hoogManMovement = false;
     // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
     vars.gesturePosition = [null, null, null, null];
     // Definieert de snelheid van Hoog-Man.
     vars.hoogManSpeed = (88 / 60) / 650 * vars.innerHeight;
+    // Functie voor het creëren van een barrière.
+    const createObstacle = (xMin, yMin, xMax, yMax) => {
+        const obstacle = [
+            vars.xInner + vars.widthUnit * xMin, vars.yInner + vars.heightUnit * yMin,
+            vars.xInner + vars.widthUnit * xMax, vars.yInner + vars.heightUnit * yMax
+        ];
+        vars.obstacles.push(obstacle);
+    }
     // Definieert de barrières van het spelbord. Zie /maps/1.jpg voor de volgorde.
     vars.obstacles = [];
     /* 1 */ createObstacle(1, 1, 3, 4); /* 2 */ createObstacle(4, 0, 5, 4); /* 3 */ createObstacle(6, 1, 8, 4);
@@ -72,14 +127,6 @@ const initializeVars = () => {
     }
     // Definieert de score in de game.
     vars.points = 0;
-}
-// Functie voor het creëren van een barrière.
-const createObstacle = (xMin, yMin, xMax, yMax) => {
-    const obstacle = [
-        vars.xInner + vars.widthUnit * xMin, vars.yInner + vars.heightUnit * yMin,
-        vars.xInner + vars.widthUnit * xMax, vars.yInner + vars.heightUnit * yMax
-    ];
-    vars.obstacles.push(obstacle);
 }
 // Functie voor het afspelen van het intro liedje.
 // const playIntroSound = (p, introSound) => {
@@ -252,7 +299,7 @@ const resetDirection = afterCollision => {
     vars.leftHoogMan = false;
     vars.xMovement = false;
     vars.yMovement = false;
-    vars.touchMovement = null;
+    vars.hoogManMovement = false;
     // Zorgt ervoor dat Hoog-Man weer gecentreerd staat na een stop.
     if (afterCollision) {constrainPostion();}
 }
@@ -292,6 +339,46 @@ const constrainPostion = () => {
         }
     }
 }
+// Functie voor het besturen van Hoog-Man doormiddel van touch.
+const touchControls = () => {
+    const upTouch = document.querySelector("#upTouch");
+    // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
+    // Checkt of er op een besturingselement wordt gedrukt.
+    upTouch.addEventListener("touchstart", () => vars.hoogManMovement = "up");
+    const rightTouch = document.querySelector("#rightTouch");
+    rightTouch.addEventListener("touchstart", () => vars.hoogManMovement = "right");
+    const downTouch = document.querySelector("#downTouch");
+    downTouch.addEventListener("touchstart", () => vars.hoogManMovement = "down");
+    const leftTouch = document.querySelector("#leftTouch");
+    leftTouch.addEventListener("touchstart", () => vars.hoogManMovement = "left");
+}
+// Functie voor het besturen van Hoog-Man doormiddel van gestures.
+const gestureControls = () => {
+    const main = document.querySelector("main");
+    main.addEventListener("touchstart", event => {
+        // Zorgt ervoor dat de standaardactie niet wordt uitgevoerd.
+        event.preventDefault();
+        vars.gesturePosition[0] = event.touches[0].clientX;
+        vars.gesturePosition[1] = event.touches[0].clientY;
+    });
+    main.addEventListener("touchmove", event => {
+        event.preventDefault();
+        vars.gesturePosition[2] = event.touches[0].clientX;
+        vars.gesturePosition[3] = event.touches[0].clientY;
+        if (vars.gesturePosition[3] < vars.gesturePosition[1] - vars.heightUnit) {vars.hoogManMovement = "up";}
+        else if (vars.gesturePosition[2] > vars.gesturePosition[0] + vars.widthUnit) {vars.hoogManMovement = "right";}
+        else if (vars.gesturePosition[3] > vars.gesturePosition[1] + vars.heightUnit) {vars.hoogManMovement = "down";}
+        else if (vars.gesturePosition[2] < vars.gesturePosition[0] - vars.widthUnit) {vars.hoogManMovement = "left";}
+    });
+    main.addEventListener("touchcancel", event => {
+        event.preventDefault();
+        vars.gesturePosition = [null, null, null, null];
+    });
+    main.addEventListener("touchend", event => {
+        event.preventDefault();
+        vars.gesturePosition = [null, null, null, null];
+    });
+}
 // Functies voor het aanroepen van andere functies zodat Hoog-Man beweegt en alles wat daar mee te maken heeft.
 const upPress = () => {
     // Checkt of er geen botsing plaatsvindt.
@@ -322,133 +409,39 @@ const leftPress = () => {
         constrainPostion();
     }
 }
-// Functie voor het besturen van Hoog-Man doormiddel van touch.
-const touchControls = () => {
-    const upTouch = document.querySelector("#upTouch");
-    // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
-    // Checkt of er op een besturingselement wordt gedrukt.
-    upTouch.addEventListener("touchstart", () => vars.touchMovement = "up");
-    const rightTouch = document.querySelector("#rightTouch");
-    rightTouch.addEventListener("touchstart", () => vars.touchMovement = "right");
-    const downTouch = document.querySelector("#downTouch");
-    downTouch.addEventListener("touchstart", () => vars.touchMovement = "down");
-    const leftTouch = document.querySelector("#leftTouch");
-    leftTouch.addEventListener("touchstart", () => vars.touchMovement = "left");
-    // Simulatie van wanneer je een toetsenbordknop ingedrukt houdt.
-    switch (vars.touchMovement) {
+// Functie voor het simuleren van wanneer een toetsenbordknop ingedrukt gehouden wordt.
+const directionHoogMan = () => {
+    switch (vars.hoogManMovement) {
         case "up": upPress(); break;
         case "right": rightPress(); break;
         case "down": downPress(); break;
         case "left": leftPress(); break;
     }
 }
-// Functie voor het besturen van Hoog-Man doormiddel van gestures.
-const gestureControls = () => {
-    const main = document.querySelector("main");
-    main.addEventListener("touchstart", event => {
-        event.preventDefault();
-        vars.gesturePosition[0] = event.touches[0].clientX;
-        vars.gesturePosition[1] = event.touches[0].clientY;
-    });
-    main.addEventListener("touchmove", event => {
-        event.preventDefault();
-        vars.gesturePosition[2] = event.touches[0].clientX;
-        vars.gesturePosition[3] = event.touches[0].clientY;
-        if (vars.gesturePosition[3] > vars.gesturePosition[1] + vars.heightUnit * 2) {
-            vars.gestureMovement = "down";
-        }
-        else if (vars.gesturePosition[3] < vars.gesturePosition[1] - vars.heightUnit * 2) {
-            vars.gestureMovement = "up";
-        }
-        else if (vars.gesturePosition[2] > vars.gesturePosition[0] + vars.widthUnit * 2) {
-            vars.gestureMovement = "right";
-        }
-        else if (vars.gesturePosition[2] < vars.gesturePosition[0] - vars.widthUnit * 2) {
-            vars.gestureMovement = "left";
-        }
-    });
-    main.addEventListener("touchstop", event => {
-        event.preventDefault();
-        vars.gesturePosition = [null, null, null, null]
-    });
-    main.addEventListener("touchcancel", event => {
-        event.preventDefault();
-        vars.gesturePosition = [null, null, null, null]
-    });
-    if (vars.gestureMovement === "up") {
-        upPress();
-    }
-    else if (vars.gestureMovement === "right") {
-        rightPress();
-    }
-    else if (vars.gestureMovement === "down") {
-        downPress();
-    }
-    else if (vars.gestureMovement === "left") {
-        leftPress();
-    }
-}
-/*
-Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
-Deze modus heeft voor deze game als belangrijkste doel om de game te kunnen starten via een JavaScript functie,
-in plaats van dat p5 automatisch start. Het argument p van de sketch functie is er om de functies en variabelen te koppelen aan p5.
-*/
-const sketch = p => {
-    // Functie voor het preloaden van game assets in p5.
-    p.preload = () => {
-        p.soundFormats("mp3");
-        p.loadFont("assets/fonts/Roboto-Light.ttf");
-        // introSound = p.loadSound("assets/music/PacMan.mp3");
-    }
-    // Functie voor de setup van de game in p5.
-    p.setup = () => {
-        initializeVars();
-        controls();
-        p.createCanvas(vars.canvasDimension, vars.canvasDimension);
-        p.colorMode(p.RGB, 255);
-        p.textFont("Roboto");
-        p.textSize(vars.widthUnit / 1.5);
-        p.noCursor();
-        p.textAlign(p.LEFT, p.CENTER);
-    }
-    // Functie voor het tekenen van de game in p5.
-    p.draw = () => {
-        p.background("black");
-        p.noFill();
-        p.strokeWeight(2);
-        p.stroke("#2121DE");
-        // playIntroSound(p, introSound);
-        boardElements(p);
-        pellet(p);
-        visualObstacles(p);
-        hoogMan(p);
-        collision();
-        // Checkt welke input wordt gebruikt.
-        if (vars.gameInput === "keyboard") {
-            // Checkt of een knop ingedrukt wordt.
-            if (p.keyIsDown(p.UP_ARROW)) {upPress();}
-            else if (p.keyIsDown(p.RIGHT_ARROW)) {rightPress();}
-            else if (p.keyIsDown(p.DOWN_ARROW)) {downPress();}
-            else if (p.keyIsDown(p.LEFT_ARROW)) {leftPress();}
-        } else if (vars.gameInput === "touch") {touchControls();}
-        else {gestureControls();}
-    }
-}
 
 // Pagina specifieke JavaScript.
-// Creëert constanten van HTML elementen.
-const startGame = document.querySelector("#startGame");
-const social = document.querySelector("#social");
-// Functie voor het correcte copyright jaar.
-const footerText = () => {
-    const footer = document.querySelector("footer");
-    let year = new Date;
-    year = year.getFullYear();
-    footer.innerText = `© ${year} Hoog-Man`;
-}
-// Functie voor het semi-fullscreenen van de game.
-const gameStartupScreen = () => {
+// Initialiseert de game.
+document.querySelector("#startGame").addEventListener("click", () => {
+    gameStartup();
+    // Creëert nieuwe p5 sketch.
+    vars.game = new p5(sketch);
+    // Zorgt ervoor dat de rest van de pagina verborgen wordt.
+    document.querySelector("#gameStartupContainer").style.display = "none";
+    // Creërt een nieuwe AudioContext zodat er audio afgespeeld kan worden.
+    new AudioContext;
+});
+// Zorgt ervoor dat de gebruiker wordt doorgestuurd naar de GitHub repository.
+document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+// Zorgt ervoor dat er een nieuwe game wordt geladen, nadat de venstergrootte is veranderd.
+window.addEventListener("resize", () => {
+    vars.game.remove();
+    vars.game = new p5(sketch);
+});
+// Functie voor het fullscreenen van de game.
+const gameStartup = () => {
     const main = document.querySelector("main");
+    main.requestFullscreen();
+    // Zorgt ervoor dat het main element de gehele viewport inneemt.
     main.style.height = "100%";
     main.style.width = "100%";
     main.style.position = "absolute";
@@ -456,24 +449,23 @@ const gameStartupScreen = () => {
     main.style.left = "0";
     main.style.backgroundColor = "black";
 }
-// Functie voor het checken welke input methode wordt gebruikt.
-const controls = () => {
+// Functie voor het checken welke input methode er wordt gebruikt.
+const inputMethod = () => {
     const inputControls = document.getElementsByName("controls");
     if (inputControls[0].checked || vars.gameInput === "keyboard") {vars.gameInput = "keyboard";}
     else if (inputControls[1].checked || vars.gameInput === "touch") {
         vars.gameInput = "touch";
         setupTouchControls();
-    } else {vars.gameInput = "gesture";}
+    } else {vars.gameInput = "gestures";}
 }
-// Functie voor het weergeven van de touch controls.
+// Functie voor het weergeven van de touch controls elementen.
 const setupTouchControls = () => {
     const touchControlsContainer = document.getElementById("touchControlsContainer");
-    const touchControls = document.getElementsByClassName("touchControls");
     touchControlsContainer.style.display = "flex";
+    const touchControls = document.getElementsByClassName("touchControls");
     // Zorgt ervoor dat de touch besturingselementen worden aangepast voor een landscape client.
     if (vars.orientation === "landscape") {
-        const htmlWidth = document.querySelector("html").offsetWidth;
-        const touchElementWidth = (htmlWidth - vars.canvasDimension) / 2;
+        const touchElementWidth = (document.querySelector("html").offsetWidth - vars.canvasDimension) / 2;
         touchControlsContainer.style.width = `${touchElementWidth}px`;
         touchControlsContainer.style.height = "100%";
         touchControlsContainer.classList.remove("containerPortrait");
@@ -485,8 +477,7 @@ const setupTouchControls = () => {
     }
     // Zorgt ervoor dat de touch besturingselementen worden aangepast voor een portrait client.
     else if (vars.orientation === "portrait") {
-        const htmlHeight = document.querySelector("html").offsetHeight;
-        const touchElementHeight = (htmlHeight - vars.canvasDimension) / 2;
+        const touchElementHeight = (document.querySelector("html").offsetHeight - vars.canvasDimension) / 2;
         touchControlsContainer.style.height = `${touchElementHeight}px`;
         touchControlsContainer.style.width = "100%";
         touchControlsContainer.classList.remove("containerLandscape");
@@ -497,23 +488,9 @@ const setupTouchControls = () => {
         }
     }
 }
-// Initialiseert de game.
-startGame.addEventListener("click", () => {
-    gameStartupScreen();
-    // Creëert nieuwe p5 sketch.
-    vars.game = new p5(sketch);
-    // Zorgt ervoor dat de rest van de pagina verborgen wordt.
-    const gameStartupContainer = document.querySelector("#gameStartupContainer");
-    gameStartupContainer.style.display = "none";
-    // Creërt ee nieuwe AudioContext zodat er audio afgespeeld kan worden.
-    new AudioContext;
-});
-// Stuurt gebruiker door naar GitHub repository.
-social.addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken");
-// Zorgt ervoor dat er een nieuwe game wordt geladen, nadat de venstergrootte is veranderd.
-window.addEventListener("resize", () => {
-    vars.game.remove();
-    vars.game = new p5(sketch);
-});
-
-footerText();
+// Functie voor het correcte copyright jaar. Dit is een directe functie die meteen wordt uitgevoerd.
+(() => {
+    let year = new Date;
+    year = year.getFullYear();
+    document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
+})()
