@@ -46,6 +46,8 @@ const initializeVars = () => {
     vars.xMovement = false;
     vars.yMovement = false;
     vars.touchMovement = null;
+    // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
+    vars.gesturePosition = [null, null, null, null];
     // Definieert de snelheid van Hoog-Man.
     vars.hoogManSpeed = (88 / 60) / 650 * vars.innerHeight;
     // Definieert de barrières van het spelbord. Zie /maps/1.jpg voor de volgorde.
@@ -340,6 +342,52 @@ const touchControls = () => {
         case "left": leftPress(); break;
     }
 }
+// Functie voor het besturen van Hoog-Man doormiddel van gestures.
+const gestureControls = () => {
+    const main = document.querySelector("main");
+    main.addEventListener("touchstart", event => {
+        event.preventDefault();
+        vars.gesturePosition[0] = event.touches[0].clientX;
+        vars.gesturePosition[1] = event.touches[0].clientY;
+    });
+    main.addEventListener("touchmove", event => {
+        event.preventDefault();
+        vars.gesturePosition[2] = event.touches[0].clientX;
+        vars.gesturePosition[3] = event.touches[0].clientY;
+        if (vars.gesturePosition[3] > vars.gesturePosition[1] + vars.heightUnit * 2) {
+            vars.gestureMovement = "down";
+        }
+        else if (vars.gesturePosition[3] < vars.gesturePosition[1] - vars.heightUnit * 2) {
+            vars.gestureMovement = "up";
+        }
+        else if (vars.gesturePosition[2] > vars.gesturePosition[0] + vars.widthUnit * 2) {
+            vars.gestureMovement = "right";
+        }
+        else if (vars.gesturePosition[2] < vars.gesturePosition[0] - vars.widthUnit * 2) {
+            vars.gestureMovement = "left";
+        }
+    });
+    main.addEventListener("touchstop", event => {
+        event.preventDefault();
+        vars.gesturePosition = [null, null, null, null]
+    });
+    main.addEventListener("touchcancel", event => {
+        event.preventDefault();
+        vars.gesturePosition = [null, null, null, null]
+    });
+    if (vars.gestureMovement === "up") {
+        upPress();
+    }
+    else if (vars.gestureMovement === "right") {
+        rightPress();
+    }
+    else if (vars.gestureMovement === "down") {
+        downPress();
+    }
+    else if (vars.gestureMovement === "left") {
+        leftPress();
+    }
+}
 /*
 Met een sketch zorg je ervoor dat je in de instance mode van p5 komt.
 Deze modus heeft voor deze game als belangrijkste doel om de game te kunnen starten via een JavaScript functie,
@@ -382,7 +430,8 @@ const sketch = p => {
             else if (p.keyIsDown(p.RIGHT_ARROW)) {rightPress();}
             else if (p.keyIsDown(p.DOWN_ARROW)) {downPress();}
             else if (p.keyIsDown(p.LEFT_ARROW)) {leftPress();}
-        } else {touchControls();}
+        } else if (vars.gameInput === "touch") {touchControls();}
+        else {gestureControls();}
     }
 }
 
@@ -411,10 +460,10 @@ const gameStartupScreen = () => {
 const controls = () => {
     const inputControls = document.getElementsByName("controls");
     if (inputControls[0].checked || vars.gameInput === "keyboard") {vars.gameInput = "keyboard";}
-    else {
+    else if (inputControls[1].checked || vars.gameInput === "touch") {
         vars.gameInput = "touch";
         setupTouchControls();
-    }
+    } else {vars.gameInput = "gesture";}
 }
 // Functie voor het weergeven van de touch controls.
 const setupTouchControls = () => {
