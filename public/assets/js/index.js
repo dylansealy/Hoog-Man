@@ -37,10 +37,10 @@ const sketch = p => {
         // Checkt welke input wordt gebruikt.
         if (vars.gameInput === "keyboard") {
             // Checkt of een knop op het toetsenbord ingedrukt wordt.
-            if (p.keyIsDown(p.UP_ARROW)) {vars.hoogManMovement = "up";}
-            else if (p.keyIsDown(p.RIGHT_ARROW)) {vars.hoogManMovement = "right";}
-            else if (p.keyIsDown(p.DOWN_ARROW)) {vars.hoogManMovement = "down";}
-            else if (p.keyIsDown(p.LEFT_ARROW)) {vars.hoogManMovement = "left";}
+            if (p.keyIsDown(p.UP_ARROW) || p.keyIsDown(87)) {vars.hoogManMovement = "up";}
+            else if (p.keyIsDown(p.RIGHT_ARROW) || p.keyIsDown(68)) {vars.hoogManMovement = "right";}
+            else if (p.keyIsDown(p.DOWN_ARROW) || p.keyIsDown(83)) {vars.hoogManMovement = "down";}
+            else if (p.keyIsDown(p.LEFT_ARROW) || p.keyIsDown(65)) {vars.hoogManMovement = "left";}
         } else if (vars.gameInput === "touch") {touchControls();}
         else {gestureControls();}
         directionHoogMan();
