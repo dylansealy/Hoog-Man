@@ -69,10 +69,8 @@ const initializeVars = () => {
     // Definieert de dimensie van het canvas. - 1 om ervoor te zorgen dat er geen scrollbars komen.
     vars.canvasDimension = getMainDimensions() - 1;
     // Definieert de startpunten van de buitenlijnen van het spelbord.
-    vars.xOuter = vars.canvasDimension / 60;
-    vars.yOuter = vars.xOuter;
-    vars.xInner = vars.xOuter * 2;
-    vars.yInner = vars.xInner;
+    vars.xOuter = vars.yOuter = vars.canvasDimension / 60;
+    vars.xInner = vars.yInner = vars.xOuter * 2;
     // Definieert de hoogte en breedte van het spelbord.
     vars.outerHeight = vars.canvasDimension - vars.yOuter * 6;
     vars.outerWidth = vars.canvasDimension - vars.xOuter * 2;
@@ -86,13 +84,7 @@ const initializeVars = () => {
     vars.yHoogMan = vars.yInner + vars.heightUnit * 0.5;
     vars.dHoogMan = vars.heightUnit / 2;
     // Definieert de bewegingsrichtingen van Hoog-Man.
-    vars.upHoogMan = false;
-    vars.rightHoogMan = false;
-    vars.downHoogMan = false;
-    vars.leftHoogMan = false;
-    vars.xMovement = false;
-    vars.yMovement = false;
-    vars.hoogManMovement = false;
+    vars.upHoogMan = vars.rightHoogMan = vars.downHoogMan = vars.leftHoogMan = vars.xMovement = vars.yMovement = vars.hoogManMovement = false;
     // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
     vars.gesturePosition = [null, null, null, null];
     // Definieert de snelheid van Hoog-Man.
@@ -107,17 +99,15 @@ const initializeVars = () => {
     }
     // Definieert de barrières van het spelbord. Zie /maps/1.jpg voor de volgorde.
     vars.obstacles = [];
-    /* 1 */ createObstacle(1, 1, 3, 4); /* 2 */ createObstacle(4, 0, 5, 4); /* 3 */ createObstacle(6, 1, 8, 4);
-    /* 4 */ createObstacle(9, 0, 10, 3); /* 5 */ createObstacle(11, 1, 13, 3); /* 6 */ createObstacle(14, 0, 17, 2);
-    /* 7 */ createObstacle(0, 5, 1, 8); /* 8 */ createObstacle(2, 5, 4, 8); /* 9 */ createObstacle(5, 5, 7, 6);
-    /* 10 */ createObstacle(8, 5, 9, 6); /* 11 */ createObstacle(9, 4, 10, 7); /* 12 */ createObstacle(11, 5, 12, 6);
-    /* 13 */ createObstacle(11, 4, 16, 5); /* 14 */ createObstacle(14, 3, 16, 4); /* 15 */ createObstacle(5, 7, 6, 8);
-    /* 16 */ createObstacle(7, 7, 8, 10); /* 17 */ createObstacle(9, 8, 10, 10); /* 18 */ createObstacle(10, 9, 11, 11);
-    /* 19 */ createObstacle(11, 7, 14, 8); /* 20 */ createObstacle(13, 6, 14, 7); /* 21 */ createObstacle(15, 6, 16, 8);
-    /* 22 */ createObstacle(1, 9, 3, 13); /* 23 */ createObstacle(4, 9, 6, 12); /* 24 */ createObstacle(7, 11, 9, 12);
-    /* 25 */ createObstacle(8, 12, 9, 13); /* 26 */ createObstacle(12, 9, 13, 12); /* 27 */ createObstacle(14, 9, 17, 10);
-    /* 28 */ createObstacle(4, 13, 7, 14); /* 29 */ createObstacle(10, 12, 11, 14); /* 30 */ createObstacle(11, 13, 14, 14);
-    /* 31 */ createObstacle(14, 11, 16, 12); /* 32 */ createObstacle(15, 12, 16, 13);
+    vars.obstacleCoordinates = [
+        [1, 1, 3, 4], [4, 0, 5, 4], [6, 1, 8, 4], [9, 0, 10, 3], [11, 1, 13, 3], [14, 0, 17, 2], [0, 5, 1, 8], [2, 5, 4, 8],
+        [5, 5, 7, 6], [8, 5, 9, 6], [9, 4, 10, 7], [11, 5, 12, 6], [11, 4, 16, 5], [14, 3, 16, 4], [5, 7, 6, 8], [7, 7, 8, 10],
+        [9, 8, 10, 10], [10, 9, 11, 11], [11, 7, 14, 8], [13, 6, 14, 7], [15, 6, 16, 8], [1, 9, 3, 13], [4, 9, 6, 12], [7, 11, 9, 12],
+        [8, 12, 9, 13], [12, 9, 13, 12], [14, 9, 17, 10], [4, 13, 7, 14], [10, 12, 11, 14], [11, 13, 14, 14], [14, 11, 16, 12], [15, 12, 16, 13]
+    ]
+    for (ob in vars.obstacleCoordinates) {
+        createObstacle(vars.obstacleCoordinates[ob][0], vars.obstacleCoordinates[ob][1], vars.obstacleCoordinates[ob][2], vars.obstacleCoordinates[ob][3]);
+    }
     // Definieert de pellets van het spelbord.
     vars.pellets = [];
     for (let yGrid = 0; yGrid < 14; yGrid++) {
@@ -293,13 +283,7 @@ const collisionInput = nextMovement => {
 }
 // Functie voor het resetten van Hoog-Mans bewegingsrichting.
 const resetDirection = afterCollision => {
-    vars.upHoogMan = false;
-    vars.rightHoogMan = false;
-    vars.downHoogMan = false;
-    vars.leftHoogMan = false;
-    vars.xMovement = false;
-    vars.yMovement = false;
-    vars.hoogManMovement = false;
+    vars.upHoogMan = vars.rightHoogMan = vars.downHoogMan = vars.leftHoogMan = vars.xMovement = vars.yMovement = vars.hoogManMovement = false;
     // Zorgt ervoor dat Hoog-Man weer gecentreerd staat na een stop.
     if (afterCollision) {constrainPostion();}
 }
