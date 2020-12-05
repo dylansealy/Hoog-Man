@@ -34,7 +34,19 @@
     <main>
         <div id="gameStartupContainer">
             <h1>Welkom bij Hoog-Man</h1>
+            <label for="keyboardControls">Keyboard besturing</label>
+            <input type="radio" id="keyboardControls" name="controls" checked>
+            <label for="touchControls">On screen button besturing</label>
+            <input type="radio" id="touchControls" name="controls">
+            <label for="GestureControls">Gesture besturing</label>
+            <input type="radio" id="GestureControls" name="controls">
             <button id="startGame">Start</button>
+        </div>
+        <div id="touchControlsContainer">
+            <div id="upTouch" class="touchControls">&uarr;</div>
+            <div id="leftTouch" class="touchControls">&larr;</div>
+            <div id="rightTouch" class="touchControls">&rarr;</div>
+            <div id="downTouch" class="touchControls">&darr;</div>
         </div>
     </main>
     <!-- Footer -->
