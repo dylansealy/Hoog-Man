@@ -343,41 +343,63 @@ const constrainPostion = () => {
 const touchControls = () => {
     const upTouch = document.querySelector("#upTouch");
     // Eventlisteners zorgen ervoor dat er iets gebeurd na een actie van de gebruiker.
-    // Checkt of er op een besturingselement wordt gedrukt.
+    // Checkt of er op een besturingselement wordt gedrukt of geklikt.
     upTouch.addEventListener("touchstart", () => vars.hoogManMovement = "up");
+    upTouch.addEventListener("click", () => vars.hoogManMovement = "up");
     const rightTouch = document.querySelector("#rightTouch");
     rightTouch.addEventListener("touchstart", () => vars.hoogManMovement = "right");
+    rightTouch.addEventListener("click", () => vars.hoogManMovement = "right");
     const downTouch = document.querySelector("#downTouch");
     downTouch.addEventListener("touchstart", () => vars.hoogManMovement = "down");
+    downTouch.addEventListener("click", () => vars.hoogManMovement = "down");
     const leftTouch = document.querySelector("#leftTouch");
     leftTouch.addEventListener("touchstart", () => vars.hoogManMovement = "left");
+    leftTouch.addEventListener("click", () => vars.hoogManMovement = "left");
 }
 // Functie voor het besturen van Hoog-Man doormiddel van gestures.
 const gestureControls = () => {
+    // Functie voor het bepalen welke gesture er wordt uitgevoerd.
+    const gesture = () => {
+        // Checkt of een gesture begonnen is doormiddel van een druk of een klik.
+        if (vars.gesturePosition[0] != null && vars.gesturePosition[1] != null) {
+            if (vars.gesturePosition[3] < vars.gesturePosition[1] - vars.heightUnit) {vars.hoogManMovement = "up";}
+            else if (vars.gesturePosition[2] > vars.gesturePosition[0] + vars.widthUnit) {vars.hoogManMovement = "right";}
+            else if (vars.gesturePosition[3] > vars.gesturePosition[1] + vars.heightUnit) {vars.hoogManMovement = "down";}
+            else if (vars.gesturePosition[2] < vars.gesturePosition[0] - vars.widthUnit) {vars.hoogManMovement = "left";}
+        }
+    }
+    // Functie voor het resetten van de gesture.
+    const resetGesture = event => {
+        // Zorgt ervoor dat de standaardactie niet wordt uitgevoerd.
+        event.preventDefault();
+        vars.gesturePosition = [null, null, null, null];
+    }
     const main = document.querySelector("main");
     main.addEventListener("touchstart", event => {
-        // Zorgt ervoor dat de standaardactie niet wordt uitgevoerd.
         event.preventDefault();
         vars.gesturePosition[0] = event.touches[0].clientX;
         vars.gesturePosition[1] = event.touches[0].clientY;
+    });
+    main.addEventListener("mousedown", event => {
+        event.preventDefault();
+        vars.gesturePosition[0] = event.clientX;
+        vars.gesturePosition[1] = event.clientY;
     });
     main.addEventListener("touchmove", event => {
         event.preventDefault();
         vars.gesturePosition[2] = event.touches[0].clientX;
         vars.gesturePosition[3] = event.touches[0].clientY;
-        if (vars.gesturePosition[3] < vars.gesturePosition[1] - vars.heightUnit) {vars.hoogManMovement = "up";}
-        else if (vars.gesturePosition[2] > vars.gesturePosition[0] + vars.widthUnit) {vars.hoogManMovement = "right";}
-        else if (vars.gesturePosition[3] > vars.gesturePosition[1] + vars.heightUnit) {vars.hoogManMovement = "down";}
-        else if (vars.gesturePosition[2] < vars.gesturePosition[0] - vars.widthUnit) {vars.hoogManMovement = "left";}
+        gesture();
     });
-    main.addEventListener("touchcancel", event => {
+    main.addEventListener("mousemove", event => {
         event.preventDefault();
-        vars.gesturePosition = [null, null, null, null];
+        vars.gesturePosition[2] = event.clientX;
+        vars.gesturePosition[3] = event.clientY;
+        gesture();
     });
-    main.addEventListener("touchend", event => {
-        event.preventDefault();
-        vars.gesturePosition = [null, null, null, null];
-    });
+    main.addEventListener("touchend", event => resetGesture(event));
+    main.addEventListener("mouseup", event => resetGesture(event));
+    main.addEventListener("touchcancel", event => resetGesture(event));
 }
 // Functies voor het aanroepen van andere functies zodat Hoog-Man beweegt en alles wat daar mee te maken heeft.
 const upPress = () => {
