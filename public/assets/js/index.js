@@ -40,8 +40,7 @@ const sketch = p => {
         } else if (v.gameInput === "touch") {touchControls();}
         else if (v.gameInput === "gestures") {gestureControls();}
     }
-}
-// v is een object. Binnen een object heb je key/value pairs.
+} // v is een object. Binnen een object heb je key/value pairs.
 const v = {}
 // Functie voor het declareren van de benodigde variabelen voor de game.
 const initializeVars = () => {
@@ -53,7 +52,7 @@ const initializeVars = () => {
         // - 1 om scrollbars te voorkomen.
         v.canvasDimension = height - 1;
     } else {
-        v.canvasDimension = "potrait";
+        v.orientation = "portrait";
         v.canvasDimension = width - 1;
     } // Definieert de startpunten van de buitenlijnen van het spelbord.
     v.xOuter = v.yOuter = v.canvasDimension / 60;
@@ -66,11 +65,11 @@ const initializeVars = () => {
     // Definieert de dimensie eenheden van het spelbord.
     v.heightUnit = v.innerHeight / 14;
     v.widthUnit = v.innerWidth / 17;
-    // Definieert de positie, bewegingsrichting snelheid en kleur van elk karakter.
+    // Definieert de positie, grootte, kleur, snelheid en bewegingsrichting van elk karakter.
     v.xCharacter = [v.xInner + v.widthUnit * 0.5, v.xInner + v.widthUnit * 13.5];
     v.yCharacter = [v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 12.5];
     v.dCharacter = [0, 0];
-        // Zorgt ervoor dat elke waarde in een array hetzelfde is zonder deze steeds te herhalen.
+        // Zorgt ervoor dat elke waarde in de array hetzelfde is zonder deze steeds te herhalen.
     v.dCharacter.fill(v.heightUnit / 2);
     v.cCharacter = ["yellow", "red"];
     v.characterSpeed = [0, 0];
@@ -81,7 +80,7 @@ const initializeVars = () => {
     v.yCharacterMovement = [false, false];
     // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
     v.gesturePosition = [null, null, null, null];
-    // Zorgt ervoor dat alle barriëres gecreëerd worden.
+    // Zorgt ervoor dat alle barrières gecreëerd worden.
     v.obstacles = [];
         // xMin, yMin, xMax, yMax.
     v.coordinates = [
@@ -103,8 +102,7 @@ const initializeVars = () => {
         for (let xPellet = 0; xPellet < 17; xPellet++) {
             if (!checkCollision(xPellet, yPellet)) {v.pellets.push([xPellet, yPellet]);}
         }
-    }
-    // Zorgt ervoor dat de score wordt bijgehouden.
+    } // Zorgt ervoor dat de score wordt bijgehouden.
     v.score = 0;
 }
 // Functie voor het afspelen van het intro liedje.
@@ -167,7 +165,6 @@ const drawBoardElements = p => {
 // Functie voor het tekenen van alle karakters.
 const drawCharacters = (ch, p) => {
     p.push();
-    // Zorgt ervoor dat alle karakters worden.
     p.noStroke();
     p.fill(v.cCharacter[ch]);
     p.ellipse(v.xCharacter[ch], v.yCharacter[ch], v.dCharacter[ch]);
@@ -187,10 +184,8 @@ const checkCollision = (ch, xIndex, yIndex) => {
         // Checkt of een pellet botst met een barrière.
         if (typeof xIndex != "undefined" && typeof yIndex != "undefined") {
             if (
-                v.xInner + v.widthUnit * (0.5 + xIndex) > v.obstacles[ob][0] &&
-                v.xInner + v.widthUnit * (0.5 + xIndex) < v.obstacles[ob][2] &&
-                v.yInner + v.heightUnit * (0.5 + yIndex) > v.obstacles[ob][1] &&
-                v.yInner + v.heightUnit * (0.5 + yIndex) < v.obstacles[ob][3]
+                v.xInner + v.widthUnit * (0.5 + xIndex) > v.obstacles[ob][0] && v.xInner + v.widthUnit * (0.5 + xIndex) < v.obstacles[ob][2] &&
+                v.yInner + v.heightUnit * (0.5 + yIndex) > v.obstacles[ob][1] && v.yInner + v.heightUnit * (0.5 + yIndex) < v.obstacles[ob][3]
             ) {return true;}
         } // Checkt of een karakter botst met een barrière.
         else if ( // -1 als marge tussen een karakter en een barrière. Anders is deze statement altijd waar.
@@ -199,8 +194,7 @@ const checkCollision = (ch, xIndex, yIndex) => {
             v.yCharacter[ch] + v.heightUnit * 0.5 - 1 > v.obstacles[ob][1] &&
             v.yCharacter[ch] - v.heightUnit * 0.5 + 1 < v.obstacles[ob][3]
         ) {return resetDirection(ch, true);}
-    }
-    return false;
+    } return false;
 }
 // Functie voor het checken of er een botsing plaatsvindt met een barrière of een buitenlijn na een key input.
 const checkCollisionInput = (ch, nextCharacterMovement) => {
@@ -217,7 +211,7 @@ const checkCollisionInput = (ch, nextCharacterMovement) => {
             // Checkt of een karakter botst met een buitelijn.
             else if (v.yCharacter[ch] > v.yInner && v.yCharacter[ch] < v.yInner + v.heightUnit) {return true;}
             // Checkt of een karakter bots met een barrière.
-            else if ( // Verschil tussen vermenigvuldigingsfactor en 0.5 om ervoor te zorgen dat deze statements minder snel waar zijn.
+            else if ( // Marge tussen vermenigvuldigingsfactor en 0.5 om ervoor te zorgen dat deze statements minder snel waar zijn.
                 // Positie links van de barrière.
                 v.xCharacter[ch] + v.widthUnit * 0.45 >= v.obstacles[ob][0] &&
                 // Positie rechts van de barrière.
@@ -230,39 +224,28 @@ const checkCollisionInput = (ch, nextCharacterMovement) => {
         } else if (nextCharacterMovement === "right") {
             if (v.xCharacter[ch] > v.xInner + v.widthUnit * 16 && v.xCharacter[ch] < v.xInner + v.widthUnit * 17) {return true;}
             else if (
-                v.xCharacter[ch] + v.widthUnit * 0.55 >= v.obstacles[ob][0] &&
-                v.xCharacter[ch] - v.widthUnit * 0.45 <= v.obstacles[ob][2] &&
-                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] &&
-                v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
+                v.xCharacter[ch] + v.widthUnit * 0.55 >= v.obstacles[ob][0] && v.xCharacter[ch] - v.widthUnit * 0.45 <= v.obstacles[ob][2] &&
+                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
             ) {return true;}
         } else if (nextCharacterMovement === "down") {
             if (
-                v.xCharacter[ch] > v.xInner + v.widthUnit &&
-                v.xCharacter[ch] < v.xInner + v.widthUnit * 2 &&
-                v.yCharacter[ch] > v.yInner + v.heightUnit * 13 &&
-                v.yCharacter[ch] < v.yInner + v.heightUnit * 14 &&
-                ch == 0
+                v.xCharacter[ch] > v.xInner + v.widthUnit && v.xCharacter[ch] < v.xInner + v.widthUnit * 2 &&
+                v.yCharacter[ch] > v.yInner + v.heightUnit * 13 && v.yCharacter[ch] < v.yInner + v.heightUnit * 14 && ch == 0
             ) {v.yCharacter[ch] = v.yInner;}
             else if (v.yCharacter[ch] > v.yInner + v.heightUnit * 13 && v.yCharacter[ch] < v.yInner + v.heightUnit * 14) {return true;}
             else if (
-                v.xCharacter[ch] + v.widthUnit * 0.45 >= v.obstacles[ob][0] &&
-                v.xCharacter[ch] - v.widthUnit * 0.45 <= v.obstacles[ob][2] &&
-                v.yCharacter[ch] + v.heightUnit * 0.55 >= v.obstacles[ob][1] &&
-                v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
+                v.xCharacter[ch] + v.widthUnit * 0.45 >= v.obstacles[ob][0] && v.xCharacter[ch] - v.widthUnit * 0.45 <= v.obstacles[ob][2] &&
+                v.yCharacter[ch] + v.heightUnit * 0.55 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
             ) {return true;}
         } else if (nextCharacterMovement === "left") {
             if (v.xCharacter[ch] > v.xInner && v.xCharacter[ch] < v.xInner + v.widthUnit) {return true;}
             else if (
-                v.xCharacter[ch] + v.widthUnit * 0.45 >= v.obstacles[ob][0] &&
-                v.xCharacter[ch] - v.widthUnit * 0.55 <= v.obstacles[ob][2] &&
-                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] &&
-                v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
+                v.xCharacter[ch] + v.widthUnit * 0.45 >= v.obstacles[ob][0] && v.xCharacter[ch] - v.widthUnit * 0.55 <= v.obstacles[ob][2] &&
+                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
             ) {return true;}
         }
-    }
-    return false;
-}
-// Functie voor het simuleren van een key press.
+    } return false;
+} // Functie voor het simuleren van een key press.
 const checkDirection = ch => {
     switch (v.nextCharacterMovement[ch]) {
         case "up": upPress(ch); break;
@@ -270,8 +253,7 @@ const checkDirection = ch => {
         case "down": downPress(ch); break;
         case "left": leftPress(ch); break;
     }
-}
-// Functies voor het laten bewegen van een karakter.
+} // Functies voor het laten bewegen van een karakter.
 const upPress = ch => {
     // Checkt of er geen botsing plaatsvindt.
     if (!checkCollisionInput(ch, "up")) {
@@ -300,14 +282,12 @@ const leftPress = ch => {
         v.characterMovement[ch] = "left";
         constrainPostion(ch);
     }
-}
-// Functie voor het resetten van een karakters bewegingsrichting.
+} // Functie voor het resetten van een karakters bewegingsrichting.
 const resetDirection = (ch, afterCollision) => {
     v.characterMovement[ch] = v.xCharacterMovement[ch] = v.yCharacterMovement[ch] = v.nextCharacterMovement[ch] = false;
-    // Zorgt ervoor dat Hoog-Man weer gecentreerd staat na een stop.
+    // Zorgt ervoor dat een karakter weer gecentreerd staat na een stop.
     if (afterCollision) {constrainPostion(ch);}
-}
-// Functie voor het beperken van een karakter zodat hij altijd een vaste x of y positie heeft.
+} // Functie voor het beperken van een karakter zodat hij altijd een vaste x of y positie heeft.
 const constrainPostion = ch => {
     if (v.characterMovement[ch] === "left" || v.characterMovement[ch] === "right") {v.xCharacterMovement[ch] = true;}
     else if (v.characterMovement[ch] === "up" || v.characterMovement[ch] === "down") {v.yCharacterMovement[ch] = true;}
@@ -340,8 +320,7 @@ const constrainPostion = ch => {
             }
         }
     }
-}
-// Functie voor het besturen van Hoog-Man doormiddel van touch.
+} // Functie voor het besturen van Hoog-Man doormiddel van touch.
 const touchControls = () => {
     // Checkt of er op een besturingselement wordt gedrukt of geklikt.
     // Eventlisteners zorgen ervoor dat er iets gebeurt na een actie van de gebruiker.
@@ -357,8 +336,7 @@ const touchControls = () => {
     const leftTouch = document.querySelector("#leftTouch");
     leftTouch.addEventListener("touchstart", () => v.nextCharacterMovement[0] = "left");
     leftTouch.addEventListener("click", () => v.nextCharacterMovement[0] = "left");
-}
-// Functie voor het besturen van Hoog-Man doormiddel van gestures.
+} // Functie voor het besturen van Hoog-Man doormiddel van gestures.
 const gestureControls = () => {
     // Functie voor het bepalen welke gesture er wordt uitgevoerd.
     const checkGesture = () => {
@@ -401,8 +379,7 @@ const gestureControls = () => {
     main.addEventListener("touchend", event => resetGesture(event));
     main.addEventListener("mouseup", event => resetGesture(event));
     main.addEventListener("touchcancel", event => resetGesture(event));
-}
-// Pagina specifieke JavaScript.
+} // Pagina specifieke JavaScript.
 // Initialiseert de game.
 document.querySelector("#startGame").addEventListener("click", () => {
     gameStartup();
@@ -431,8 +408,7 @@ const gameStartup = () => {
     main.style.top = "0";
     main.style.left = "0";
     main.style.backgroundColor = "black";
-}
-// Functie voor het checken welke input methode er wordt gebruikt.
+} // Functie voor het checken welke input methode er wordt gebruikt.
 const getInputMethod = () => {
     const inputControls = document.getElementsByName("controls");
     if (inputControls[0].checked || v.gameInput === "keyboard") {v.gameInput = "keyboard";}
@@ -440,8 +416,7 @@ const getInputMethod = () => {
         v.gameInput = "touch";
         setupTouchControls();
     } else {v.gameInput = "gestures";}
-}
-// Functie voor het weergeven van de touch controls elementen.
+} // Functie voor het weergeven van de touch controls elementen.
 const setupTouchControls = () => {
     const touchControlsContainer = document.getElementById("touchControlsContainer");
     touchControlsContainer.style.display = "flex";
@@ -457,8 +432,7 @@ const setupTouchControls = () => {
             touchControls[i].classList.remove("touchPortrait");
             touchControls[i].classList.add("touchLandscape");
         }
-    }
-    // Zorgt ervoor dat de touch besturingselementen worden aangepast voor een portrait client.
+    } // Zorgt ervoor dat de touch besturingselementen worden aangepast voor een portrait client.
     else if (v.orientation === "portrait") {
         const touchElementHeight = (document.querySelector("html").offsetHeight - v.canvasDimension) / 2;
         touchControlsContainer.style.height = `${touchElementHeight}px`;
@@ -470,8 +444,7 @@ const setupTouchControls = () => {
             touchControls[i].classList.add("touchPortrait");
         }
     }
-}
-// Functie voor het correcte copyright jaar. Dit is een directe functie die meteen wordt uitgevoerd.
+} // Functie voor het correcte copyright jaar. Dit is een directe functie die meteen wordt uitgevoerd.
 (() => {
     let year = new Date;
     year = year.getFullYear();
