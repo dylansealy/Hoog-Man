@@ -30,6 +30,7 @@ const sketch = p => {
             drawCharacters(ch, p);
             checkCollision(ch);
             checkDirection(ch);
+            ghostMovement(ch, p);
         } // Zorgt ervoor dat alleen de gekozen input methode werkt.
         if (v.gameInput === "keyboard") {
             // Checkt of een knop op het toetsenbord wordt ingedrukt.
@@ -75,6 +76,7 @@ const initializeVars = () => {
     v.characterSpeed = [0, 0];
     v.characterSpeed.fill(88 / 60 / 650 * v.innerHeight);
     v.characterMovement = [false, false];
+    v.previousCharacterMovement = [false, false];
     v.nextCharacterMovement = [false, false];
     v.xCharacterMovement = [false, false];
     v.yCharacterMovement = [false, false];
@@ -104,8 +106,7 @@ const initializeVars = () => {
         }
     } // Zorgt ervoor dat de score wordt bijgehouden.
     v.score = 0;
-}
-// Functie voor het afspelen van het intro liedje.
+} // Functie voor het afspelen van het intro liedje.
 // const playIntroSound = (p, introSound) => {
 //     p.push();
 //     p.noLoop();
@@ -161,24 +162,75 @@ const drawBoardElements = p => {
         );
     }
     p.pop();
-}
-// Functie voor het tekenen van alle karakters.
+} // Functie voor het tekenen van alle karakters.
 const drawCharacters = (ch, p) => {
     p.push();
     p.noStroke();
     p.fill(v.cCharacter[ch]);
     p.ellipse(v.xCharacter[ch], v.yCharacter[ch], v.dCharacter[ch]);
     p.pop();
-    // Zorgt ervoor dat alle karakters niet buiten het spelbord gaat.
-    v.xCharacter[ch] = p.constrain(v.xCharacter[ch], v.xInner + v.widthUnit * 0.5, v.xInner + v.innerWidth - v.widthUnit * 0.5);
-    v.yCharacter[ch] = p.constrain(v.yCharacter[ch], v.yInner + v.heightUnit * 0.5, v.yInner + v.innerHeight - v.heightUnit * 0.5);
     // Zorgt ervoor dat alle karakters bewegen in hun gedefinieerde bewegingsrichting met hun gedefinieerde snelheid.
     if (v.characterMovement[ch] === "up") {v.yCharacter[ch] -= v.characterSpeed[ch];}
     else if (v.characterMovement[ch] === "right") {v.xCharacter[ch] += v.characterSpeed[ch];}
     else if (v.characterMovement[ch] === "down") {v.yCharacter[ch] += v.characterSpeed[ch];}
     else if (v.characterMovement[ch] === "left") {v.xCharacter[ch] -= v.characterSpeed[ch];}
-}
-// Functie voor het checken of er een botsing plaatsvindt met een barrière.
+} // Functie voor de bewegingen van de ghosts.
+const ghostMovement = (ch, p) => {
+    // Functie voor het checken van de afstand tussen een ghost en Hoog-Man.
+    const checkDistance = () => {
+        const upDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.xCharacter[0], v.yCharacter[0]);
+        const rightDistance = p.dist(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0], v.yCharacter[0]);
+        const downDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.xCharacter[0], v.yCharacter[0]);
+        const leftDistance = p.dist(v.xCharacter[ch] - v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0], v.yCharacter[0]);
+        const distance = [upDistance, rightDistance, downDistance, leftDistance];
+        const directionOrder = [];
+        for (let i = 0; i < distance.length; i++) {
+            // Bepaalt de kleinste waarde in de array. ... zorgt ervoor dat individuele elementen worden gegeven als parameter.
+            const smallestDistance = Math.min(...distance);
+            // Bepaalt de index in de array.
+            const index = distance.indexOf(smallestDistance);
+            directionOrder.push(index);
+            // Zorgt ervoor dat de kleinste waarde groter wordt.
+            distance[index] = distance[index] * 2;
+        } return directionOrder;
+    } // Functie voor het bepalen welke richting de ghost op gaat.
+    const setDirection = (directionOrder, index) => {
+        switch (directionOrder[index]) {
+            // Checkt welke richting de ghost op wil.
+            case 0:
+                // Checkt of er geen botsing plaatsvindt met een barrière en of de ghosts niet uit de tegenovergestelde richting komt.
+                if (!checkCollisionInput(ch, "up") && v.characterMovement[ch] != "down" && v.previousCharacterMovement[ch] != "down") {
+                    v.nextCharacterMovement[ch] = "up";
+                    return true;
+                } break;
+            case 1:
+                if (!checkCollisionInput(ch, "right") && v.characterMovement[ch] != "left" && v.previousCharacterMovement[ch] != "left") {
+                    v.nextCharacterMovement[ch] = "right";
+                    return true;
+                } break;
+            case 2:
+                if (!checkCollisionInput(ch, "down") && v.characterMovement[ch] != "up" && v.previousCharacterMovement[ch] != "up") {
+                    v.nextCharacterMovement[ch] = "down";
+                    return true;
+                } break;
+            case 3:
+                if (!checkCollisionInput(ch, "left") && v.characterMovement[ch] != "right" && v.previousCharacterMovement[ch] != "right") {
+                    v.nextCharacterMovement[ch] = "left";
+                    return true;
+                } break;
+        } return false;
+    }
+    if (ch == 1) {
+        // Checkt of de voorkeursrichting is toegestaan. Anders probeert de ghost de volgende voorkeursrichting. === false zorgt ervoor dat de functie niet te vaak wordt aangeroepen.
+        if (!setDirection(checkDistance(), 0) && v.characterMovement[ch] === false) {
+            if (!setDirection(checkDistance(), 1) && v.characterMovement[ch] === false) {
+                if (!setDirection(checkDistance(), 2) && v.characterMovement[ch] === false) {
+                    setDirection(checkDistance(), 3);
+                }
+            }
+        }
+    }
+} // Functie voor het checken of er een botsing plaatsvindt met een barrière.
 const checkCollision = (ch, xIndex, yIndex) => {
     for (ob in v.obstacles) {
         // Checkt of een pellet botst met een barrière.
@@ -194,9 +246,12 @@ const checkCollision = (ch, xIndex, yIndex) => {
             v.yCharacter[ch] + v.heightUnit * 0.5 - 1 > v.obstacles[ob][1] &&
             v.yCharacter[ch] - v.heightUnit * 0.5 + 1 < v.obstacles[ob][3]
         ) {return resetDirection(ch, true);}
+        else if ( // Checkt of een karakter botst met een buitenlijn.
+            v.xCharacter[ch] - v.widthUnit * 0.5 + 1 < v.xInner || v.xCharacter[ch] + v.widthUnit * 0.5 - 1 > v.xInner + v.innerWidth ||
+            v.yCharacter[ch] - v.heightUnit * 0.5 + 1 < v.yInner || v.yCharacter[ch] + v.heightUnit * 0.5 -1 > v.yInner + v.innerHeight
+        ) {return resetDirection(ch, true);}
     } return false;
-}
-// Functie voor het checken of er een botsing plaatsvindt met een barrière of een buitenlijn na een key input.
+} // Functie voor het checken of er een botsing plaatsvindt met een barrière of een buitenlijn na een key input.
 const checkCollisionInput = (ch, nextCharacterMovement) => {
     for (ob in v.obstacles) {
         if (nextCharacterMovement === "up") {
@@ -257,6 +312,7 @@ const checkDirection = ch => {
 const upPress = ch => {
     // Checkt of er geen botsing plaatsvindt.
     if (!checkCollisionInput(ch, "up")) {
+        if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
         resetDirection(ch);
         v.characterMovement[ch] = "up";
         constrainPostion(ch);
@@ -264,6 +320,7 @@ const upPress = ch => {
 }
 const rightPress = ch => {
     if (!checkCollisionInput(ch, "right")) {
+        if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
         resetDirection(ch);
         v.characterMovement[ch] = "right";
         constrainPostion(ch);
@@ -271,6 +328,7 @@ const rightPress = ch => {
 }
 const downPress = ch => {
     if (!checkCollisionInput(ch, "down")) {
+        if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
         resetDirection(ch);
         v.characterMovement[ch] = "down";
         constrainPostion(ch);
@@ -278,13 +336,18 @@ const downPress = ch => {
 }
 const leftPress = ch => {
     if (!checkCollisionInput(ch, "left")) {
+        if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
         resetDirection(ch);
         v.characterMovement[ch] = "left";
         constrainPostion(ch);
     }
 } // Functie voor het resetten van een karakters bewegingsrichting.
 const resetDirection = (ch, afterCollision) => {
-    v.characterMovement[ch] = v.xCharacterMovement[ch] = v.yCharacterMovement[ch] = v.nextCharacterMovement[ch] = false;
+    if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
+    v.characterMovement[ch] = false;
+    v.xCharacterMovement[ch] = false;
+    v.yCharacterMovement[ch] = false;
+    v.nextCharacterMovement[ch] = false;
     // Zorgt ervoor dat een karakter weer gecentreerd staat na een stop.
     if (afterCollision) {constrainPostion(ch);}
 } // Functie voor het beperken van een karakter zodat hij altijd een vaste x of y positie heeft.
