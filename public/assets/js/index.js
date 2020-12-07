@@ -27,10 +27,12 @@ const sketch = p => {
         // playIntroSound(p, introSound);
         drawBoardElements(p);
         for (ch in v.xCharacter) {
+            // Zorgt ervoor dat deze waarde gereset wordt na een beweging.
+            v.collision[ch] = false;
             drawCharacters(ch, p);
             checkCollision(ch);
             checkDirection(ch);
-            ghostMovement(ch, p);
+            ghostMovement(ch, v.xCharacter[ch], v.yCharacter[ch], p);
         } // Zorgt ervoor dat alleen de gekozen input methode werkt.
         if (v.gameInput === "keyboard") {
             // Checkt of een knop op het toetsenbord wordt ingedrukt.
@@ -66,8 +68,8 @@ const initializeVars = () => {
     // Definieert de dimensie eenheden van het spelbord.
     v.heightUnit = v.innerHeight / 14;
     v.widthUnit = v.innerWidth / 17;
-    // Definieert de positie, grootte, kleur, snelheid en bewegingsrichting van elk karakter.
-    v.xCharacter = [v.xInner + v.widthUnit * 0.5, v.xInner + v.widthUnit * 13.5];
+    // Definieert de positie, grootte, kleur, snelheid, bewegingsrichting en botsing van elk karakter.
+    v.xCharacter = [v.xInner + v.widthUnit * 0.5, v.xInner + v.widthUnit * 3.5];
     v.yCharacter = [v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 12.5];
     v.dCharacter = [0, 0];
         // Zorgt ervoor dat elke waarde in de array hetzelfde is zonder deze steeds te herhalen.
@@ -76,10 +78,15 @@ const initializeVars = () => {
     v.characterSpeed = [0, 0];
     v.characterSpeed.fill(88 / 60 / 650 * v.innerHeight);
     v.characterMovement = [false, false];
+        // Houdt bij wat de oude bewegingsrichting was.
     v.previousCharacterMovement = [false, false];
+        // Houdt bij wat de volgende bewegingsrichting wordt.
     v.nextCharacterMovement = [false, false];
+        // Houdt bij wat de huidge bewegingsrichting is. Ook waneer resetDirection wordt uitgvoerd.
+    v.previousNextCharacterMovement = [false, false];
     v.xCharacterMovement = [false, false];
     v.yCharacterMovement = [false, false];
+    v.collision = [false, false];
     // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
     v.gesturePosition = [null, null, null, null];
     // Zorgt ervoor dat alle barrières gecreëerd worden.
@@ -175,7 +182,7 @@ const drawCharacters = (ch, p) => {
     else if (v.characterMovement[ch] === "down") {v.yCharacter[ch] += v.characterSpeed[ch];}
     else if (v.characterMovement[ch] === "left") {v.xCharacter[ch] -= v.characterSpeed[ch];}
 } // Functie voor de bewegingen van de ghosts.
-const ghostMovement = (ch, p) => {
+const ghostMovement = (ch, xCharacter, yCharacter, p) => {
     // Functie voor het checken van de afstand tussen een ghost en Hoog-Man.
     const checkDistance = () => {
         const upDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.xCharacter[0], v.yCharacter[0]);
@@ -198,25 +205,75 @@ const ghostMovement = (ch, p) => {
         switch (directionOrder[index]) {
             // Checkt welke richting de ghost op wil.
             case 0:
-                // Checkt of er geen botsing plaatsvindt met een barrière en of de ghosts niet uit de tegenovergestelde richting komt.
-                if (!checkCollisionInput(ch, "up") && v.characterMovement[ch] != "down" && v.previousCharacterMovement[ch] != "down") {
-                    v.nextCharacterMovement[ch] = "up";
-                    return true;
+                // 1. Checkt of er geen botsing plaatsvindt na de nieuwe bewegingsrichting.
+                // 2. Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de huidige.
+                // 3. Checkt of de nieuwe bewegingsrichting niet gelijk is aan de huidige. Dit voorkomt dat v.previousCharacterMovement[ch] wordt overschreven.
+                if (!checkCollisionInput(ch, "up") && v.characterMovement[ch] != "down" && v.characterMovement[ch] != "up") {
+                    // Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de ouwde.
+                    if (v.previousCharacterMovement[ch] != "down") {
+                        v.nextCharacterMovement[ch] = "up";
+                        return true;
+                    }
+                    /*
+                    Checkt of de huidge bewegingsrichting, na resetDirection wordt dit de bewegingsrichting voordat resetDirection werd uitgevoerd,
+                    niet gelijk is aan de tegenovergestelde bewegingsrichting na een botsing.
+                    */
+                    else if (v.previousNextCharacterMovement[ch] != "down" && v.collision[ch] === true) {
+                        // Zet de nieuwe bewegingsrichting na een bepaalde tijd. Dit om ervoor te zorgen dat een ghost niet meteen een nieuwe bewegingsrichting krijgt na een botsing.
+                        setTimeout(() => {
+                            v.nextCharacterMovement[ch] = "up";
+                            return true;
+                        }, 50);
+                    } // Zet meteen de nieuwe bewegingsrichting. Dit om ervoor te zorgen dat een ghost meteen een nieuwe bewegingsrichting krijgt, terwijl er geen botsing is.
+                    else if (v.previousNextCharacterMovement[ch] != "down" && v.collision[ch] === false) {
+                        v.nextCharacterMovement[ch] = "up";
+                        return true;
+                    }
                 } break;
             case 1:
-                if (!checkCollisionInput(ch, "right") && v.characterMovement[ch] != "left" && v.previousCharacterMovement[ch] != "left") {
-                    v.nextCharacterMovement[ch] = "right";
-                    return true;
+                if (!checkCollisionInput(ch, "right") && v.characterMovement[ch] != "left" && v.characterMovement[ch] != "right") {
+                    if (v.previousCharacterMovement[ch] != "left") {
+                        v.nextCharacterMovement[ch] = "right";
+                        return true;
+                    } else if (v.previousNextCharacterMovement[ch] != "left" && v.collision[ch] === true) {
+                        setTimeout(() => {
+                            v.nextCharacterMovement[ch] = "right";
+                            return true;
+                        }, 50);
+                    } else if (v.previousNextCharacterMovement[ch] != "left" && v.collision[ch] === false) {
+                        v.nextCharacterMovement[ch] = "right";
+                        return true;
+                    }
                 } break;
             case 2:
-                if (!checkCollisionInput(ch, "down") && v.characterMovement[ch] != "up" && v.previousCharacterMovement[ch] != "up") {
-                    v.nextCharacterMovement[ch] = "down";
-                    return true;
+                if (!checkCollisionInput(ch, "down") && v.characterMovement[ch] != "up" && v.characterMovement[ch] != "down") {
+                    if (v.previousCharacterMovement[ch] != "up") {
+                        v.nextCharacterMovement[ch] = "down";
+                        return true;
+                    } else if (v.previousNextCharacterMovement[ch] != "up" && v.collision[ch] === true) {
+                        setTimeout(() => {
+                            v.nextCharacterMovement[ch] = "down";
+                            return true;
+                        }, 50);
+                    } else if (v.previousNextCharacterMovement[ch] != "up" && v.collision[ch] === false) {
+                        v.nextCharacterMovement[ch] = "down";
+                        return true;
+                    }
                 } break;
             case 3:
-                if (!checkCollisionInput(ch, "left") && v.characterMovement[ch] != "right" && v.previousCharacterMovement[ch] != "right") {
-                    v.nextCharacterMovement[ch] = "left";
-                    return true;
+                if (!checkCollisionInput(ch, "left") && v.characterMovement[ch] != "right" && v.characterMovement[ch] != "left") {
+                    if (v.previousCharacterMovement[ch] != "right") {
+                        v.nextCharacterMovement[ch] = "left";
+                        return true;
+                    } else if (v.previousNextCharacterMovement[ch] != "right" && v.collision[ch] === true) {
+                        setTimeout(() => {
+                            v.nextCharacterMovement[ch] = "left";
+                            return true;
+                        }, 50);
+                    } else if (v.previousNextCharacterMovement[ch] != "right" && v.collision[ch] === false) {
+                        v.nextCharacterMovement[ch] = "left";
+                        return true;
+                    }
                 } break;
         } return false;
     }
@@ -302,6 +359,7 @@ const checkCollisionInput = (ch, nextCharacterMovement) => {
     } return false;
 } // Functie voor het simuleren van een key press.
 const checkDirection = ch => {
+    if (v.nextCharacterMovement[ch] != false) {v.previousNextCharacterMovement[ch] = v.nextCharacterMovement[ch];}
     switch (v.nextCharacterMovement[ch]) {
         case "up": upPress(ch); break;
         case "right": rightPress(ch); break;
@@ -344,10 +402,12 @@ const leftPress = ch => {
 } // Functie voor het resetten van een karakters bewegingsrichting.
 const resetDirection = (ch, afterCollision) => {
     if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
+    if (v.nextCharacterMovement[ch] != false) {v.previousNextCharacterMovement[ch] = v.nextCharacterMovement[ch];}
     v.characterMovement[ch] = false;
     v.xCharacterMovement[ch] = false;
     v.yCharacterMovement[ch] = false;
     v.nextCharacterMovement[ch] = false;
+    v.collision[ch] = true;
     // Zorgt ervoor dat een karakter weer gecentreerd staat na een stop.
     if (afterCollision) {constrainPostion(ch);}
 } // Functie voor het beperken van een karakter zodat hij altijd een vaste x of y positie heeft.
