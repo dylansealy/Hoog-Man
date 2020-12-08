@@ -15,6 +15,7 @@ const sketch = p => {
         initializeVars();
         getInputMethod();
         p.createCanvas(v.canvasDimension, v.canvasDimension);
+        p.frameRate();
         p.colorMode(p.RGB, 255);
         p.textFont("Roboto");
         p.textSize(v.widthUnit / 1.5);
@@ -27,12 +28,11 @@ const sketch = p => {
         // playIntroSound(p, introSound);
         drawBoardElements(p);
         for (ch in v.xCharacter) {
-            // Zorgt ervoor dat deze waarde gereset wordt na een beweging.
-            v.collision[ch] = false;
+            iterationVariables(ch, p);
             drawCharacters(ch, p);
             checkCollision(ch);
             checkDirection(ch);
-            ghostMovement(ch, v.xCharacter[ch], v.yCharacter[ch], p);
+            ghostMovement(ch, p);
         } // Zorgt ervoor dat alleen de gekozen input methode werkt.
         if (v.gameInput === "keyboard") {
             // Checkt of een knop op het toetsenbord wordt ingedrukt.
@@ -69,22 +69,28 @@ const initializeVars = () => {
     v.heightUnit = v.innerHeight / 14;
     v.widthUnit = v.innerWidth / 17;
     // Definieert de positie, grootte, kleur, snelheid, bewegingsrichting en botsing van elk karakter.
-    v.xCharacter = [v.xInner + v.widthUnit * 0.5, v.xInner + v.widthUnit * 3.5];
-    v.yCharacter = [v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 12.5];
+    v.xCharacter = [v.xInner + v.widthUnit * 0.5, v.xInner + v.widthUnit * 13.5];
+    v.yCharacter = [v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5];
+        // Definieert de diameter van elk karakter.
     v.dCharacter = [0, 0];
         // Zorgt ervoor dat elke waarde in de array hetzelfde is zonder deze steeds te herhalen.
     v.dCharacter.fill(v.heightUnit / 2);
-    v.cCharacter = ["yellow", "red"];
+    v.cCharacter = ["yellow", "red", "pink", "blue", "organe"];
     v.characterSpeed = [0, 0];
     v.characterSpeed.fill(88 / 60 / 650 * v.innerHeight);
     v.characterMovement = [false, false];
-        // Houdt bij wat de oude bewegingsrichting was.
+        // Definieert de oude bewegingsrichting.
     v.previousCharacterMovement = [false, false];
-        // Houdt bij wat de volgende bewegingsrichting wordt.
-    v.nextCharacterMovement = [false, false];
+        // Definieert de volgende bewegingsrichting.
+    v.nextCharacterMovement = [false, "left"];
     v.xCharacterMovement = [false, false];
     v.yCharacterMovement = [false, false];
     v.collision = [false, false];
+    // Definieert de modus van elke ghost. Index 0 is Hoog-Man, maar wordt niet gebruikt.
+    v.ghostMode = ["scatter", "chase"];
+    v.ghostModeCounter = [0, 0];
+    // Definieert de target tile van elke ghost.
+    v.ghostTarget = [[0, 0], [v.xOuter, v.yOuter + v.outerHeight], [v.xOuter, v.yOuter], [v.xOuter + v.outerWidth, v.yOuter + v.outerHeight], [v.xOuter + v.outerWidth, v.yOuter]];
     // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
     v.gesturePosition = [null, null, null, null];
     // Zorgt ervoor dat alle barrières gecreëerd worden.
@@ -117,8 +123,20 @@ const initializeVars = () => {
 //     p.noLoop();
 //     introSound.play();
 //     p.pop();
-// }
-// Functie voor het tekenen van elementen van het spelbord.
+// } // Functie voor het zetten van enkele variabelen na elke herhaling van de draw functie.
+const iterationVariables = (ch, p) => {
+        // Zorgt ervoor dat de framerate wordt afgerond naar het dichtstbijzijnde gehele getal.
+    v.frameRate = Math.round(p.frameRate());
+    if (v.ghostMode[ch] != "frightened") {
+        // Checkt hoeveel seconden er voorbij zijn gegaan.
+        if (Math.floor(v.ghostModeCounter[ch] / v.frameRate) == 6) {
+            // Zorgt ervoor dat de modus van een ghost verandert.
+            if (v.ghostMode[ch] === "scatter") {v.ghostMode[ch] = "chase";}
+            else {v.ghostMode[ch] = "scatter";}
+            v.ghostModeCounter[ch] = 0;
+        } v.ghostModeCounter[ch] += 1;
+    } v.collision[ch] = false;
+} // Functie voor het tekenen van elementen van het spelbord.
 const drawBoardElements = p => {
     p.push();
     // Zorgt voor het tekenen van de buitenlijnen.
@@ -180,9 +198,9 @@ const drawCharacters = (ch, p) => {
     else if (v.characterMovement[ch] === "down") {v.yCharacter[ch] += v.characterSpeed[ch];}
     else if (v.characterMovement[ch] === "left") {v.xCharacter[ch] -= v.characterSpeed[ch];}
 } // Functie voor de bewegingen van de ghosts.
-const ghostMovement = (ch, xCharacter, yCharacter, p) => {
+const ghostMovement = (ch, p) => {
     // Functie voor het checken van de afstand tussen een ghost en Hoog-Man.
-    const checkDistance = () => {
+    const checkDistanceToHoogMan = () => {
         const upDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.xCharacter[0], v.yCharacter[0]);
         const rightDistance = p.dist(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0], v.yCharacter[0]);
         const downDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.xCharacter[0], v.yCharacter[0]);
@@ -196,6 +214,20 @@ const ghostMovement = (ch, xCharacter, yCharacter, p) => {
             const index = distance.indexOf(smallestDistance);
             directionOrder.push(index);
             // Zorgt ervoor dat de kleinste waarde groter wordt.
+            distance[index] = distance[index] * 2;
+        } return directionOrder;
+    } // Functie voor het checken van de afstand tussen een ghost en zijn target tile.
+    const checkDistanceToTargetTile = () => {
+        const upDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        const rightDistance = p.dist(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        const downDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        const leftDistance = p.dist(v.xCharacter[ch] - v.widthUnit * 0.5, v.yCharacter[ch], v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        const distance = [upDistance, rightDistance, downDistance, leftDistance];
+        const directionOrder = [];
+        for (let i = 0; i < distance.length; i++) {
+            const smallestDistance = Math.min(...distance);
+            const index = distance.indexOf(smallestDistance);
+            directionOrder.push(index);
             distance[index] = distance[index] * 2;
         } return directionOrder;
     } // Functie voor het bepalen welke richting de ghost op gaat.
@@ -258,12 +290,38 @@ const ghostMovement = (ch, xCharacter, yCharacter, p) => {
                 } break;
         } return false;
     }
-    if (ch == 1) {
-        // Checkt of de voorkeursrichting is toegestaan. Anders probeert de ghost de volgende voorkeursrichting. === false zorgt ervoor dat de functie niet te vaak wordt aangeroepen.
-        if (!setDirection(checkDistance(), 0) && v.characterMovement[ch] === false) {
-            if (!setDirection(checkDistance(), 1) && v.characterMovement[ch] === false) {
-                if (!setDirection(checkDistance(), 2) && v.characterMovement[ch] === false) {
-                    setDirection(checkDistance(), 3);
+    if (ch > 0) {
+        if (v.ghostMode[ch] === "chase") {
+            const directionOrder = checkDistanceToHoogMan();
+            // Checkt of de voorkeursrichting is toegestaan. Anders probeert de ghost de volgende voorkeursrichting. === false zorgt ervoor dat de functie niet te vaak wordt aangeroepen.
+            if (!setDirection(directionOrder, 0) && v.characterMovement[ch] === false) {
+                if (!setDirection(directionOrder, 1) && v.characterMovement[ch] === false) {
+                    if (!setDirection(directionOrder, 2) && v.characterMovement[ch] === false) {
+                        setDirection(directionOrder, 3);
+                    }
+                }
+            }
+        } else if (v.ghostMode[ch] === "scatter") {
+            const directionOrder = checkDistanceToTargetTile();
+            if (!setDirection(directionOrder, 0) && v.characterMovement[ch] === false) {
+                if (!setDirection(directionOrder, 1) && v.characterMovement[ch] === false) {
+                    if (!setDirection(directionOrder, 2) && v.characterMovement[ch] === false) {
+                        setDirection(directionOrder, 3);
+                    }
+                }
+            }
+        } else if (v.ghostMode[ch] === "frightened") {
+            const directionOrder = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+            let randomIndex = Math.floor(Math.random() * 4);
+            if (!setDirection(directionOrder, randomIndex) && v.characterMovement[ch] === false) {
+                directionOrder.splice(randomIndex, 1);
+                randomIndex = Math.floor(Math.random() * 2);
+                if (!setDirection(directionOrder, randomIndex) && v.characterMovement[ch] === false) {
+                    directionOrder.splice(randomIndex, 1);
+                    randomIndex = Math.floor(Math.random() * 1);
+                } if (!setDirection(directionOrder, randomIndex) && v.characterMovement[ch] === false) {
+                    directionOrder.splice(randomIndex, 1);
+                    setDirection(directionOrder, 0)
                 }
             }
         }
@@ -502,7 +560,7 @@ window.addEventListener("resize", () => {
 // Functie voor het fullscreenen van de game.
 const gameStartup = () => {
     const main = document.querySelector("main");
-    main.requestFullscreen();
+    // main.requestFullscreen();
     // Zorgt ervoor dat het main element de gehele viewport inneemt.
     main.style.height = "100%";
     main.style.width = "100%";
@@ -548,7 +606,6 @@ const setupTouchControls = () => {
     }
 } // Functie voor het correcte copyright jaar. Dit is een directe functie die meteen wordt uitgevoerd.
 (() => {
-    let year = new Date;
-    year = year.getFullYear();
+    const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
 })()
