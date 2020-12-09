@@ -69,26 +69,26 @@ const initializeVars = () => {
     v.heightUnit = v.innerHeight / 14;
     v.widthUnit = v.innerWidth / 17;
     // Definieert de positie, grootte, kleur, snelheid, bewegingsrichting en botsing van elk karakter.
-    v.xCharacter = [v.xInner + v.widthUnit * 0.5, v.xInner + v.widthUnit * 13.5];
-    v.yCharacter = [v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5];
+    v.xCharacter = [v.xInner + v.widthUnit * 0.5, v.xInner + v.widthUnit * 13.5, v.xInner + v.widthUnit * 13.5, v.xInner + v.widthUnit * 13.5, v.xInner + v.widthUnit * 13.5];
+    v.yCharacter = [v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 1.5, v.yInner + v.heightUnit * 2.5, v.yInner + v.heightUnit * 3.5];
         // Definieert de diameter van elk karakter.
-    v.dCharacter = [0, 0];
+    v.dCharacter = [0, 0, 0, 0, 0];
         // Zorgt ervoor dat elke waarde in de array hetzelfde is zonder deze steeds te herhalen.
     v.dCharacter.fill(v.heightUnit / 2);
-    v.cCharacter = ["yellow", "red", "pink", "blue", "organe"];
-    v.characterSpeed = [0, 0];
+    v.cCharacter = ["yellow", "red", "pink", "blue", "orange"];
+    v.characterSpeed = [0, 0, 0, 0, 0];
     v.characterSpeed.fill(88 / 60 / 650 * v.innerHeight);
-    v.characterMovement = [false, false];
+    v.characterMovement = [false, false, false, false, false];
         // Definieert de oude bewegingsrichting.
-    v.previousCharacterMovement = [false, false];
+    v.previousCharacterMovement = [false, false, false, false, false];
         // Definieert de volgende bewegingsrichting.
-    v.nextCharacterMovement = [false, "left"];
-    v.xCharacterMovement = [false, false];
-    v.yCharacterMovement = [false, false];
-    v.collision = [false, false];
+    v.nextCharacterMovement = [false, "left", "left", "left", "left"];
+    v.xCharacterMovement = [false, false, false, false, false];
+    v.yCharacterMovement = [false, false, false, false, false];
+    v.collision = [false, false, false, false, false];
     // Definieert de modus van elke ghost. Index 0 is Hoog-Man, maar wordt niet gebruikt.
-    v.ghostMode = ["scatter", "chase"];
-    v.ghostModeCounter = [0, 0];
+    v.ghostMode = ["scatter", "scatter", "scatter", "scatter", "scatter"];
+    v.ghostModeCounter = [0, 0, 0, 0, 0];
     // Definieert de target tile van elke ghost.
     v.ghostTarget = [[0, 0], [v.xOuter, v.yOuter + v.outerHeight], [v.xOuter, v.yOuter], [v.xOuter + v.outerWidth, v.yOuter + v.outerHeight], [v.xOuter + v.outerWidth, v.yOuter]];
     // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
@@ -131,8 +131,8 @@ const iterationVariables = (ch, p) => {
         // Checkt hoeveel seconden er voorbij zijn gegaan.
         if (Math.floor(v.ghostModeCounter[ch] / v.frameRate) == 6) {
             // Zorgt ervoor dat de modus van een ghost verandert.
-            if (v.ghostMode[ch] === "scatter") {v.ghostMode[ch] = "chase";}
-            else {v.ghostMode[ch] = "scatter";}
+            // if (v.ghostMode[ch] === "scatter") {v.ghostMode[ch] = "chase";}
+            // else {v.ghostMode[ch] = "scatter";}
             v.ghostModeCounter[ch] = 0;
         } v.ghostModeCounter[ch] += 1;
     } v.collision[ch] = false;
@@ -200,11 +200,17 @@ const drawCharacters = (ch, p) => {
 } // Functie voor de bewegingen van de ghosts.
 const ghostMovement = (ch, p) => {
     // Functie voor het checken van de afstand tussen een ghost en Hoog-Man.
-    const checkDistanceToHoogMan = () => {
-        const upDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.xCharacter[0], v.yCharacter[0]);
-        const rightDistance = p.dist(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0], v.yCharacter[0]);
-        const downDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.xCharacter[0], v.yCharacter[0]);
-        const leftDistance = p.dist(v.xCharacter[ch] - v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0], v.yCharacter[0]);
+    const checkDistanceToHoogMan = (chr, xMargin, yMargin, dMargin) => {
+        const upDistance = p.dist(v.xCharacter[chr], v.yCharacter[chr] - v.heightUnit * 0.5, v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        const rightDistance = p.dist(v.xCharacter[chr] + v.widthUnit * 0.5, v.yCharacter[chr], v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        const downDistance = p.dist(v.xCharacter[chr], v.yCharacter[chr] + v.heightUnit * 0.5, v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        const leftDistance = p.dist(v.xCharacter[chr] - v.widthUnit * 0.5, v.yCharacter[chr], v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        if (ch == 1) {p.stroke("red")}
+        else {p.stroke("white")}
+        p.line(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        p.line(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        p.line(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        p.line(v.xCharacter[ch] - v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
         const distance = [upDistance, rightDistance, downDistance, leftDistance];
         const directionOrder = [];
         for (let i = 0; i < distance.length; i++) {
@@ -214,7 +220,7 @@ const ghostMovement = (ch, p) => {
             const index = distance.indexOf(smallestDistance);
             directionOrder.push(index);
             // Zorgt ervoor dat de kleinste waarde groter wordt.
-            distance[index] = distance[index] * 2;
+            distance[index] = distance[index] * 100;
         } return directionOrder;
     } // Functie voor het checken van de afstand tussen een ghost en zijn target tile.
     const checkDistanceToTargetTile = () => {
@@ -222,13 +228,18 @@ const ghostMovement = (ch, p) => {
         const rightDistance = p.dist(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
         const downDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
         const leftDistance = p.dist(v.xCharacter[ch] - v.widthUnit * 0.5, v.yCharacter[ch], v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        p.stroke("white");
+        p.line(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        p.line(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        p.line(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        p.line(v.xCharacter[ch] - v.widthUnit * 0.5, v.yCharacter[ch], v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
         const distance = [upDistance, rightDistance, downDistance, leftDistance];
         const directionOrder = [];
         for (let i = 0; i < distance.length; i++) {
             const smallestDistance = Math.min(...distance);
             const index = distance.indexOf(smallestDistance);
             directionOrder.push(index);
-            distance[index] = distance[index] * 2;
+            distance[index] = distance[index] * 100;
         } return directionOrder;
     } // Functie voor het bepalen welke richting de ghost op gaat.
     const setDirection = (directionOrder, index) => {
@@ -292,12 +303,83 @@ const ghostMovement = (ch, p) => {
     }
     if (ch > 0) {
         if (v.ghostMode[ch] === "chase") {
-            const directionOrder = checkDistanceToHoogMan();
-            // Checkt of de voorkeursrichting is toegestaan. Anders probeert de ghost de volgende voorkeursrichting. === false zorgt ervoor dat de functie niet te vaak wordt aangeroepen.
-            if (!setDirection(directionOrder, 0) && v.characterMovement[ch] === false) {
-                if (!setDirection(directionOrder, 1) && v.characterMovement[ch] === false) {
-                    if (!setDirection(directionOrder, 2) && v.characterMovement[ch] === false) {
-                        setDirection(directionOrder, 3);
+            if (ch == 1) {
+                const directionOrder = checkDistanceToHoogMan(ch, 0, 0);
+                // Checkt of de voorkeursrichting is toegestaan. Anders probeert de ghost de volgende voorkeursrichting. === false zorgt ervoor dat de functie niet te vaak wordt aangeroepen.
+                if (!setDirection(directionOrder, 0) && v.characterMovement[ch] === false) {
+                    if (!setDirection(directionOrder, 1) && v.characterMovement[ch] === false) {
+                        if (!setDirection(directionOrder, 2) && v.characterMovement[ch] === false) {
+                            setDirection(directionOrder, 3);
+                        }
+                    }
+                }
+            } else if (ch == 2) {
+                let directionOrder = null;
+                switch (v.characterMovement[0]) {
+                    case "up": directionOrder = checkDistanceToHoogMan(ch, 0, -4); break;
+                    case "right": directionOrder = checkDistanceToHoogMan(ch, 4, 0); break;
+                    case "down": directionOrder = checkDistanceToHoogMan(ch, 0, 4); break;
+                    case "left": directionOrder = checkDistanceToHoogMan(ch, -4, 0); break;
+                    default:
+                        switch (v.previousCharacterMovement[0]) {
+                            case "up": directionOrder = checkDistanceToHoogMan(ch, 0, -4); break;
+                            case "right": directionOrder = checkDistanceToHoogMan(ch, 4, 0); break;
+                            case "down": directionOrder = checkDistanceToHoogMan(ch, 0, 4); break;
+                            case "left": directionOrder = checkDistanceToHoogMan(ch, -4, 0); break;
+                            default: directionOrder = checkDistanceToHoogMan(ch, 0, 0); break;
+                        }
+                    break;
+                } if (!setDirection(directionOrder, 0) && v.characterMovement[ch] === false) {
+                    if (!setDirection(directionOrder, 1) && v.characterMovement[ch] === false) {
+                        if (!setDirection(directionOrder, 2) && v.characterMovement[ch] === false) {
+                            setDirection(directionOrder, 3);
+                        }
+                    }
+                }
+            } else if (ch == 3) {
+                let directionOrder = null;
+                switch (v.characterMovement[0]) {
+                    case "up": directionOrder = checkDistanceToHoogMan(1, -2, -2); break;
+                    case "right": directionOrder = checkDistanceToHoogMan(1, 2, 2); break;
+                    case "down": directionOrder = checkDistanceToHoogMan(1, 2, 2); break;
+                    case "left": directionOrder = checkDistanceToHoogMan(1, -2, -2); break;
+                    default:
+                        switch (v.previousCharacterMovement[0]) {
+                            case "up": directionOrder = checkDistanceToHoogMan(1, -2, -2); break;
+                            case "right": directionOrder = checkDistanceToHoogMan(1, 2, 2); break;
+                            case "down": directionOrder = checkDistanceToHoogMan(1, 2, 2); break;
+                            case "left": directionOrder = checkDistanceToHoogMan(1, -2, -2); break;
+                            default: directionOrder = checkDistanceToHoogMan(1, 0, 0); break;
+                        }
+                    break;
+                } if (!setDirection(directionOrder, 0) && v.characterMovement[ch] === false) {
+                    if (!setDirection(directionOrder, 1) && v.characterMovement[ch] === false) {
+                        if (!setDirection(directionOrder, 2) && v.characterMovement[ch] === false) {
+                            setDirection(directionOrder, 3);
+                        }
+                    }
+                }
+            } else if (ch == 4) {
+                if (
+                    v.xCharacter[ch] > v.xCharacter[0] + v.widthUnit * 8 || v.xCharacter[ch] < v.xCharacter[0] - v.widthUnit * 8 ||
+                    v.yCharacter[ch] > v.yCharacter[0] + v.heightUnit * 8 || v.yCharacter[ch] < v.yCharacter[0] - v.heightUnit * 8
+                ) {
+                    const directionOrder = checkDistanceToHoogMan(ch, 0, 0);
+                    if (!setDirection(directionOrder, 0) && v.characterMovement[ch] === false) {
+                        if (!setDirection(directionOrder, 1) && v.characterMovement[ch] === false) {
+                            if (!setDirection(directionOrder, 2) && v.characterMovement[ch] === false) {
+                                setDirection(directionOrder, 3);
+                            }
+                        }
+                    }
+                } else {
+                    const directionOrder = checkDistanceToTargetTile();
+                    if (!setDirection(directionOrder, 0) && v.characterMovement[ch] === false) {
+                        if (!setDirection(directionOrder, 1) && v.characterMovement[ch] === false) {
+                            if (!setDirection(directionOrder, 2) && v.characterMovement[ch] === false) {
+                                setDirection(directionOrder, 3);
+                            }
+                        }
                     }
                 }
             }
@@ -311,7 +393,9 @@ const ghostMovement = (ch, p) => {
                 }
             }
         } else if (v.ghostMode[ch] === "frightened") {
+            // Zorgt voor een random bewegingsrichting volgorde.
             const directionOrder = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+            // Zorgt voor een random nummer van 0 tot 4.
             let randomIndex = Math.floor(Math.random() * 4);
             if (!setDirection(directionOrder, randomIndex) && v.characterMovement[ch] === false) {
                 directionOrder.splice(randomIndex, 1);
