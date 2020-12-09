@@ -232,63 +232,32 @@ const ghostMovement = (ch, p) => {
         } return directionOrder;
     } // Functie voor het bepalen welke richting de ghost op gaat.
     const setDirection = (directionOrder, index) => {
+        // Functie voor het checken of een ghost een bepaalde richting op kan.
+        const checkTargetDirection = (targetDirection, forbiddenDirection) => {
+            // 1. Checkt of er geen botsing plaatsvindt na de nieuwe bewegingsrichting.
+            // 2. Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de huidige.
+            // 3. Checkt of de nieuwe bewegingsrichting niet gelijk is aan de huidige. Dit voorkomt dat v.previousCharacterMovement[ch] wordt overschreven.
+            if (!checkCollisionInput(ch, targetDirection) && v.characterMovement[ch] != forbiddenDirection && v.characterMovement[ch] != targetDirection) {
+                // Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de bewegingsrichting voor de huidige. Als dit wel zo is dan mag er geen botsing plaatsvinden.
+                if (v.previousCharacterMovement[ch] != forbiddenDirection || (v.previousCharacterMovement[ch] == forbiddenDirection && v.collision[ch] === false)) {
+                    v.nextCharacterMovement[ch] = targetDirection;
+                    return true;
+                } // Checkt of de nieuwe bewegingsrichting gelijk is aan de bewegingsrichting voor de huidige en als er een botsing plaatsvindt.
+                else if (v.previousCharacterMovement[ch] == forbiddenDirection && v.collision[ch] === true) {
+                    // Zet de nieuwe bewegingsrichting na een bepaalde tijd. Dit om ervoor te zorgen dat een ghost niet meteen een nieuwe bewegingsrichting krijgt na een botsing.
+                    setTimeout(() => {
+                        v.nextCharacterMovement[ch] = targetDirection;
+                        return true;
+                    }, 50);
+                }
+            } return false;
+        } // Checkt welke richting de ghost op wil.
         switch (directionOrder[index]) {
-            // Checkt welke richting de ghost op wil.
-            case 0:
-                // 1. Checkt of er geen botsing plaatsvindt na de nieuwe bewegingsrichting.
-                // 2. Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de huidige.
-                // 3. Checkt of de nieuwe bewegingsrichting niet gelijk is aan de huidige. Dit voorkomt dat v.previousCharacterMovement[ch] wordt overschreven.
-                if (!checkCollisionInput(ch, "up") && v.characterMovement[ch] != "down" && v.characterMovement[ch] != "up") {
-                    // Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de bewegingsrichting voor de huidige. Als dit wel zo is dan mag er geen botsing plaatsvinden.
-                    if (v.previousCharacterMovement[ch] != "down" || (v.previousCharacterMovement[ch] === "down" && v.collision[ch] === false)) {
-                        v.nextCharacterMovement[ch] = "up";
-                        return true;
-                    } // Checkt of de nieuwe bewegingsrichting gelijk is aan de bewegingsrichting voor de huidige en als er een botsing plaatsvindt.
-                    else if (v.previousCharacterMovement[ch] === "down" && v.collision[ch] === true) {
-                        // Zet de nieuwe bewegingsrichting na een bepaalde tijd. Dit om ervoor te zorgen dat een ghost niet meteen een nieuwe bewegingsrichting krijgt na een botsing.
-                        setTimeout(() => {
-                            v.nextCharacterMovement[ch] = "up";
-                            return true;
-                        }, 50);
-                    }
-                } break;
-            case 1:
-                if (!checkCollisionInput(ch, "right") && v.characterMovement[ch] != "left" && v.characterMovement[ch] != "right") {
-                    if (v.previousCharacterMovement[ch] != "left" || (v.previousCharacterMovement[ch] === "left" && v.collision[ch] === false)) {
-                        v.nextCharacterMovement[ch] = "right";
-                        return true;
-                    } else if (v.previousCharacterMovement[ch] === "left" && v.collision[ch] === true) {
-                        setTimeout(() => {
-                            v.nextCharacterMovement[ch] = "right";
-                            return true;
-                        }, 50);
-                    }
-                } break;
-            case 2:
-                if (!checkCollisionInput(ch, "down") && v.characterMovement[ch] != "up" && v.characterMovement[ch] != "down") {
-                    if (v.previousCharacterMovement[ch] != "up" || (v.previousCharacterMovement[ch] === "up" && v.collision[ch] === false)) {
-                        v.nextCharacterMovement[ch] = "down";
-                        return true;
-                    } else if (v.previousCharacterMovement[ch] === "up" && v.collision[ch] === true) {
-                        setTimeout(() => {
-                            v.nextCharacterMovement[ch] = "down";
-                            return true;
-                        }, 50);
-                    }
-                } break;
-            case 3:
-                if (!checkCollisionInput(ch, "left") && v.characterMovement[ch] != "right" && v.characterMovement[ch] != "left") {
-                    if (v.previousCharacterMovement[ch] != "right" || (v.previousCharacterMovement[ch] === "right" && v.collision[ch] === false)) {
-                        v.nextCharacterMovement[ch] = "left";
-                        return true;
-                    } else if (v.previousCharacterMovement[ch] === "right" && v.collision[ch] === true) {
-                        setTimeout(() => {
-                            v.nextCharacterMovement[ch] = "left";
-                            return true;
-                        }, 50);
-                    }
-                } break;
-        } return false;
+            case 0: return checkTargetDirection("up", "down");
+            case 1: return checkTargetDirection("right", "left");
+            case 2: return checkTargetDirection("down", "up");
+            case 3: return checkTargetDirection("left", "right");
+        }
     } // Functie voor het checken of de voorkeursrichting is toegestaan. Anders probeert de ghost de volgende voorkeursrichting. === false zorgt ervoor dat de functie niet te vaak wordt aangeroepen.
     const movementSequence = (directionOrder) => {
         if (!setDirection(directionOrder, 0) && v.characterMovement[ch] === false) {
