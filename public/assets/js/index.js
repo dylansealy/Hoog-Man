@@ -87,10 +87,17 @@ const initializeVars = () => {
     v.yCharacterMovement = [false, false, false, false, false];
     v.collision = [false, false, false, false, false];
     // Definieert de modus van elke ghost. Index 0 is Hoog-Man, maar wordt niet gebruikt.
-    v.ghostMode = ["scatter", "scatter", "scatter", "scatter", "scatter"];
-    v.ghostModeCounter = [0, 0, 0, 0, 0];
+    v.ghostMode = [null, "scatter", "scatter", "scatter", "scatter"];
+    v.previousGhostMode = [null, null, null, null, null];
+        // Houdt bij hoelang een ghost in een modus zit. chase, scatter, frightened.
+    v.ghostModeCounter = [[null, null, null], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    v.scatterRound = [null, 0, 0, 0, 0];
+    v.chaseRound = [null, 0, 0, 0, 0];
+        // Definieert hoe lang elke modus duurt.
+    v.scatterSequence = [7, 7, 5, 5];
+    v.chaseSequence = [20, 20, 20];
     // Definieert de target tile van elke ghost.
-    v.ghostTarget = [[0, 0], [v.xOuter, v.yOuter + v.outerHeight], [v.xOuter, v.yOuter], [v.xOuter + v.outerWidth, v.yOuter + v.outerHeight], [v.xOuter + v.outerWidth, v.yOuter]];
+    v.ghostTarget = [[null, null], [v.xOuter, v.yOuter + v.outerHeight], [v.xOuter, v.yOuter], [v.xOuter + v.outerWidth, v.yOuter + v.outerHeight], [v.xOuter + v.outerWidth, v.yOuter]];
     // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
     v.gesturePosition = [null, null, null, null];
     // Zorgt ervoor dat alle barrières gecreëerd worden.
@@ -113,7 +120,7 @@ const initializeVars = () => {
     v.pellets = [];
     for (let yPellet = 0; yPellet < 14; yPellet++) {
         for (let xPellet = 0; xPellet < 17; xPellet++) {
-            if (!checkCollision(xPellet, yPellet)) {v.pellets.push([xPellet, yPellet]);}
+            if (!checkCollision(0, xPellet, yPellet)) {v.pellets.push([xPellet, yPellet]);}
         }
     } // Zorgt ervoor dat de score wordt bijgehouden.
     v.score = 0;
@@ -125,17 +132,34 @@ const initializeVars = () => {
 //     p.pop();
 // } // Functie voor het zetten van enkele variabelen na elke herhaling van de draw functie.
 const iterationVariables = (ch, p) => {
+    v.collision[ch] = false;
         // Zorgt ervoor dat de framerate wordt afgerond naar het dichtstbijzijnde gehele getal.
     v.frameRate = Math.round(p.frameRate());
-    if (v.ghostMode[ch] != "frightened") {
-        // Checkt hoeveel seconden er voorbij zijn gegaan.
-        if (Math.floor(v.ghostModeCounter[ch] / v.frameRate) == 6) {
-            // Zorgt ervoor dat de modus van een ghost verandert.
-            if (v.ghostMode[ch] == "scatter") {v.ghostMode[ch] = "chase";}
-            else {v.ghostMode[ch] = "scatter";}
-            v.ghostModeCounter[ch] = 0;
-        } v.ghostModeCounter[ch] += 1;
-    } v.collision[ch] = false;
+    if (v.ghostMode[ch] == "frightened") {
+            // Zorgt ervoor dat de frightenedTime wordt geupdatet aan de hand van hoeveel pellets er zijn. + 1 om ervoor te zorgen dat dit nooit 0 wordt.
+        v.frightenedTime = Math.round(v.pellets.length * 0.05) + 1;
+        v.characterSpeed[ch] = 88 / 60 / 650 * v.innerHeight * 0.8;
+            // Checkt hoeveel tijd er voorbij is.
+        if (Math.floor(v.ghostModeCounter[ch][2] / v.frameRate) == v.frightenedTime) {
+            v.ghostMode[ch] = v.previousGhostMode[ch];
+            v.ghostModeCounter[ch][2] = 0;
+        } v.ghostModeCounter[ch][2] += 1;
+    } else {
+        v.characterSpeed[ch] = 88 / 60 / 650 * v.innerHeight;
+        if (v.ghostMode[ch] == "scatter") {
+            if (Math.floor(v.ghostModeCounter[ch][1] / v.frameRate) == v.scatterSequence[v.scatterRound[ch]]) {
+                v.ghostMode[ch] = "chase";
+                v.ghostModeCounter[ch][1] = 0;
+                v.scatterRound[ch] += 1;
+            } v.ghostModeCounter[ch][1] += 1;
+        } else if (v.ghostMode[ch] == "chase") {
+            if (Math.floor(v.ghostModeCounter[ch][0] / v.frameRate) == v.chaseSequence[v.chaseRound[ch]]) {
+                v.ghostMode[ch] = "scatter";
+                v.ghostModeCounter[ch][0] = 0;
+                v.chaseRound[ch] += 1;
+            } v.ghostModeCounter[ch][0] += 1;
+        }
+    }
 } // Functie voor het tekenen van elementen van het spelbord.
 const drawBoardElements = p => {
     p.push();
@@ -333,13 +357,22 @@ const ghostMovement = (ch, p) => {
         }
     }
 } // Functie voor het checken of er een botsing plaatsvindt met een barrière.
-const checkCollision = (ch, xIndex, yIndex) => {
+const checkCollision = (ch, xPellet, yPellet) => {
+    // Checkt of een ghost botst met Hoog-Man.
+    if (ch > 0) {
+        if (
+            v.xCharacter[ch] + v.dCharacter[ch] / 3 >= v.xCharacter[0] - v.dCharacter[0] / 3 &&
+            v.xCharacter[ch] - v.dCharacter[ch] / 3 <= v.xCharacter[0] + v.dCharacter[0] / 3 &&
+            v.yCharacter[ch] + v.dCharacter[ch] / 3 >= v.yCharacter[0] - v.dCharacter[0] / 3 &&
+            v.yCharacter[ch] - v.dCharacter[ch] / 3 <= v.yCharacter[0] + v.dCharacter[0] / 3
+        ) {endGame();}
+    }
     for (ob in v.obstacles) {
         // Checkt of een pellet botst met een barrière.
-        if (typeof xIndex != "undefined" && typeof yIndex != "undefined") {
+        if (typeof xPellet != "undefined" && typeof yPellet != "undefined") {
             if (
-                v.xInner + v.widthUnit * (0.5 + xIndex) > v.obstacles[ob][0] && v.xInner + v.widthUnit * (0.5 + xIndex) < v.obstacles[ob][2] &&
-                v.yInner + v.heightUnit * (0.5 + yIndex) > v.obstacles[ob][1] && v.yInner + v.heightUnit * (0.5 + yIndex) < v.obstacles[ob][3]
+                v.xInner + v.widthUnit * (0.5 + xPellet) > v.obstacles[ob][0] && v.xInner + v.widthUnit * (0.5 + xPellet) < v.obstacles[ob][2] &&
+                v.yInner + v.heightUnit * (0.5 + yPellet) > v.obstacles[ob][1] && v.yInner + v.heightUnit * (0.5 + yPellet) < v.obstacles[ob][3]
             ) {return true;}
         } // Checkt of een karakter botst met een barrière.
         else if ( // -1 als marge tussen een karakter en een barrière. Anders is deze statement altijd waar.
