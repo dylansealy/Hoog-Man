@@ -415,7 +415,7 @@ const checkCollisionInput = (ch, nextCharacterMovement) => {
             if (v.xCharacter[ch] > v.xInner + v.widthUnit * 16 && v.xCharacter[ch] < v.xInner + v.widthUnit * 17) {return true;}
             else if (
                 v.xCharacter[ch] + v.widthUnit * 0.55 >= v.obstacles[ob][0] && v.xCharacter[ch] - v.widthUnit * 0.45 <= v.obstacles[ob][2] &&
-                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
+                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]
             ) {return true;}
         } else if (nextCharacterMovement == "down") {
             if (
@@ -425,13 +425,13 @@ const checkCollisionInput = (ch, nextCharacterMovement) => {
             else if (v.yCharacter[ch] > v.yInner + v.heightUnit * 13 && v.yCharacter[ch] < v.yInner + v.heightUnit * 14) {return true;}
             else if (
                 v.xCharacter[ch] + v.widthUnit * 0.45 >= v.obstacles[ob][0] && v.xCharacter[ch] - v.widthUnit * 0.45 <= v.obstacles[ob][2] &&
-                v.yCharacter[ch] + v.heightUnit * 0.55 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
+                v.yCharacter[ch] + v.heightUnit * 0.55 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]
             ) {return true;}
         } else if (nextCharacterMovement == "left") {
             if (v.xCharacter[ch] > v.xInner && v.xCharacter[ch] < v.xInner + v.widthUnit) {return true;}
             else if (
                 v.xCharacter[ch] + v.widthUnit * 0.45 >= v.obstacles[ob][0] && v.xCharacter[ch] - v.widthUnit * 0.55 <= v.obstacles[ob][2] &&
-                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
+                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]
             ) {return true;}
         }
     } return false;
