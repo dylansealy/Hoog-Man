@@ -27,7 +27,7 @@ const sketch = p => {
         p.noFill();
         // playIntroSound(p, introSound);
         drawBoardElements(p);
-        for (ch in v.xCharacter) {
+        for (let ch in v.xCharacter) {
             iterationVariables(ch, p);
             drawCharacters(ch, p);
             checkCollision(ch);
@@ -109,7 +109,7 @@ const initializeVars = () => {
         [9, 8, 10, 10], [10, 9, 11, 11], [11, 7, 14, 8], [13, 6, 14, 7], [15, 6, 16, 8], [1, 9, 3, 13], [4, 9, 6, 12], [7, 11, 9, 12],
         [8, 12, 9, 13], [12, 9, 13, 12], [14, 9, 17, 10], [4, 13, 7, 14], [10, 12, 11, 14], [11, 13, 14, 14], [14, 11, 16, 12], [15, 12, 16, 13]
     ];
-    for (ob in v.coordinates) {
+    for (let ob in v.coordinates) {
         const obstacle = [
             v.xInner + v.widthUnit * v.coordinates[ob][0], v.yInner + v.heightUnit * v.coordinates[ob][1],
             v.xInner + v.widthUnit * v.coordinates[ob][2], v.yInner + v.heightUnit * v.coordinates[ob][3]
@@ -182,7 +182,7 @@ const drawBoardElements = p => {
     // Zorgt voor het tekenen van de pellets.
     p.stroke("yellow");
     p.fill("yellow");
-    for (pe in v.pellets) {
+    for (let pe in v.pellets) {
         p.circle(
             v.xInner + v.widthUnit * (0.5 + v.pellets[pe][0]),
             v.yInner + v.heightUnit * (0.5 + v.pellets[pe][1]),
@@ -202,7 +202,7 @@ const drawBoardElements = p => {
     p.stroke("#2121DE");
     p.strokeWeight(2);
     p.fill("black");
-    for (ob in v.obstacles) {
+    for (let ob in v.obstacles) {
         p.rect(
             v.obstacles[ob][0], v.obstacles[ob][1],
             v.obstacles[ob][2] - v.obstacles[ob][0], v.obstacles[ob][3] - v.obstacles[ob][1], 4
@@ -367,7 +367,7 @@ const checkCollision = (ch, xPellet, yPellet) => {
             v.yCharacter[ch] - v.dCharacter[ch] / 3 <= v.yCharacter[0] + v.dCharacter[0] / 3
         ) {endGame();}
     }
-    for (ob in v.obstacles) {
+    for (let ob in v.obstacles) {
         // Checkt of een pellet botst met een barrière.
         if (typeof xPellet != "undefined" && typeof yPellet != "undefined") {
             if (
@@ -388,7 +388,7 @@ const checkCollision = (ch, xPellet, yPellet) => {
     } return false;
 } // Functie voor het checken of er een botsing plaatsvindt met een barrière of een buitenlijn na een key input.
 const checkCollisionInput = (ch, nextCharacterMovement) => {
-    for (ob in v.obstacles) {
+    for (let ob in v.obstacles) {
         if (nextCharacterMovement == "up") {
             // Checkt of Hoog-Man door een gat in de buitenlijnen gaat.
             if (
