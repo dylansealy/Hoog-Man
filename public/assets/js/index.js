@@ -30,7 +30,7 @@ const sketch = p => {
         for (let ch in v.xCharacter) {
             iterationVariables(ch, p);
             drawCharacters(ch, p);
-            checkCollision(ch);
+            checkCollision(ch, undefined, undefined, p);
             checkDirection(ch);
             ghostMovement(ch, p);
         } // Zorgt ervoor dat alleen de gekozen input methode werkt.
@@ -68,9 +68,7 @@ const initializeVars = () => {
     // Definieert de dimensie eenheden van het spelbord.
     v.heightUnit = v.innerHeight / 14;
     v.widthUnit = v.innerWidth / 17;
-    // Definieert de positie, grootte, kleur, snelheid, bewegingsrichting en botsing van elk karakter.
-    v.xCharacter = [v.xInner + v.widthUnit * 0.5, v.xInner + v.widthUnit * 13.5, v.xInner + v.widthUnit * 13.5, v.xInner + v.widthUnit * 13.5, v.xInner + v.widthUnit * 13.5];
-    v.yCharacter = [v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 1.5, v.yInner + v.heightUnit * 2.5, v.yInner + v.heightUnit * 3.5];
+    // Definieert de grootte, kleur, snelheid, bewegingsrichting en botsing van elk karakter.
         // Definieert de diameter van elk karakter.
     v.dCharacter = [0, 0, 0, 0, 0];
         // Zorgt ervoor dat elke waarde in de array hetzelfde is zonder deze steeds te herhalen.
@@ -78,16 +76,9 @@ const initializeVars = () => {
     v.cCharacter = ["yellow", "red", "pink", "blue", "orange"];
     v.characterSpeed = [0, 0, 0, 0, 0];
     v.characterSpeed.fill(88 / 60 / 650 * v.innerHeight);
-    v.characterMovement = [false, false, false, false, false];
-        // Definieert de oude bewegingsrichting.
-    v.previousCharacterMovement = [false, false, false, false, false];
-        // Definieert de volgende bewegingsrichting.
-    v.nextCharacterMovement = [false, "left", "left", "left", "left"];
-    v.xCharacterMovement = [false, false, false, false, false];
-    v.yCharacterMovement = [false, false, false, false, false];
     v.collision = [false, false, false, false, false];
     // Definieert de modus van elke ghost. Index 0 is Hoog-Man, maar wordt niet gebruikt.
-    v.ghostMode = [null, "scatter", "scatter", "scatter", "scatter"];
+    v.ghostMode = [null, "scatter", null, null, null];
     v.previousGhostMode = [null, null, null, null, null];
         // Houdt bij hoelang een ghost in een modus zit. chase, scatter, frightened.
     v.ghostModeCounter = [[null, null, null], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
@@ -96,8 +87,25 @@ const initializeVars = () => {
         // Definieert hoe lang elke modus duurt.
     v.scatterSequence = [7, 7, 5, 5];
     v.chaseSequence = [20, 20, 20];
+    v.pelletThreshold = [null, null, 0, 25, 50];
+    v.pelletCounter = [null, null, 0, 25, 50];
     // Definieert de target tile van elke ghost.
     v.ghostTarget = [[null, null], [v.xOuter, v.yOuter + v.outerHeight], [v.xOuter, v.yOuter], [v.xOuter + v.outerWidth, v.yOuter + v.outerHeight], [v.xOuter + v.outerWidth, v.yOuter]];
+    // Functie voor het (re)setten van de posities en bewegingsrichting van elk karakter.
+    (v.setPosition = () => {
+        v.xCharacter = [v.xInner + v.widthUnit * 9.5, v.xInner + v.widthUnit * 13.5, v.xInner + v.widthUnit * 14.5, v.xInner + v.widthUnit * 15.5, v.xInner + v.widthUnit * 16.5];
+        v.yCharacter = [v.yInner + v.heightUnit * 7.5, v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5];
+        v.characterMovement = [false, false, false, false, false];
+            // Definieert de oude bewegingsrichting.
+        v.previousCharacterMovement = [false, false, false, false, false];
+            // Definieert de volgende bewegingsrichting.
+        v.nextCharacterMovement = [false, "left", false, false, false];
+        v.xCharacterMovement = [false, false, false, false, false];
+        v.yCharacterMovement = [false, false, false, false, false];
+        v.ghostMode[2] = null;
+        v.ghostMode[3] = null;
+        v.ghostMode[4] = null;
+    })()
     // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
     v.gesturePosition = [null, null, null, null];
     // Zorgt ervoor dat alle barrières gecreëerd worden.
@@ -124,6 +132,7 @@ const initializeVars = () => {
         }
     } // Zorgt ervoor dat de score wordt bijgehouden.
     v.score = 0;
+    v.lives = 3;
 } // Functie voor het afspelen van het intro liedje.
 // const playIntroSound = (p, introSound) => {
 //     p.push();
@@ -135,6 +144,14 @@ const iterationVariables = (ch, p) => {
     v.collision[ch] = false;
         // Zorgt ervoor dat de framerate wordt afgerond naar het dichtstbijzijnde gehele getal.
     v.frameRate = Math.round(p.frameRate());
+    if (v.ghostMode[ch] == null) {
+        if (v.pelletCounter[ch] == 0) {
+            setTimeout(() => {
+                v.ghostMode[ch] = "scatter";
+                v.xCharacter[ch] = v.xInner + v.widthUnit * 13.5;
+            }, 250);
+        } else if (ch > 2 && v.pelletCounter[ch -1] == 0) {v.pelletCounter[ch] = v.pelletThreshold[ch] + v.pelletThreshold[ch - 1] - (138 - v.pellets.length);}
+    }
     if (v.ghostMode[ch] == "frightened") {
             // Zorgt ervoor dat de frightenedTime wordt geupdatet aan de hand van hoeveel pellets er zijn. + 1 om ervoor te zorgen dat dit nooit 0 wordt.
         v.frightenedTime = Math.round(v.pellets.length * 0.05) + 1;
@@ -178,7 +195,8 @@ const drawBoardElements = p => {
     p.rect(v.xInner + v.widthUnit, v.yInner + v.innerHeight, v.widthUnit, 0);
     // Zorgt voor het weergeven van de score.
     p.fill("white");
-    p.text(`Score ${v.score}`, v.xInner, v.canvasDimension - (v.canvasDimension - v.outerHeight) / 2.5);
+    p.text(`Score: ${v.score}`, v.xInner, v.canvasDimension - (v.canvasDimension - v.outerHeight) / 2.5);
+    p.text(`Aantal levens: ${v.lives}`, v.xInner + v.widthUnit * 4, v.canvasDimension - (v.canvasDimension - v.outerHeight) / 2.5);
     // Zorgt voor het tekenen van de pellets.
     p.stroke("yellow");
     p.fill("yellow");
@@ -357,7 +375,7 @@ const ghostMovement = (ch, p) => {
         }
     }
 } // Functie voor het checken of er een botsing plaatsvindt met een barrière.
-const checkCollision = (ch, xPellet, yPellet) => {
+const checkCollision = (ch, xPellet, yPellet, p) => {
     // Checkt of een ghost botst met Hoog-Man.
     if (ch > 0) {
         if (
@@ -365,7 +383,7 @@ const checkCollision = (ch, xPellet, yPellet) => {
             v.xCharacter[ch] - v.dCharacter[ch] / 3 <= v.xCharacter[0] + v.dCharacter[0] / 3 &&
             v.yCharacter[ch] + v.dCharacter[ch] / 3 >= v.yCharacter[0] - v.dCharacter[0] / 3 &&
             v.yCharacter[ch] - v.dCharacter[ch] / 3 <= v.yCharacter[0] + v.dCharacter[0] / 3
-        ) {endGame();}
+        ) {endGame(p);}
     }
     for (let ob in v.obstacles) {
         // Checkt of een pellet botst met een barrière.
@@ -435,6 +453,23 @@ const checkCollisionInput = (ch, nextCharacterMovement) => {
             ) {return true;}
         }
     } return false;
+}
+const endGame = p => {
+    v.setPosition();
+    v.lives -= 1;
+    if (v.lives == 0) {
+        p.noLoop();
+        document.querySelector("#gameEndContainer").style.display = "flex";
+        document.querySelector("#gameEndContainer p").innerText += v.score;
+        document.querySelector("#again").addEventListener("click", () => {
+            document.querySelector("#gameEndContainer").style.display = "none";
+            v.game.remove();
+            v.game = new p5(sketch);
+        });
+        document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+    } else {
+
+    }
 } // Functie voor het simuleren van een key press.
 const checkDirection = ch => {
     switch (v.nextCharacterMovement[ch]) {
