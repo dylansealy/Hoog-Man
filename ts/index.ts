@@ -1,11 +1,12 @@
+import {GameVariables} from "./Types";
 import GameBoard from "./GameBoard.js";
 import Obstacle from "./Obstacle.js";
-const sketch = (p) => {
-    p.preload = () => {
+const sketch = (p: p5): void => {
+    p.preload = (): void => {
         p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
-    };
-    p.setup = () => {
+    }
+    p.setup = (): void => {
         initializeVars(p);
         getInputMethod();
         p.createCanvas(v.gameBoard.canvasDimension, v.gameBoard.canvasDimension);
@@ -15,18 +16,19 @@ const sketch = (p) => {
         p.textSize(v.gameBoard.widthUnit / 1.5);
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
-    };
-    p.draw = () => {
+    }
+    p.draw = (): void => {
         p.background("black");
         p.noFill();
         v.gameBoard.draw();
         for (let obstacle in v.obstacles) {
             v.obstacles[obstacle].draw();
         }
-    };
-};
-const v = {};
-const initializeVars = (p) => {
+    }
+}
+
+const v: GameVariables = {}
+const initializeVars = (p: p5): void => {
     v.gameBoard = new GameBoard(p, v);
     v.obstacleCoordinates = [
         [1, 1, 3, 4], [4, 0, 5, 4], [6, 1, 8, 4], [9, 0, 10, 3], [11, 1, 13, 3], [14, 0, 17, 2], [0, 5, 1, 8], [2, 5, 4, 8],
@@ -39,21 +41,21 @@ const initializeVars = (p) => {
         const obstacle = new Obstacle(p, v, v.obstacleCoordinates[coordinates][0], v.obstacleCoordinates[coordinates][1], v.obstacleCoordinates[coordinates][2], v.obstacleCoordinates[coordinates][3]);
         v.obstacles.push(obstacle);
     }
-};
-document.querySelector("#startGame").addEventListener("click", () => {
+}
+document.querySelector("#startGame").addEventListener("click", (): void => {
     gameStartup();
     v.game = new p5(sketch);
-    const gameStartupContainer = document.querySelector("#gameStartupContainer");
+    const gameStartupContainer: HTMLElement = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
     new AudioContext;
 });
-document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
-window.addEventListener("resize", () => {
+document.querySelector("#social").addEventListener("click", (): string => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+window.addEventListener("resize", (): void => {
     v.game.remove();
     v.game = new p5(sketch);
 });
-const gameStartup = () => {
-    const main = document.querySelector("main");
+const gameStartup = (): void => {
+    const main: HTMLElement = document.querySelector("main");
     main.requestFullscreen();
     main.style.height = "100%";
     main.style.width = "100%";
@@ -61,26 +63,21 @@ const gameStartup = () => {
     main.style.top = "0";
     main.style.left = "0";
     main.style.backgroundColor = "black";
-};
-const getInputMethod = () => {
+}
+const getInputMethod = (): void => {
     const inputControls = document.getElementsByName("controls");
-    if (inputControls[0].checked || v.gameInput == "keyboard") {
-        v.gameInput = "keyboard";
-    }
+    if (inputControls[0].checked || v.gameInput == "keyboard") {v.gameInput = "keyboard";}
     else if (inputControls[1].checked || v.gameInput == "touch") {
         v.gameInput = "touch";
         setupTouchControls();
-    }
-    else {
-        v.gameInput = "gestures";
-    }
-};
-const setupTouchControls = () => {
+    } else {v.gameInput = "gestures";}
+}
+const setupTouchControls = (): void => {
     const touchControlsContainer = document.getElementById("touchControlsContainer");
     touchControlsContainer.style.display = "flex";
     const touchControls = document.getElementsByClassName("touchControls");
     if (v.gameBoard.orientation == "landscape") {
-        const touchElementWidth = (document.querySelector("html").offsetWidth - v.gameBoard.canvasDimension) / 2;
+        const touchElementWidth: number = (document.querySelector("html").offsetWidth - v.gameBoard.canvasDimension) / 2;
         touchControlsContainer.style.width = `${touchElementWidth}px`;
         touchControlsContainer.style.height = "100%";
         touchControlsContainer.classList.remove("containerPortrait");
@@ -91,7 +88,7 @@ const setupTouchControls = () => {
         }
     }
     else if (v.gameBoard.orientation == "portrait") {
-        const touchElementHeight = (document.querySelector("html").offsetHeight - v.gameBoard.canvasDimension) / 2;
+        const touchElementHeight: number = (document.querySelector("html").offsetHeight - v.gameBoard.canvasDimension) / 2;
         touchControlsContainer.style.height = `${touchElementHeight}px`;
         touchControlsContainer.style.width = "100%";
         touchControlsContainer.classList.remove("containerLandscape");
@@ -101,8 +98,8 @@ const setupTouchControls = () => {
             touchControls[i].classList.add("touchPortrait");
         }
     }
-};
-(() => {
-    const year = new Date().getFullYear();
+}
+((): void => {
+    const year: number = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
-})();
+})()
