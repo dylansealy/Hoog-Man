@@ -1,5 +1,6 @@
 import GameBoard from "./GameBoard.js";
 import Obstacle from "./Obstacle.js";
+import Pellet from "./Pellet.js";
 const sketch = (p) => {
     p.preload = () => {
         p.soundFormats("mp3");
@@ -23,6 +24,9 @@ const sketch = (p) => {
         for (let obstacle in v.obstacles) {
             v.obstacles[obstacle].draw();
         }
+        for (let pellet in v.pellets) {
+            v.pellets[pellet].draw();
+        }
     };
 };
 const v = {};
@@ -38,6 +42,15 @@ const initializeVars = (p) => {
     for (let coordinates in v.obstacleCoordinates) {
         const obstacle = new Obstacle(p, v, v.obstacleCoordinates[coordinates][0], v.obstacleCoordinates[coordinates][1], v.obstacleCoordinates[coordinates][2], v.obstacleCoordinates[coordinates][3]);
         v.obstacles.push(obstacle);
+    }
+    v.pellets = [];
+    for (let xPosition = 0; xPosition < 17; xPosition++) {
+        for (let yPosition = 0; yPosition < 14; yPosition++) {
+            const pellet = new Pellet(p, v, xPosition, yPosition);
+            if (!pellet.checkCollision()) {
+                v.pellets.push(pellet);
+            }
+        }
     }
 };
 document.querySelector("#startGame").addEventListener("click", () => {

@@ -41,15 +41,11 @@ export default class Pellet implements PelletInterface {
     checkCollision(): boolean {
         for (let obstacle in this.v.obstacles) {
             if (
-                this.xPosition > this.v.obstacles[obstacle][0] &&
-                this.xPosition
-                this.yPosition
-                this.yPosition
+                this.xPosition > this.v.obstacles[obstacle].xPosition &&
+                this.xPosition < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
+                this.yPosition > this.v.obstacles[obstacle].yPosition &&
+                this.yPosition < this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height
             ) {return true;}
-        }
-        // this.v.xInner + this.v.widthUnit * (0.5 + xPellet) > this.v.obstacles[ob][0] &&
-        // this.v.xInner + this.v.widthUnit * (0.5 + xPellet) < this.v.obstacles[ob][2] &&
-        // this.v.yInner + this.v.heightUnit * (0.5 + yPellet) > this.v.obstacles[ob][1] &&
-        // this.v.yInner + this.v.heightUnit * (0.5 + yPellet) < this.v.obstacles[ob][3]
+        } return false;
     }
 }

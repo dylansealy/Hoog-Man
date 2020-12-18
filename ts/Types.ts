@@ -1,12 +1,12 @@
 import p5 from "p5";
 export interface GameVariables {
-    gameInput: "keyboard" | "touch" | "gestures";
     game: p5;
     gameBoard: GameBoardInterface;
-    pellets: Array<PelletInterface>;
-    obstacles: Array<ObstacleInterface>;
+    gameInput: "keyboard" | "touch" | "gestures";
     hoogMan: HoogManInterface;
     obstacleCoordinates: Array<Array<number>>;
+    obstacles: Array<ObstacleInterface>;
+    pellets: Array<PelletInterface>;
 }
 export interface GameBoardInterface {
     canvasDimension: number;
@@ -35,17 +35,17 @@ export interface PelletInterface {
     yMargin: number;
     xPosition: number;
     yPosition: number;
-    draw: Function;
-    checkEaten: Function;
     checkCollision: Function;
+    checkEaten: Function;
+    draw: Function;
 }
 export interface ObstacleInterface {
-    p: p5;
-    xPosition: number;
-    yPosition: number;
     height: number;
     width: number;
+    p: p5;
     v: GameVariables;
+    xPosition: number;
+    yPosition: number;
     draw: Function;
 }
 export interface CharacterInterface {
@@ -58,10 +58,10 @@ export interface CharacterInterface {
     yMovement: boolean;
     nextMovement: Movement;
     speed: number;
-    xPosition: number;
-    yPosition: number;
     xMargin: number;
     yMargin: number;
+    xPosition: number;
+    yPosition: number;
 }
 export interface HoogManInterface extends CharacterInterface {
     lives: number;

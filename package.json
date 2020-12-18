@@ -6,7 +6,8 @@
     "url": "git+https://github.com/DylanSealy/PO-2D-games-maken.git"
   },
   "scripts": {
-    "test": "http-server ./public/ -c-1"
+    "http-server": "http-server ./public/ -c-1",
+    "tsc": "tsc"
   },
   "author": "Dylan Sealy",
   "license": "GPLv3",
