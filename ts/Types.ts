@@ -35,7 +35,7 @@ export interface PelletInterface {
     yMargin: number;
     xPosition: number;
     yPosition: number;
-    checkCollision: Function;
+    checkCollisionObstacle: Function;
     checkEaten: Function;
     draw: Function;
 }
@@ -57,13 +57,19 @@ export interface CharacterInterface {
     xMovement: boolean;
     yMovement: boolean;
     nextMovement: Movement;
+    p: p5;
     speed: number;
-    xMargin: number;
-    yMargin: number;
+    v: GameVariables;
     xPosition: number;
     yPosition: number;
+    checkCollision: Function;
+    checkDirection: Function;
+    constrainPosition: Function;
+    draw: Function;
+    keyPress: Function;
+    resetMovement: Function;
 }
 export interface HoogManInterface extends CharacterInterface {
     lives: number;
 }
-type Movement = "up" | "right" | "down" | "left" | null;
+export type Movement = "up" | "right" | "down" | "left" | null;

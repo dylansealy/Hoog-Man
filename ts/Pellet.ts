@@ -38,7 +38,7 @@ export default class Pellet implements PelletInterface {
             this.v.pellets.splice(counter, 1);
         }
     }
-    checkCollision(): boolean {
+    checkCollisionObstacle(): boolean {
         for (let obstacle in this.v.obstacles) {
             if (
                 this.xPosition < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&

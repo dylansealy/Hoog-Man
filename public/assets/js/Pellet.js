@@ -26,7 +26,7 @@ export default class Pellet {
             this.v.pellets.splice(counter, 1);
         }
     }
-    checkCollision() {
+    checkCollisionObstacle() {
         for (let obstacle in this.v.obstacles) {
             if (this.xPosition < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
                 this.xPosition > this.v.obstacles[obstacle].xPosition &&

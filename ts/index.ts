@@ -50,7 +50,7 @@ const initializeVars = (p: p5): void => {
         for (let xPosition = 0; xPosition < 17; xPosition++) {
             for (let yPosition = 0; yPosition < 14; yPosition++) {
                 const pellet = new Pellet(p, v, xPosition, yPosition);
-                if (!pellet.checkCollision()) {v.pellets.push(pellet);}
+                if (!pellet.checkCollisionObstacle()) {v.pellets.push(pellet);}
             }
         }
     })();
