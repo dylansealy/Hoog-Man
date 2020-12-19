@@ -2,7 +2,7 @@ import p5 from "p5";
 export interface GameVariables {
     game: p5;
     gameBoard: GameBoardInterface;
-    gameInput: "keyboard" | "touch" | "gestures";
+    inputMethod: "keyboard" | "touch" | "gestures";
     hoogMan: HoogManInterface;
     obstacleCoordinates: Array<Array<number>>;
     obstacles: Array<ObstacleInterface>;

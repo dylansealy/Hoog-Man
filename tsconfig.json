@@ -5,13 +5,12 @@
         "lib": ["DOM"],
         "module": "ESNext",
         "outDir": "./public/assets/js/",
+        "rootDir": "./ts/",
         "skipLibCheck": true,
         "strict": true,
-        "target": "ESNext",
-        "rootDir": "./ts/",
         "strictNullChecks": false,
-        "watch": true,
+        "target": "ESNext",
+        "watch": true
     },
-    "include": ["./ts/"],
-    "exclude": ["./ts/Types.ts"],
+    "include": ["./ts/"]
 }
