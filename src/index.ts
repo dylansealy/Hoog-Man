@@ -3,7 +3,7 @@ import GameBoard from "./GameBoard.js";
 import Obstacle from "./Obstacle.js";
 import Pellet from "./Pellet.js";
 import { HoogMan } from "./HoogMan.js";
-const sketch = (p: p5): void => {
+const sketch = (p: p5) => {
     p.preload = (): void => {
         p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
@@ -43,7 +43,7 @@ const initializeVars = (p: p5): void => {
     v.gameBoard = new GameBoard(p, v);
     v.hoogMan = new HoogMan(p, v);
     v.gesturePosition = [null, null, null, null];
-    ((): void => {
+    (() => {
         v.obstacleCoordinates = [
             [1, 1, 3, 4], [4, 0, 5, 4], [6, 1, 8, 4], [9, 0, 10, 3], [11, 1, 13, 3], [14, 0, 17, 2], [0, 5, 1, 8], [2, 5, 4, 8],
             [5, 5, 7, 6], [8, 5, 9, 6], [9, 4, 10, 7], [11, 5, 12, 6], [11, 4, 16, 5], [14, 3, 16, 4], [5, 7, 6, 8], [7, 7, 8, 10],
@@ -59,7 +59,7 @@ const initializeVars = (p: p5): void => {
             v.obstacles.push(obstacle);
         }
     })();
-    ((): void => {
+    (() => {
         v.pellets = [];
         for (let xPosition = 0; xPosition < 17; xPosition++) {
             for (let yPosition = 0; yPosition < 14; yPosition++) {
@@ -83,8 +83,8 @@ const touchControls = (): void => {
     leftTouch.addEventListener("click", () => v.hoogMan.nextMovement = "left");
     leftTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "left");
 }
-const gestureControls = (): void => {
-    const checkGesture = (): void => {
+const gestureControls = () => {
+    const checkGesture = () => {
         if (v.gesturePosition[0] != null && v.gesturePosition[1] != null) {
             if (v.gesturePosition[3] < v.gesturePosition[1] - v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "up";}
             else if (v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.widthUnit) {v.hoogMan.nextMovement = "right";}
@@ -92,7 +92,7 @@ const gestureControls = (): void => {
             else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.widthUnit) {v.hoogMan.nextMovement = "left";}
         }
     }
-    const resetGesture = (event: Event) => {
+    const resetGesture = (event: TouchEvent | MouseEvent) => {
         event.preventDefault();
         v.gesturePosition = [null, null, null, null];
     }
@@ -123,10 +123,10 @@ const gestureControls = (): void => {
     main.addEventListener("mouseup", event => resetGesture(event));
     main.addEventListener("touchcancel", event => resetGesture(event));
 }
-document.querySelector("#social").addEventListener("click", (): string => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
-document.querySelector("#startGame").addEventListener("click", (): void => {
-    ((): void => {
-        const main: HTMLElement = document.querySelector("main");
+document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+document.querySelector("#startGame").addEventListener("click", () => {
+    (() => {
+        const main = document.querySelector("main");
         main.requestFullscreen();
         main.style.height = "100%";
         main.style.width = "100%";
@@ -140,13 +140,13 @@ document.querySelector("#startGame").addEventListener("click", (): void => {
     gameStartupContainer.style.display = "none";
     new AudioContext;
 });
-window.addEventListener("resize", (): void => {
+window.addEventListener("resize", () => {
     if (v.game) {
         v.game.remove();
         v.game = new p5(sketch);
     }
 });
-const getInputMethod = (): void => {
+const getInputMethod = () => {
     const inputMethod = document.getElementsByName("controls");
     if (inputMethod[0].checked || v.inputMethod == "keyboard") {v.inputMethod = "keyboard";}
     else if (inputMethod[1].checked || v.inputMethod == "touch") {
@@ -156,7 +156,7 @@ const getInputMethod = (): void => {
             touchControlsContainer.style.display = "flex";
             const touchControls = document.getElementsByClassName("touchControls");
             if (v.gameBoard.orientation == "landscape") {
-                const touchElementWidth: number = (document.querySelector("html").offsetWidth - v.gameBoard.canvasDimension) / 2;
+                const touchElementWidth = (document.querySelector("html").offsetWidth - v.gameBoard.canvasDimension) / 2;
                 touchControlsContainer.style.width = `${touchElementWidth}px`;
                 touchControlsContainer.style.height = "100%";
                 touchControlsContainer.classList.remove("containerPortrait");
@@ -166,7 +166,7 @@ const getInputMethod = (): void => {
                     touchControls[i].classList.add("touchLandscape");
                 }
             } else if (v.gameBoard.orientation == "portrait") {
-                const touchElementHeight: number = (document.querySelector("html").offsetHeight - v.gameBoard.canvasDimension) / 2;
+                const touchElementHeight = (document.querySelector("html").offsetHeight - v.gameBoard.canvasDimension) / 2;
                 touchControlsContainer.style.height = `${touchElementHeight}px`;
                 touchControlsContainer.style.width = "100%";
                 touchControlsContainer.classList.remove("containerLandscape");
@@ -179,7 +179,7 @@ const getInputMethod = (): void => {
         })();
     } else {v.inputMethod = "gestures";}
 }
-((): void => {
-    const year: number = new Date().getFullYear();
+(() => {
+    const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
 })()

@@ -28,31 +28,23 @@ export class Character implements CharacterInterface {
         this.xPosition = null;
         this.yPosition = null;
     }
-    checkCollision(): boolean {
+    checkCollision: () => void = () => {
         for (let obstacle in this.v.obstacles) {
             if (
                 this.xPosition - this.v.gameBoard.widthUnit * 0.5 + 1 < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
                 this.xPosition + this.v.gameBoard.widthUnit * 0.5 - 1 > this.v.obstacles[obstacle].xPosition &&
                 this.yPosition - this.v.gameBoard.heightUnit * 0.5 + 1 < this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
                 this.yPosition + this.v.gameBoard.heightUnit * 0.5 - 1 > this.v.obstacles[obstacle].yPosition
-            ) {
-                console.log("T1");
-                this.resetMovement(true);
-                return true;
-            }
+            ) {this.resetMovement(true);}
             else if (
                 this.xPosition - this.v.gameBoard.widthUnit * 0.5 + 1 < this.v.gameBoard.xInner ||
                 this.xPosition + this.v.gameBoard.widthUnit * 0.5 - 1 > this.v.gameBoard.xInner + this.v.gameBoard.innerWidth ||
                 this.yPosition - this.v.gameBoard.heightUnit * 0.5 + 1 < this.v.gameBoard.yInner ||
                 this.yPosition + this.v.gameBoard.heightUnit * 0.5 -1 > this.v.gameBoard.yInner + this.v.gameBoard.innerHeight
-            ) {
-                console.log("T2");
-                this.resetMovement(true);
-                return true;
-            }
-        } return false;
+            ) {this.resetMovement(true);}
+        }
     }
-    checkCollisionInput(): boolean {
+    checkCollisionInput: () => boolean = () => {
         for (let obstacle in this.v.obstacles) {
             switch (this.nextMovement) {
                 case "up":
@@ -124,7 +116,7 @@ export class Character implements CharacterInterface {
             }
         } return false;
     }
-    checkNextMovement(): void {
+    checkNextMovement: () => void = () => {
         if (!this.checkCollisionInput() && this.nextMovement != this.movement) {
             if (this.movement != null) {this.previousMovement = this.movement;}
             const newMovement = this.nextMovement;
@@ -133,21 +125,27 @@ export class Character implements CharacterInterface {
             this.constrainPosition();
         }
     }
-    constrainPosition(): void {
-        const xConstrain = (): number => {
+    constrainPosition: () => void = () => {
+        const xConstrain = (): void => {
             for (let i = 0; i < 17; i++) {
                 if (
                     this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * i &&
                     this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * (i + 1)
-                ) {return this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * (i + 0.5);}
+                ) {
+                    this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * (i + 0.5);
+                    break;
+                }
             }
         }
-        const yConstrain = (): number => {
+        const yConstrain = (): void => {
             for (let i = 0; i < 14; i++) {
                 if (
                     this.yPosition > this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * i &&
                     this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * (i + 1)
-                ) {return this.yPosition = this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * (i + 0.5);}
+                ) {
+                    this.yPosition = this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * (i + 0.5);
+                    break;
+                }
             }
         }
         if (this.movement == "left" || this.movement == "right") {yConstrain();}
@@ -157,7 +155,7 @@ export class Character implements CharacterInterface {
             yConstrain();
         }
     }
-    draw(): void {
+    draw: () => void = () => {
         this.p.push();
         this.p.fill(this.color);
         this.p.noStroke();
@@ -170,7 +168,7 @@ export class Character implements CharacterInterface {
             case "left": this.xPosition -= this.speed; break;
         }
     }
-    resetMovement(afterCollision: boolean): void {
+    resetMovement: (afterCollision: boolean) => void = afterCollision => {
         if (this.movement != null) {this.previousMovement = this.movement;}
         this.collision = true;
         this.movement = null;

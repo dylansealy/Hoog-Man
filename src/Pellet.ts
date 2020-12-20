@@ -19,7 +19,7 @@ export default class Pellet implements PelletInterface {
         this.xMargin = this.v.gameBoard.widthUnit * 0.2;
         this.yMargin = this.v.gameBoard.heightUnit * 0.2;
     }
-    draw(): void {
+    draw: () => void = () => {
         this.p.push();
         this.p.fill("yellow");
         this.p.stroke(this.color);
@@ -27,7 +27,7 @@ export default class Pellet implements PelletInterface {
         this.p.circle(this.xPosition, this.yPosition, this.diameter);
         this.p.pop();
     }
-    checkEaten(counter: number): void {
+    checkEaten: (index: number) => void = index => {
         if (
             this.v.hoogMan.xPosition - this.xMargin < this.xPosition &&
             this.v.hoogMan.xPosition + this.xMargin > this.xPosition &&
@@ -35,10 +35,10 @@ export default class Pellet implements PelletInterface {
             this.v.hoogMan.yPosition + this.yMargin > this.yPosition
         ) {
             this.v.gameBoard.score += 100;
-            this.v.pellets.splice(counter, 1);
+            this.v.pellets.splice(index, 1);
         }
     }
-    checkCollisionObstacle(): boolean {
+    checkCollisionObstacle: () => boolean = () => {
         for (let obstacle in this.v.obstacles) {
             if (
                 this.xPosition < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&

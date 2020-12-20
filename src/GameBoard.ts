@@ -38,7 +38,7 @@ export default class GameBoard implements GameBoardInterface {
         this.widthUnit = this.innerWidth / 17;
         this.score = 0;
     }
-    draw(): void {
+    draw: () => void = () => {
         this.p.push();
         this.p.stroke("#2121DE");
         this.p.strokeWeight(3);

@@ -25,7 +25,7 @@ export interface GameBoardInterface {
     xOuter: number;
     yInner: number;
     yOuter: number;
-    draw: Function;
+    draw: () => void;
 }
 export interface PelletInterface {
     color: string;
@@ -36,9 +36,9 @@ export interface PelletInterface {
     yMargin: number;
     xPosition: number;
     yPosition: number;
-    checkCollisionObstacle: Function;
-    checkEaten: Function;
-    draw: Function;
+    checkCollisionObstacle: () => boolean;
+    checkEaten: (index: number) => void;
+    draw: () => void;
 }
 export interface ObstacleInterface {
     height: number;
@@ -47,7 +47,7 @@ export interface ObstacleInterface {
     v: GameVariables;
     xPosition: number;
     yPosition: number;
-    draw: Function;
+    draw: () => void;
 }
 export interface CharacterInterface {
     collision: boolean;
@@ -62,13 +62,13 @@ export interface CharacterInterface {
     v: GameVariables;
     xPosition: number;
     yPosition: number;
-    checkCollision: Function;
-    checkCollisionInput: Function;
-    checkNextMovement: Function;
-    constrainPosition: Function;
-    draw: Function;
-    keyPress: Function;
-    resetMovement: Function;
+    checkCollision: () => void;
+    checkCollisionInput: () => boolean;
+    checkNextMovement: () => void;
+    constrainPosition: () => void;
+    draw: () => void;
+    keyPress: () => void;
+    resetMovement: (afterCollision: boolean) => void;
 }
 export interface HoogManInterface extends CharacterInterface {
     lives: number;
