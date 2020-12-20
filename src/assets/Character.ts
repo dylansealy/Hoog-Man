@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { CharacterInterface, GameVariables, Movement, Name } from "./Types";
+import { CharacterInterface, GameVariables, Movement, Name } from "../Types";
 
 export class Character implements CharacterInterface {
     collision: boolean;

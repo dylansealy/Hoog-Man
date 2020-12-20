@@ -7,7 +7,7 @@
   },
   "scripts": {
     "http-server": "http-server ./public/ -c-1",
-    "tsc": "tsc"
+    "deploy": "erase public\\assets\\js\\Types.js && git add ."
   },
   "author": "Dylan Sealy",
   "license": "GPLv3",

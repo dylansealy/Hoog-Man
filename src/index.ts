@@ -1,8 +1,8 @@
 import {GameVariables} from "./Types";
-import GameBoard from "./GameBoard.js";
-import Obstacle from "./Obstacle.js";
-import Pellet from "./Pellet.js";
-import { HoogMan } from "./HoogMan.js";
+import GameBoard from "./gameBoard/GameBoard.js";
+import Obstacle from "./gameBoard/Obstacle.js";
+import Pellet from "./gameBoard/Pellet.js";
+import { HoogMan } from "./characters/HoogMan.js";
 const sketch = (p: p5) => {
     p.preload = (): void => {
         p.soundFormats("mp3");

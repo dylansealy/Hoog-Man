@@ -1,5 +1,5 @@
 import p5 from "p5";
-import {GameVariables, PelletInterface} from "./Types";
+import {GameVariables, PelletInterface} from "../Types";
 export default class Pellet implements PelletInterface {
     color: string;
     diameter: number;

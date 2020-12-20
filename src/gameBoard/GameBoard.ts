@@ -1,5 +1,5 @@
 import p5 from "p5";
-import {GameBoardInterface, GameVariables} from "./Types";
+import {GameBoardInterface, GameVariables} from "../Types";
 export default class GameBoard implements GameBoardInterface {
     canvasDimension: number;
     heightUnit: number;

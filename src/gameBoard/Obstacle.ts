@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { GameVariables, ObstacleInterface } from "./Types";
+import { GameVariables, ObstacleInterface } from "../Types";
 export default class Obstacle implements ObstacleInterface {
     height: number;
     width: number;

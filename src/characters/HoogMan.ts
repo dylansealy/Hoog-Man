@@ -1,6 +1,6 @@
 import p5 from "p5";
-import {Character} from "./Character.js";
-import {GameVariables, HoogManInterface} from "./Types";
+import {Character} from "../assets/Character.js";
+import {GameVariables, HoogManInterface} from "../Types";
 
 export class HoogMan extends Character implements HoogManInterface {
     lives: number;

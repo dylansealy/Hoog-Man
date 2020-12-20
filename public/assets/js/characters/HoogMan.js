@@ -1,4 +1,4 @@
-import { Character } from "./Character.js";
+import { Character } from "../assets/Character.js";
 export class HoogMan extends Character {
     constructor(p, v) {
         super(p, v);
