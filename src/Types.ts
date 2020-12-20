@@ -1,5 +1,6 @@
 import p5 from "p5";
 export interface GameVariables {
+    blinky: GhostInterface;
     game: p5;
     gameBoard: GameBoardInterface;
     gesturePosition: Array<number>;
@@ -72,5 +73,22 @@ export interface CharacterInterface {
 export interface HoogManInterface extends CharacterInterface {
     lives: number;
 }
+export interface GhostInterface extends CharacterInterface {
+    chaseCounter: number;
+    chaseRound: number;
+    chaseSequence: Array<number>;
+    frightenedCounter: number;
+    frightenedRound: number;
+    scatterCounter: number;
+    scatterRound: number;
+    scatterSequence: Array<number>;
+    previousMode: GhostMode;
+    mode: GhostMode;
+    pelletCounter: number;
+    pelletThreshold: number;
+    xTarget: number;
+    yTarget: number;
+}
+export type GhostMode = "chase" | "scatter" | "frightened";
 export type Movement = "up" | "right" | "down" | "left";
 export type Name = "Hoog-Man" | "Blinky" | "Pinky" | "Inky" | "Clyde";

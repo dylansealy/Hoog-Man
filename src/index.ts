@@ -3,6 +3,7 @@ import GameBoard from "./gameBoard/GameBoard.js";
 import Obstacle from "./gameBoard/Obstacle.js";
 import Pellet from "./gameBoard/Pellet.js";
 import { HoogMan } from "./characters/HoogMan.js";
+import { Blinky } from "./characters/Blinky.js";
 const sketch = (p: p5) => {
     p.preload = (): void => {
         p.soundFormats("mp3");
@@ -32,6 +33,10 @@ const sketch = (p: p5) => {
         v.hoogMan.collision = false;
         v.hoogMan.checkCollision();
         v.hoogMan.checkNextMovement();
+        v.blinky.draw();
+        v.blinky.collision = false;
+        v.blinky.checkCollision();
+        v.blinky.checkNextMovement();
         if (v.inputMethod == "keyboard") {
             if (p.keyIsDown(p.UP_ARROW) || p.keyIsDown(87)) {v.hoogMan.nextMovement = "up";}
             else if (p.keyIsDown(p.RIGHT_ARROW) || p.keyIsDown(68)) {v.hoogMan.nextMovement = "right";}
@@ -45,6 +50,7 @@ const v: GameVariables = {}
 const initializeVars = (p: p5): void => {
     v.gameBoard = new GameBoard(p, v);
     v.hoogMan = new HoogMan(p, v);
+    v.blinky = new Blinky(p, v);
     v.gesturePosition = [null, null, null, null];
     (() => {
         v.obstacleCoordinates = [
