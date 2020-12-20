@@ -36,7 +36,6 @@ export default class GameBoard {
         this.p.rect(this.xInner + this.widthUnit, this.yOuter, this.widthUnit, 0);
         this.p.fill("white");
         this.p.text(`Score: ${this.score}`, this.xInner, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);
-        // this.p.text(`Aantal levens: ${this.v.hoogMan.lives}`, this.xInner + this.widthUnit * 4, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);
         this.p.pop();
     }
 }

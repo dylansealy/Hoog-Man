@@ -2,15 +2,20 @@
     "compilerOptions": {
         "esModuleInterop": true,
         "forceConsistentCasingInFileNames": true,
-        "lib": ["DOM"],
         "module": "ESNext",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "outDir": "./public/assets/js/",
-        "rootDir": "./ts/",
+        "removeComments": true,
+        "rootDir": "./src/",
         "skipLibCheck": true,
         "strict": true,
         "strictNullChecks": false,
         "target": "ESNext",
         "watch": true
     },
-    "include": ["./ts/"]
+    "include": ["./src/"]
 }
