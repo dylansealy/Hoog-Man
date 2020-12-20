@@ -1,6 +1,7 @@
 import GameBoard from "./GameBoard.js";
 import Obstacle from "./Obstacle.js";
 import Pellet from "./Pellet.js";
+import { HoogMan } from "./HoogMan.js";
 const sketch = (p) => {
     p.preload = () => {
         p.soundFormats("mp3");
@@ -27,11 +28,37 @@ const sketch = (p) => {
         for (let pellet in v.pellets) {
             v.pellets[pellet].draw();
         }
+        v.hoogMan.draw();
+        v.hoogMan.collision = false;
+        v.hoogMan.checkCollision();
+        v.hoogMan.checkNextMovement();
+        if (v.inputMethod == "keyboard") {
+            if (p.keyIsDown(p.UP_ARROW) || p.keyIsDown(87)) {
+                v.hoogMan.nextMovement = "up";
+            }
+            else if (p.keyIsDown(p.RIGHT_ARROW) || p.keyIsDown(68)) {
+                v.hoogMan.nextMovement = "right";
+            }
+            else if (p.keyIsDown(p.DOWN_ARROW) || p.keyIsDown(83)) {
+                v.hoogMan.nextMovement = "down";
+            }
+            else if (p.keyIsDown(p.LEFT_ARROW) || p.keyIsDown(65)) {
+                v.hoogMan.nextMovement = "left";
+            }
+        }
+        else if (v.inputMethod == "touch") {
+            touchControls();
+        }
+        else if (v.inputMethod == "gestures") {
+            gestureControls();
+        }
     };
 };
 const v = {};
 const initializeVars = (p) => {
     v.gameBoard = new GameBoard(p, v);
+    v.hoogMan = new HoogMan(p, v);
+    v.gesturePosition = [null, null, null, null];
     (() => {
         v.obstacleCoordinates = [
             [1, 1, 3, 4], [4, 0, 5, 4], [6, 1, 8, 4], [9, 0, 10, 3], [11, 1, 13, 3], [14, 0, 17, 2], [0, 5, 1, 8], [2, 5, 4, 8],
@@ -56,6 +83,68 @@ const initializeVars = (p) => {
             }
         }
     })();
+};
+const touchControls = () => {
+    const upTouch = document.querySelector("#upTouch");
+    upTouch.addEventListener("click", () => v.hoogMan.nextMovement = "up");
+    upTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "up");
+    const rightTouch = document.querySelector("#rightTouch");
+    rightTouch.addEventListener("click", () => v.hoogMan.nextMovement = "right");
+    rightTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "right");
+    const downTouch = document.querySelector("#downTouch");
+    downTouch.addEventListener("click", () => v.hoogMan.nextMovement = "down");
+    downTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "down");
+    const leftTouch = document.querySelector("#leftTouch");
+    leftTouch.addEventListener("click", () => v.hoogMan.nextMovement = "left");
+    leftTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "left");
+};
+const gestureControls = () => {
+    const checkGesture = () => {
+        if (v.gesturePosition[0] != null && v.gesturePosition[1] != null) {
+            if (v.gesturePosition[3] < v.gesturePosition[1] - v.gameBoard.heightUnit) {
+                v.hoogMan.nextMovement = "up";
+            }
+            else if (v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.widthUnit) {
+                v.hoogMan.nextMovement = "right";
+            }
+            else if (v.gesturePosition[3] > v.gesturePosition[1] + v.gameBoard.heightUnit) {
+                v.hoogMan.nextMovement = "down";
+            }
+            else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.widthUnit) {
+                v.hoogMan.nextMovement = "left";
+            }
+        }
+    };
+    const resetGesture = (event) => {
+        event.preventDefault();
+        v.gesturePosition = [null, null, null, null];
+    };
+    const main = document.querySelector("main");
+    main.addEventListener("touchstart", event => {
+        event.preventDefault();
+        v.gesturePosition[0] = event.touches[0].clientX;
+        v.gesturePosition[1] = event.touches[0].clientY;
+    });
+    main.addEventListener("mousedown", event => {
+        event.preventDefault();
+        v.gesturePosition[0] = event.clientX;
+        v.gesturePosition[1] = event.clientY;
+    });
+    main.addEventListener("touchmove", event => {
+        event.preventDefault();
+        v.gesturePosition[2] = event.touches[0].clientX;
+        v.gesturePosition[3] = event.touches[0].clientY;
+        checkGesture();
+    });
+    main.addEventListener("mousemove", event => {
+        event.preventDefault();
+        v.gesturePosition[2] = event.clientX;
+        v.gesturePosition[3] = event.clientY;
+        checkGesture();
+    });
+    main.addEventListener("touchend", event => resetGesture(event));
+    main.addEventListener("mouseup", event => resetGesture(event));
+    main.addEventListener("touchcancel", event => resetGesture(event));
 };
 document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
 document.querySelector("#startGame").addEventListener("click", () => {

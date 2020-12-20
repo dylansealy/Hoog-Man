@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { CharacterInterface, GameVariables, Movement } from "./Types";
+import { CharacterInterface, GameVariables, Movement, Name } from "./Types";
 
 export class Character implements CharacterInterface {
     collision: boolean;
@@ -7,6 +7,7 @@ export class Character implements CharacterInterface {
     diameter: number;
     previousMovement: Movement;
     movement: Movement;
+    name: Name;
     nextMovement: Movement;
     p: p5;
     speed: number;
@@ -21,25 +22,115 @@ export class Character implements CharacterInterface {
         this.diameter = this.v.gameBoard.heightUnit / 2;
         this.previousMovement = null;
         this.movement = null;
+        this.name = null;
         this.nextMovement = null;
         this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight
         this.xPosition = null;
         this.yPosition = null;
     }
-    checkCollision(): void {
+    checkCollision(): boolean {
         for (let obstacle in this.v.obstacles) {
             if (
                 this.xPosition - this.v.gameBoard.widthUnit * 0.5 + 1 < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
                 this.xPosition + this.v.gameBoard.widthUnit * 0.5 - 1 > this.v.obstacles[obstacle].xPosition &&
                 this.yPosition - this.v.gameBoard.heightUnit * 0.5 + 1 < this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
                 this.yPosition + this.v.gameBoard.heightUnit * 0.5 - 1 > this.v.obstacles[obstacle].yPosition
-            ) {return this.resetMovement(true);}
+            ) {
+                console.log("T1");
+                this.resetMovement(true);
+                return true;
+            }
             else if (
                 this.xPosition - this.v.gameBoard.widthUnit * 0.5 + 1 < this.v.gameBoard.xInner ||
                 this.xPosition + this.v.gameBoard.widthUnit * 0.5 - 1 > this.v.gameBoard.xInner + this.v.gameBoard.innerWidth ||
                 this.yPosition - this.v.gameBoard.heightUnit * 0.5 + 1 < this.v.gameBoard.yInner ||
                 this.yPosition + this.v.gameBoard.heightUnit * 0.5 -1 > this.v.gameBoard.yInner + this.v.gameBoard.innerHeight
-            ) {return this.resetMovement(true);}
+            ) {
+                console.log("T2");
+                this.resetMovement(true);
+                return true;
+            }
+        } return false;
+    }
+    checkCollisionInput(): boolean {
+        for (let obstacle in this.v.obstacles) {
+            switch (this.nextMovement) {
+                case "up":
+                    if (
+                        this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 2 &&
+                        this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit &&
+                        this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit &&
+                        this.yPosition > this.v.gameBoard.yInner &&
+                        this.name == "Hoog-Man"
+                    ) {
+                        this.yPosition = this.v.gameBoard.yInner + this.v.gameBoard.innerHeight;
+                        return false;
+                    } else if (
+                        this.yPosition > this.v.gameBoard.yInner &&
+                        this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit
+                    ) {return true;}
+                    else if (
+                        this.xPosition - this.v.gameBoard.widthUnit * 0.45 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
+                        this.xPosition + this.v.gameBoard.widthUnit * 0.45 >= this.v.obstacles[obstacle].xPosition &&
+                        this.yPosition - this.v.gameBoard.heightUnit * 0.55 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
+                        this.yPosition + this.v.gameBoard.heightUnit * 0.45 >= this.v.obstacles[obstacle].yPosition
+                    ) {return true;}
+                    break;
+                case "right":
+                    if (
+                        this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 16 &&
+                        this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 17
+                    ) {return true;}
+                    else if (
+                        this.xPosition - this.v.gameBoard.widthUnit * 0.45 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
+                        this.xPosition + this.v.gameBoard.widthUnit * 0.55 >= this.v.obstacles[obstacle].xPosition &&
+                        this.yPosition - this.v.gameBoard.heightUnit * 0.45 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
+                        this.yPosition + this.v.gameBoard.heightUnit * 0.45 >= this.v.obstacles[obstacle].yPosition
+                    ) {return true;}
+                    break;
+                case "down":
+                    if (
+                        this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 2 &&
+                        this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit &&
+                        this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 14 &&
+                        this.yPosition > this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 13 &&
+                        this.name == "Hoog-Man"
+                    ) {
+                        this.yPosition = this.v.gameBoard.yInner
+                        return false;
+                    } else if (
+                        this.yPosition > this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 13 &&
+                        this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 14
+                    ) {return true;}
+                    else if (
+                        this.xPosition - this.v.gameBoard.widthUnit * 0.45 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
+                        this.xPosition + this.v.gameBoard.widthUnit * 0.45 >= this.v.obstacles[obstacle].xPosition &&
+                        this.yPosition - this.v.gameBoard.heightUnit * 0.45 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
+                        this.yPosition + this.v.gameBoard.heightUnit * 0.55 >= this.v.obstacles[obstacle].yPosition
+                    ) {return true;}
+                    break;
+                case "left":
+                    if (
+                        this.xPosition > this.v.gameBoard.xInner &&
+                        this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit
+                    ) {return true;}
+                    else if (
+                        this.xPosition - this.v.gameBoard.widthUnit * 0.55 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
+                        this.xPosition + this.v.gameBoard.widthUnit * 0.45 >= this.v.obstacles[obstacle].xPosition &&
+                        this.yPosition - this.v.gameBoard.heightUnit * 0.45 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
+                        this.yPosition + this.v.gameBoard.heightUnit * 0.45 >= this.v.obstacles[obstacle].yPosition
+                    ) {return true;}
+                    break;
+            }
+        } return false;
+    }
+    checkNextMovement(): void {
+        if (!this.checkCollisionInput() && this.nextMovement != this.movement) {
+            if (this.movement != null) {this.previousMovement = this.movement;}
+            const newMovement = this.nextMovement;
+            this.resetMovement(false);
+            this.movement = newMovement;
+            this.constrainPosition();
         }
     }
     constrainPosition(): void {
@@ -84,8 +175,6 @@ export class Character implements CharacterInterface {
         this.collision = true;
         this.movement = null;
         this.nextMovement = null;
-        this.xMovement = false;
-        this.yMovement = false;
         if (afterCollision) {this.constrainPosition();}
     }
 }

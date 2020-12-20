@@ -2,8 +2,9 @@ import p5 from "p5";
 export interface GameVariables {
     game: p5;
     gameBoard: GameBoardInterface;
-    inputMethod: "keyboard" | "touch" | "gestures";
+    gesturePosition: Array<number>;
     hoogMan: HoogManInterface;
+    inputMethod: "keyboard" | "touch" | "gestures";
     obstacleCoordinates: Array<Array<number>>;
     obstacles: Array<ObstacleInterface>;
     pellets: Array<PelletInterface>;
@@ -54,8 +55,7 @@ export interface CharacterInterface {
     diameter: number;
     previousMovement: Movement;
     movement: Movement;
-    xMovement: boolean;
-    yMovement: boolean;
+    name: Name;
     nextMovement: Movement;
     p: p5;
     speed: number;
@@ -63,7 +63,8 @@ export interface CharacterInterface {
     xPosition: number;
     yPosition: number;
     checkCollision: Function;
-    checkDirection: Function;
+    checkCollisionInput: Function;
+    checkNextMovement: Function;
     constrainPosition: Function;
     draw: Function;
     keyPress: Function;
@@ -72,4 +73,5 @@ export interface CharacterInterface {
 export interface HoogManInterface extends CharacterInterface {
     lives: number;
 }
-export type Movement = "up" | "right" | "down" | "left" | null;
+export type Movement = "up" | "right" | "down" | "left";
+export type Name = "Hoog-Man" | "Blinky" | "Pinky" | "Inky" | "Clyde";

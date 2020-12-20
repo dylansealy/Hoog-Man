@@ -1,6 +1,10 @@
-import { Character } from "./Character.js";
-export class HoogMan extends Character {
-    constructor(p, v) {
+import p5 from "p5";
+import {Character} from "./Character.js";
+import {GameVariables, HoogManInterface} from "./Types";
+
+export class HoogMan extends Character implements HoogManInterface {
+    lives: number;
+    constructor(p: p5, v: GameVariables) {
         super(p, v);
         this.color = "yellow";
         this.name = "Hoog-Man";
