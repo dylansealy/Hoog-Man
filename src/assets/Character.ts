@@ -1,9 +1,9 @@
 import p5 from "p5";
-import { CharacterInterface, GameVariables, Movement, Name } from "../Types";
+import { CharacterInterface, Color, GameVariables, Movement, Name } from "../Types";
 
 export class Character implements CharacterInterface {
     collision: boolean;
-    color: string;
+    color: Color;
     diameter: number;
     previousMovement: Movement;
     movement: Movement;
@@ -14,6 +14,8 @@ export class Character implements CharacterInterface {
     v: GameVariables;
     xPosition: number;
     yPosition: number;
+    xStartPosition: number;
+    yStartPosition: number;
     constructor(p: p5, v: GameVariables) {
         this.p = p;
         this.v = v;
@@ -29,24 +31,33 @@ export class Character implements CharacterInterface {
         this.yPosition = null;
     }
     checkCollision: () => void = () => {
+        this.collision = false;
+        if (this.name != "Hoog-Man") {
+            if (
+                this.xPosition + this.diameter / 2 >= this.v.hoogMan.xPosition - this.v.hoogMan.diameter / 2 &&
+                this.xPosition - this.diameter / 2 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 2 &&
+                this.yPosition + this.diameter / 2 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 2 &&
+                this.yPosition - this.diameter / 2 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 2
+            ) {return this.v.endGame();}
+        }
         for (let obstacle in this.v.obstacles) {
             if (
                 this.xPosition - this.v.gameBoard.widthUnit * 0.5 + 1 < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
                 this.xPosition + this.v.gameBoard.widthUnit * 0.5 - 1 > this.v.obstacles[obstacle].xPosition &&
                 this.yPosition - this.v.gameBoard.heightUnit * 0.5 + 1 < this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
                 this.yPosition + this.v.gameBoard.heightUnit * 0.5 - 1 > this.v.obstacles[obstacle].yPosition
-            ) {this.resetMovement(true);}
+            ) {return this.resetMovement(true);}
             else if (
                 this.xPosition - this.v.gameBoard.widthUnit * 0.5 + 1 < this.v.gameBoard.xInner ||
                 this.xPosition + this.v.gameBoard.widthUnit * 0.5 - 1 > this.v.gameBoard.xInner + this.v.gameBoard.innerWidth ||
                 this.yPosition - this.v.gameBoard.heightUnit * 0.5 + 1 < this.v.gameBoard.yInner ||
                 this.yPosition + this.v.gameBoard.heightUnit * 0.5 -1 > this.v.gameBoard.yInner + this.v.gameBoard.innerHeight
-            ) {this.resetMovement(true);}
+            ) {return this.resetMovement(true);}
         }
     }
-    checkCollisionInput: () => boolean = () => {
+    checkCollisionInput: (targetMovement: Movement) => boolean = targetMovement => {
         for (let obstacle in this.v.obstacles) {
-            switch (this.nextMovement) {
+            switch (targetMovement) {
                 case "up":
                     if (
                         this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 2 &&
@@ -117,7 +128,7 @@ export class Character implements CharacterInterface {
         } return false;
     }
     checkNextMovement: () => void = () => {
-        if (!this.checkCollisionInput() && this.nextMovement != this.movement && this.nextMovement != null) {
+        if (!this.checkCollisionInput(this.nextMovement) && this.nextMovement != this.movement && this.nextMovement != null) {
             if (this.movement != null) {this.previousMovement = this.movement;}
             const newMovement = this.nextMovement;
             this.resetMovement(false);
@@ -174,5 +185,15 @@ export class Character implements CharacterInterface {
         this.movement = null;
         this.nextMovement = null;
         if (afterCollision) {this.constrainPosition();}
+    }
+    resetCharacter: () => void = () => {
+        this.xPosition = this.xStartPosition;
+        this.yPosition = this.yStartPosition;
+        if (this.name == "Blinky") {this.movement = "left";}
+        else {this.movement = null;}
+        this.previousMovement = null;
+        if (this.name != "Hoog-Man") {
+            this.mode = null;
+        }
     }
 }

@@ -1,17 +1,22 @@
 import p5 from "p5";
 export interface GameVariables {
     blinky: GhostInterface;
+    clyde: GhostInterface;
+    hoogMan: HoogManInterface;
+    inky: GhostInterface;
+    pinky: GhostInterface;
     game: p5;
     gameBoard: GameBoardInterface;
     gesturePosition: Array<number>;
-    hoogMan: HoogManInterface;
     inputMethod: "keyboard" | "touch" | "gestures";
     obstacleCoordinates: Array<Array<number>>;
     obstacles: Array<ObstacleInterface>;
     pellets: Array<PelletInterface>;
+    endGame: () => void;
 }
 export interface GameBoardInterface {
     canvasDimension: number;
+    frameRate: number;
     heightUnit: number;
     widthUnit: number;
     innerHeight: number;
@@ -52,23 +57,26 @@ export interface ObstacleInterface {
 }
 export interface CharacterInterface {
     collision: boolean;
-    color: string;
+    color: Color;
     diameter: number;
     previousMovement: Movement;
     movement: Movement;
-    name: Name;
     nextMovement: Movement;
+    name: Name;
     p: p5;
     speed: number;
     v: GameVariables;
     xPosition: number;
     yPosition: number;
+    xStartPosition: number;
+    yStartPosition: number;
     checkCollision: () => void;
-    checkCollisionInput: () => boolean;
+    checkCollisionInput: (targetDirection: Movement) => boolean;
     checkNextMovement: () => void;
     constrainPosition: () => void;
     draw: () => void;
     resetMovement: (afterCollision: boolean) => void;
+    resetCharacter: () => void;
 }
 export interface HoogManInterface extends CharacterInterface {
     lives: number;
@@ -79,6 +87,7 @@ export interface GhostInterface extends CharacterInterface {
     chaseSequence: Array<number>;
     frightenedCounter: number;
     frightenedRound: number;
+    frightenedTime: number;
     scatterCounter: number;
     scatterRound: number;
     scatterSequence: Array<number>;
@@ -86,9 +95,16 @@ export interface GhostInterface extends CharacterInterface {
     mode: GhostMode;
     pelletCounter: number;
     pelletThreshold: number;
-    xTarget: number;
-    yTarget: number;
+    xTargetTile: number;
+    yTargetTile: number;
+    checkDistanceTarget: (target: "Hoog-Man" | "Target tile", xMargin: number, yMargin: number) => Array<number>;
+    frightenedMovement: () => void;
+    iterationVariables: () => void;
+    movementSequence: (movementOrder: Array<number>) => void;
+    setMovement: () => void;
+    setNextMovement: (movementOrder: Array<number>, index: number) => boolean;
 }
+export type Color = "yellow" | "red" | "pink" | "blue" | "orange";
 export type GhostMode = "chase" | "scatter" | "frightened";
 export type Movement = "up" | "right" | "down" | "left";
 export type Name = "Hoog-Man" | "Blinky" | "Pinky" | "Inky" | "Clyde";

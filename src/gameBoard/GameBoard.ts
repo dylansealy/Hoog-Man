@@ -4,6 +4,7 @@ export default class GameBoard implements GameBoardInterface {
     canvasDimension: number;
     heightUnit: number;
     widthUnit: number;
+    frameRate: number;
     innerHeight: number;
     innerWidth: number;
     orientation: "portrait" | "landscape";
@@ -36,9 +37,11 @@ export default class GameBoard implements GameBoardInterface {
         this.outerWidth = this.canvasDimension - this.xOuter * 2;
         this.heightUnit = this.innerHeight / 14;
         this.widthUnit = this.innerWidth / 17;
+        this.frameRate = Math.round(this.p.frameRate());
         this.score = 0;
     }
     draw: () => void = () => {
+        this.frameRate = Math.round(this.p.frameRate());
         this.p.push();
         this.p.stroke("#2121DE");
         this.p.strokeWeight(3);
@@ -52,7 +55,7 @@ export default class GameBoard implements GameBoardInterface {
         this.p.rect(this.xInner + this.widthUnit, this.yOuter, this.widthUnit, 0);
         this.p.fill("white");
         this.p.text(`Score: ${this.score}`, this.xInner, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);
-        // this.p.text(`Aantal levens: ${this.v.hoogMan.lives}`, this.xInner + this.widthUnit * 4, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);
+        this.p.text(`Aantal levens: ${this.v.hoogMan.lives}`, this.xInner + this.widthUnit * 4, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);
         this.p.pop();
     }
 }

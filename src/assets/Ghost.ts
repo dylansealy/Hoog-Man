@@ -1,5 +1,5 @@
 import p5 from "p5";
-import { GameVariables, GhostInterface, GhostMode } from "../Types";
+import { GameVariables, GhostInterface, GhostMode, Movement } from "../Types";
 import { Character } from "./Character.js";
 
 export class Ghost extends Character implements GhostInterface {
@@ -8,6 +8,7 @@ export class Ghost extends Character implements GhostInterface {
     chaseSequence: Array<number>;
     frightenedCounter: number;
     frightenedRound: number;
+    frightenedTime: number;
     scatterCounter: number;
     scatterRound: number;
     scatterSequence: Array<number>;
@@ -15,19 +16,128 @@ export class Ghost extends Character implements GhostInterface {
     mode: GhostMode;
     pelletCounter: number;
     pelletThreshold: number;
-    xTarget: number;
-    yTarget: number;
+    xTargetTile: number;
+    yTargetTile: number;
     constructor(p: p5, v: GameVariables) {
         super(p, v);
         this.chaseCounter = 0;
         this.chaseRound = 0;
         this.chaseSequence = [20, 20, 20];
         this.frightenedCounter = 0;
-        this.frightenedRound = 0;
+        this.frightenedTime = 0;
         this.scatterCounter = 0;
         this.scatterRound = 0;
         this.scatterSequence = [7, 7, 5, 5];
         this.previousMode = null;
-        this.pelletCounter = 0;
+    }
+    checkDistanceTarget: (target: "Hoog-Man" | "Target tile", xMargin: number, yMargin: number) => Array<number> = (target, xMargin, yMargin) => {
+        let xTarget: number = 0;
+        let yTarget: number = 0;
+        if (target == "Hoog-Man") {
+            xTarget = this.v.hoogMan.xPosition + this.v.gameBoard.widthUnit * xMargin;
+            yTarget = this.v.hoogMan.yPosition + this.v.gameBoard.heightUnit * yMargin;
+        } else {
+            xTarget = this.xTargetTile;
+            yTarget = this.yTargetTile;
+        }
+        const upDistance = this.p.dist(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
+        const rightDistance = this.p.dist( this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+        const downDistance = this.p.dist(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
+        const leftDistance = this.p.dist(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+        this.p.stroke("white");
+        this.p.line(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
+        this.p.line( this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+        this.p.line(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
+        this.p.line(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+        const distance = [upDistance, rightDistance, downDistance, leftDistance];
+        const movementOrder = [];
+        for (let i = 0; i < distance.length; i++) {
+            const smallestDistance = Math.min(...distance);
+            const index = distance.indexOf(smallestDistance);
+            movementOrder.push(index);
+            distance[index] *= 100;
+        } return movementOrder;
+    }
+    setNextMovement: (movementOrder: Array<number>, index: number) => boolean = (movementOrder, index) => {
+        const checkPossibilityMovement = (targetMovement: Movement, forbiddenMovement: Movement) => {
+            if (!this.checkCollisionInput(targetMovement) && this.movement != forbiddenMovement && this.movement != targetMovement) {
+                if (this.previousMovement != forbiddenMovement || (this.movement == forbiddenMovement && this.collision == false)) {
+                    this.nextMovement = targetMovement;
+                    return true;
+                } else if (this.previousMovement == forbiddenMovement && this.collision == true) {
+                    setTimeout(() => this.nextMovement = targetMovement, 50);
+                    return true;
+                } else {return false;}
+            } else {return false;}
+        }
+        switch(movementOrder[index]) {
+            case 0: return checkPossibilityMovement("up", "down");
+            case 1: return checkPossibilityMovement("right", "left");
+            case 2: return checkPossibilityMovement("down", "up");
+            case 3: return checkPossibilityMovement("left", "right");
+        }
+    }
+    movementSequence: (movementOrder: Array<number>) => void = movementOrder => {
+        if (!this.setNextMovement(movementOrder, 0) && this.movement == null) {
+            if (!this.setNextMovement(movementOrder, 1)) {
+                if (!this.setNextMovement(movementOrder, 2)) {
+                    this.setNextMovement(movementOrder, 3);
+                }
+            }
+        }
+    }
+    frightenedMovement: () => void = () => {
+        const movementOrder = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+        let randomIndex = Math.floor(Math.random() * 4);
+        if (!this.setNextMovement(movementOrder, randomIndex) && this.movement == null) {
+            movementOrder.splice(randomIndex, 1);
+            randomIndex = Math.floor(Math.random() * 3);
+            if (!this.setNextMovement(movementOrder, randomIndex)) {
+                movementOrder.splice(randomIndex, 1);
+                randomIndex = Math.floor(Math.random() * 2);
+                if (!this.setNextMovement(movementOrder, randomIndex)) {
+                    movementOrder.splice(randomIndex, 1);
+                    this.setNextMovement(movementOrder, 0);
+                }
+            }
+        }
+    }
+    iterationVariables: () => void = () => {
+        if (this.mode == null) {
+            if (this.pelletCounter == 0) {
+                setTimeout(() => {
+                    this.mode = "scatter";
+                    this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
+                }, 250);
+            } else if (this.name == "Inky" || this.name == "Clyde") {
+                if (this.name == "Inky") {this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);}
+                else if (this.name == "Clyde" && this.v.inky.pelletCounter == 0) {
+                    this.pelletCounter = this.pelletThreshold + this.v.inky.pelletThreshold - (138 - this.v.pellets.length);
+                }
+            }
+        }
+        else if (this.mode == "frightened") {
+            this.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
+            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.8;
+            if (Math.floor(this.frightenedCounter / this.v.gameBoard.frameRate) == this.frightenedTime) {
+                this.mode = this.previousMode;
+                this.frightenedCounter = 0;
+            } this.frightenedCounter++;
+        } else {
+            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
+            if (this.mode == "scatter") {
+                if (Math.floor(this.scatterCounter / this.v.gameBoard.frameRate) == this.scatterSequence[this.scatterRound]) {
+                    this.mode = "chase";
+                    this.scatterCounter = 0;
+                    this.scatterRound++;
+                } this.scatterCounter++;
+            } else {
+                if (Math.floor(this.chaseCounter / this.v.gameBoard.frameRate) == this.chaseSequence[this.chaseRound]) {
+                    this.mode = "scatter";
+                    this.chaseCounter = 0;
+                    this.chaseRound++;
+                } this.chaseCounter++;
+            }
+        }
     }
 }
