@@ -62,7 +62,7 @@ main {
 /* Past de style aan van het eerste of laatste directe dochterelement. */
 #gameStartupContainer > :first-child {margin-top: 1rem}
 #gameStartupContainer > :last-child {margin-bottom: 1rem}
-#gameStartupContainer button {
+button {
     background-color: #ffff00;
     border: 1px solid #adff2f;
     outline: 2px double #808080;
@@ -105,6 +105,25 @@ main {
     height: 100%;
     width: 15%;
     font-size: 7vh
+}
+#gameEndContainer {
+    height: 100%;
+    width: 100%;
+    display: none;
+    flex-flow: column nowrap;
+    place-items: center center;
+    place-content: center center;
+    gap: 1rem;
+    position: absolute;
+    margin: auto;
+    background-color: #662f2fda;
+    color: white;
+    text-align: center;
+}
+#gameEndContainer button {
+    background-color: white;
+    border: none;
+    outline: none;
 }
 footer {
     grid-area: 3 / 1 / 4 / 2;

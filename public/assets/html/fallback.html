@@ -3,17 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <base href="https://dylansealy.github.io/PO-2D-games-maken/public/">
+    <base href="C:/Projects/PO 2D games/Public/">
     <title>Hoog-Man offline</title>
     <link rel="stylesheet" type="text/css" href="assets/css/index.css">
     <link rel="stylesheet" type="text/css" href="assets/css/media.css">
     <!-- Checkt of de browser een Service Worker ondersteunt en registreert deze. -->
     <script>
-		if ("serviceWorker" in navigator) {
-			navigator.serviceWorker.register("sw.js")
-			.then(registration => console.log("ServiceWorker registration successful"))
-			.catch(error => console.log(error));
-		}
+		(() => {
+			try {if ("serviceWorker" in navigator) {navigator.serviceWorker.register("sw.js");}}
+			catch (error) {console.log(error);}
+		})()
     </script>
     <!-- PWA web components om het werken met PWA's gemakkelijker te maken. -->
     <script async type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate"></script>

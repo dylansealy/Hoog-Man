@@ -15,6 +15,7 @@ const sketch = p => {
         initializeVars();
         getInputMethod();
         p.createCanvas(v.canvasDimension, v.canvasDimension);
+        p.frameRate();
         p.colorMode(p.RGB, 255);
         p.textFont("Roboto");
         p.textSize(v.widthUnit / 1.5);
@@ -26,22 +27,21 @@ const sketch = p => {
         p.noFill();
         // playIntroSound(p, introSound);
         drawBoardElements(p);
-        for (ch in v.xCharacter) {
-            // Zorgt ervoor dat deze waarde gereset wordt na een beweging.
-            v.collision[ch] = false;
+        for (let ch in v.xCharacter) {
+            iterationVariables(ch, p);
             drawCharacters(ch, p);
-            checkCollision(ch);
+            checkCollision(ch, undefined, undefined, p);
             checkDirection(ch);
-            ghostMovement(ch, v.xCharacter[ch], v.yCharacter[ch], p);
+            ghostMovement(ch, p);
         } // Zorgt ervoor dat alleen de gekozen input methode werkt.
-        if (v.gameInput === "keyboard") {
+        if (v.gameInput == "keyboard") {
             // Checkt of een knop op het toetsenbord wordt ingedrukt.
             if (p.keyIsDown(p.UP_ARROW) || p.keyIsDown(87)) {v.nextCharacterMovement[0] = "up";}
             else if (p.keyIsDown(p.RIGHT_ARROW) || p.keyIsDown(68)) {v.nextCharacterMovement[0] = "right";}
             else if (p.keyIsDown(p.DOWN_ARROW) || p.keyIsDown(83)) {v.nextCharacterMovement[0] = "down";}
             else if (p.keyIsDown(p.LEFT_ARROW) || p.keyIsDown(65)) {v.nextCharacterMovement[0] = "left";}
-        } else if (v.gameInput === "touch") {touchControls();}
-        else if (v.gameInput === "gestures") {gestureControls();}
+        } else if (v.gameInput == "touch") {touchControls();}
+        else if (v.gameInput == "gestures") {gestureControls();}
     }
 } // v is een object. Binnen een object heb je key/value pairs.
 const v = {}
@@ -68,25 +68,44 @@ const initializeVars = () => {
     // Definieert de dimensie eenheden van het spelbord.
     v.heightUnit = v.innerHeight / 14;
     v.widthUnit = v.innerWidth / 17;
-    // Definieert de positie, grootte, kleur, snelheid, bewegingsrichting en botsing van elk karakter.
-    v.xCharacter = [v.xInner + v.widthUnit * 0.5, v.xInner + v.widthUnit * 3.5];
-    v.yCharacter = [v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 12.5];
-    v.dCharacter = [0, 0];
+    // Definieert de grootte, kleur, snelheid, bewegingsrichting en botsing van elk karakter.
+        // Definieert de diameter van elk karakter.
+    v.dCharacter = [0, 0, 0, 0, 0];
         // Zorgt ervoor dat elke waarde in de array hetzelfde is zonder deze steeds te herhalen.
     v.dCharacter.fill(v.heightUnit / 2);
-    v.cCharacter = ["yellow", "red"];
-    v.characterSpeed = [0, 0];
+    v.cCharacter = ["yellow", "red", "pink", "blue", "orange"];
+    v.characterSpeed = [0, 0, 0, 0, 0];
     v.characterSpeed.fill(88 / 60 / 650 * v.innerHeight);
-    v.characterMovement = [false, false];
-        // Houdt bij wat de oude bewegingsrichting was.
-    v.previousCharacterMovement = [false, false];
-        // Houdt bij wat de volgende bewegingsrichting wordt.
-    v.nextCharacterMovement = [false, false];
-        // Houdt bij wat de huidge bewegingsrichting is. Ook waneer resetDirection wordt uitgvoerd.
-    v.previousNextCharacterMovement = [false, false];
-    v.xCharacterMovement = [false, false];
-    v.yCharacterMovement = [false, false];
-    v.collision = [false, false];
+    v.collision = [false, false, false, false, false];
+    // Definieert de modus van elke ghost. Index 0 is Hoog-Man, maar wordt niet gebruikt.
+    v.ghostMode = [null, "scatter", null, null, null];
+    v.previousGhostMode = [null, null, null, null, null];
+        // Houdt bij hoelang een ghost in een modus zit. chase, scatter, frightened.
+    v.ghostModeCounter = [[null, null, null], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    v.scatterRound = [null, 0, 0, 0, 0];
+    v.chaseRound = [null, 0, 0, 0, 0];
+        // Definieert hoe lang elke modus duurt.
+    v.scatterSequence = [7, 7, 5, 5];
+    v.chaseSequence = [20, 20, 20];
+    v.pelletThreshold = [null, null, 0, 25, 50];
+    v.pelletCounter = [null, null, 0, 25, 50];
+    // Definieert de target tile van elke ghost.
+    v.ghostTarget = [[null, null], [v.xOuter, v.yOuter + v.outerHeight], [v.xOuter, v.yOuter], [v.xOuter + v.outerWidth, v.yOuter + v.outerHeight], [v.xOuter + v.outerWidth, v.yOuter]];
+    // Functie voor het (re)setten van de posities en bewegingsrichting van elk karakter.
+    (v.setPosition = () => {
+        v.xCharacter = [v.xInner + v.widthUnit * 9.5, v.xInner + v.widthUnit * 13.5, v.xInner + v.widthUnit * 14.5, v.xInner + v.widthUnit * 15.5, v.xInner + v.widthUnit * 16.5];
+        v.yCharacter = [v.yInner + v.heightUnit * 7.5, v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5, v.yInner + v.heightUnit * 0.5];
+        v.characterMovement = [false, false, false, false, false];
+            // Definieert de oude bewegingsrichting.
+        v.previousCharacterMovement = [false, false, false, false, false];
+            // Definieert de volgende bewegingsrichting.
+        v.nextCharacterMovement = [false, "left", false, false, false];
+        v.xCharacterMovement = [false, false, false, false, false];
+        v.yCharacterMovement = [false, false, false, false, false];
+        v.ghostMode[2] = null;
+        v.ghostMode[3] = null;
+        v.ghostMode[4] = null;
+    })()
     // Definieert de coördinaten van de gesture inputs. xStart, yStart, xEnd, yEnd.
     v.gesturePosition = [null, null, null, null];
     // Zorgt ervoor dat alle barrières gecreëerd worden.
@@ -98,7 +117,7 @@ const initializeVars = () => {
         [9, 8, 10, 10], [10, 9, 11, 11], [11, 7, 14, 8], [13, 6, 14, 7], [15, 6, 16, 8], [1, 9, 3, 13], [4, 9, 6, 12], [7, 11, 9, 12],
         [8, 12, 9, 13], [12, 9, 13, 12], [14, 9, 17, 10], [4, 13, 7, 14], [10, 12, 11, 14], [11, 13, 14, 14], [14, 11, 16, 12], [15, 12, 16, 13]
     ];
-    for (ob in v.coordinates) {
+    for (let ob in v.coordinates) {
         const obstacle = [
             v.xInner + v.widthUnit * v.coordinates[ob][0], v.yInner + v.heightUnit * v.coordinates[ob][1],
             v.xInner + v.widthUnit * v.coordinates[ob][2], v.yInner + v.heightUnit * v.coordinates[ob][3]
@@ -109,18 +128,56 @@ const initializeVars = () => {
     v.pellets = [];
     for (let yPellet = 0; yPellet < 14; yPellet++) {
         for (let xPellet = 0; xPellet < 17; xPellet++) {
-            if (!checkCollision(xPellet, yPellet)) {v.pellets.push([xPellet, yPellet]);}
+            if (!checkCollision(0, xPellet, yPellet)) {v.pellets.push([xPellet, yPellet]);}
         }
     } // Zorgt ervoor dat de score wordt bijgehouden.
     v.score = 0;
+    v.lives = 3;
 } // Functie voor het afspelen van het intro liedje.
 // const playIntroSound = (p, introSound) => {
 //     p.push();
 //     p.noLoop();
 //     introSound.play();
 //     p.pop();
-// }
-// Functie voor het tekenen van elementen van het spelbord.
+// } // Functie voor het zetten van enkele variabelen na elke herhaling van de draw functie.
+const iterationVariables = (ch, p) => {
+    v.collision[ch] = false;
+        // Zorgt ervoor dat de framerate wordt afgerond naar het dichtstbijzijnde gehele getal.
+    v.frameRate = Math.round(p.frameRate());
+    if (v.ghostMode[ch] == null) {
+        if (v.pelletCounter[ch] == 0) {
+            setTimeout(() => {
+                v.ghostMode[ch] = "scatter";
+                v.xCharacter[ch] = v.xInner + v.widthUnit * 13.5;
+            }, 250);
+        } else if (ch > 2 && v.pelletCounter[ch -1] == 0) {v.pelletCounter[ch] = v.pelletThreshold[ch] + v.pelletThreshold[ch - 1] - (138 - v.pellets.length);}
+    }
+    if (v.ghostMode[ch] == "frightened") {
+            // Zorgt ervoor dat de frightenedTime wordt geupdatet aan de hand van hoeveel pellets er zijn. + 1 om ervoor te zorgen dat dit nooit 0 wordt.
+        v.frightenedTime = Math.round(v.pellets.length * 0.05) + 1;
+        v.characterSpeed[ch] = 88 / 60 / 650 * v.innerHeight * 0.8;
+            // Checkt hoeveel tijd er voorbij is.
+        if (Math.floor(v.ghostModeCounter[ch][2] / v.frameRate) == v.frightenedTime) {
+            v.ghostMode[ch] = v.previousGhostMode[ch];
+            v.ghostModeCounter[ch][2] = 0;
+        } v.ghostModeCounter[ch][2] += 1;
+    } else {
+        v.characterSpeed[ch] = 88 / 60 / 650 * v.innerHeight;
+        if (v.ghostMode[ch] == "scatter") {
+            if (Math.floor(v.ghostModeCounter[ch][1] / v.frameRate) == v.scatterSequence[v.scatterRound[ch]]) {
+                v.ghostMode[ch] = "chase";
+                v.ghostModeCounter[ch][1] = 0;
+                v.scatterRound[ch] += 1;
+            } v.ghostModeCounter[ch][1] += 1;
+        } else if (v.ghostMode[ch] == "chase") {
+            if (Math.floor(v.ghostModeCounter[ch][0] / v.frameRate) == v.chaseSequence[v.chaseRound[ch]]) {
+                v.ghostMode[ch] = "scatter";
+                v.ghostModeCounter[ch][0] = 0;
+                v.chaseRound[ch] += 1;
+            } v.ghostModeCounter[ch][0] += 1;
+        }
+    }
+} // Functie voor het tekenen van elementen van het spelbord.
 const drawBoardElements = p => {
     p.push();
     // Zorgt voor het tekenen van de buitenlijnen.
@@ -138,11 +195,12 @@ const drawBoardElements = p => {
     p.rect(v.xInner + v.widthUnit, v.yInner + v.innerHeight, v.widthUnit, 0);
     // Zorgt voor het weergeven van de score.
     p.fill("white");
-    p.text(`Score ${v.score}`, v.xInner, v.canvasDimension - (v.canvasDimension - v.outerHeight) / 2.5);
+    p.text(`Score: ${v.score}`, v.xInner, v.canvasDimension - (v.canvasDimension - v.outerHeight) / 2.5);
+    p.text(`Aantal levens: ${v.lives}`, v.xInner + v.widthUnit * 4, v.canvasDimension - (v.canvasDimension - v.outerHeight) / 2.5);
     // Zorgt voor het tekenen van de pellets.
     p.stroke("yellow");
     p.fill("yellow");
-    for (pe in v.pellets) {
+    for (let pe in v.pellets) {
         p.circle(
             v.xInner + v.widthUnit * (0.5 + v.pellets[pe][0]),
             v.yInner + v.heightUnit * (0.5 + v.pellets[pe][1]),
@@ -162,7 +220,7 @@ const drawBoardElements = p => {
     p.stroke("#2121DE");
     p.strokeWeight(2);
     p.fill("black");
-    for (ob in v.obstacles) {
+    for (let ob in v.obstacles) {
         p.rect(
             v.obstacles[ob][0], v.obstacles[ob][1],
             v.obstacles[ob][2] - v.obstacles[ob][0], v.obstacles[ob][3] - v.obstacles[ob][1], 4
@@ -177,18 +235,18 @@ const drawCharacters = (ch, p) => {
     p.ellipse(v.xCharacter[ch], v.yCharacter[ch], v.dCharacter[ch]);
     p.pop();
     // Zorgt ervoor dat alle karakters bewegen in hun gedefinieerde bewegingsrichting met hun gedefinieerde snelheid.
-    if (v.characterMovement[ch] === "up") {v.yCharacter[ch] -= v.characterSpeed[ch];}
-    else if (v.characterMovement[ch] === "right") {v.xCharacter[ch] += v.characterSpeed[ch];}
-    else if (v.characterMovement[ch] === "down") {v.yCharacter[ch] += v.characterSpeed[ch];}
-    else if (v.characterMovement[ch] === "left") {v.xCharacter[ch] -= v.characterSpeed[ch];}
+    if (v.characterMovement[ch] == "up") {v.yCharacter[ch] -= v.characterSpeed[ch];}
+    else if (v.characterMovement[ch] == "right") {v.xCharacter[ch] += v.characterSpeed[ch];}
+    else if (v.characterMovement[ch] == "down") {v.yCharacter[ch] += v.characterSpeed[ch];}
+    else if (v.characterMovement[ch] == "left") {v.xCharacter[ch] -= v.characterSpeed[ch];}
 } // Functie voor de bewegingen van de ghosts.
-const ghostMovement = (ch, xCharacter, yCharacter, p) => {
+const ghostMovement = (ch, p) => {
     // Functie voor het checken van de afstand tussen een ghost en Hoog-Man.
-    const checkDistance = () => {
-        const upDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.xCharacter[0], v.yCharacter[0]);
-        const rightDistance = p.dist(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0], v.yCharacter[0]);
-        const downDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.xCharacter[0], v.yCharacter[0]);
-        const leftDistance = p.dist(v.xCharacter[ch] - v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0], v.yCharacter[0]);
+    const checkDistanceToHoogMan = (xMargin, yMargin) => {
+        const upDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        const rightDistance = p.dist(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        const downDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
+        const leftDistance = p.dist(v.xCharacter[ch] - v.widthUnit * 0.5, v.yCharacter[ch], v.xCharacter[0] + v.widthUnit * xMargin, v.yCharacter[0] + v.heightUnit * yMargin);
         const distance = [upDistance, rightDistance, downDistance, leftDistance];
         const directionOrder = [];
         for (let i = 0; i < distance.length; i++) {
@@ -198,103 +256,141 @@ const ghostMovement = (ch, xCharacter, yCharacter, p) => {
             const index = distance.indexOf(smallestDistance);
             directionOrder.push(index);
             // Zorgt ervoor dat de kleinste waarde groter wordt.
-            distance[index] = distance[index] * 2;
+            distance[index] = distance[index] * 100;
+        } return directionOrder;
+    } // Functie voor het checken van de afstand tussen een ghost en zijn target tile.
+    const checkDistanceToTargetTile = () => {
+        const upDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] - v.heightUnit * 0.5, v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        const rightDistance = p.dist(v.xCharacter[ch] + v.widthUnit * 0.5, v.yCharacter[ch], v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        const downDistance = p.dist(v.xCharacter[ch], v.yCharacter[ch] + v.heightUnit * 0.5, v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        const leftDistance = p.dist(v.xCharacter[ch] - v.widthUnit * 0.5, v.yCharacter[ch], v.ghostTarget[ch][0], v.ghostTarget[ch][1]);
+        const distance = [upDistance, rightDistance, downDistance, leftDistance];
+        const directionOrder = [];
+        for (let i = 0; i < distance.length; i++) {
+            const smallestDistance = Math.min(...distance);
+            const index = distance.indexOf(smallestDistance);
+            directionOrder.push(index);
+            distance[index] = distance[index] * 100;
         } return directionOrder;
     } // Functie voor het bepalen welke richting de ghost op gaat.
     const setDirection = (directionOrder, index) => {
+        // Functie voor het checken of een ghost een bepaalde richting op kan.
+        const checkTargetDirection = (targetDirection, forbiddenDirection) => {
+            // 1. Checkt of er geen botsing plaatsvindt na de nieuwe bewegingsrichting.
+            // 2. Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de huidige.
+            // 3. Checkt of de nieuwe bewegingsrichting niet gelijk is aan de huidige. Dit voorkomt dat v.previousCharacterMovement[ch] wordt overschreven.
+            if (!checkCollisionInput(ch, targetDirection) && v.characterMovement[ch] != forbiddenDirection && v.characterMovement[ch] != targetDirection) {
+                // Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de bewegingsrichting voor de huidige. Als dit wel zo is dan mag er geen botsing plaatsvinden.
+                if (v.previousCharacterMovement[ch] != forbiddenDirection || (v.previousCharacterMovement[ch] == forbiddenDirection && v.collision[ch] == false)) {
+                    v.nextCharacterMovement[ch] = targetDirection;
+                    return true;
+                } // Checkt of de nieuwe bewegingsrichting gelijk is aan de bewegingsrichting voor de huidige en als er een botsing plaatsvindt.
+                else if (v.previousCharacterMovement[ch] == forbiddenDirection && v.collision[ch] == true) {
+                    // Zet de nieuwe bewegingsrichting na een bepaalde tijd. Dit om ervoor te zorgen dat een ghost niet meteen een nieuwe bewegingsrichting krijgt na een botsing.
+                    setTimeout(() => {
+                        v.nextCharacterMovement[ch] = targetDirection;
+                        return true;
+                    }, 50);
+                }
+            } return false;
+        } // Checkt welke richting de ghost op wil.
         switch (directionOrder[index]) {
-            // Checkt welke richting de ghost op wil.
-            case 0:
-                // 1. Checkt of er geen botsing plaatsvindt na de nieuwe bewegingsrichting.
-                // 2. Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de huidige.
-                // 3. Checkt of de nieuwe bewegingsrichting niet gelijk is aan de huidige. Dit voorkomt dat v.previousCharacterMovement[ch] wordt overschreven.
-                if (!checkCollisionInput(ch, "up") && v.characterMovement[ch] != "down" && v.characterMovement[ch] != "up") {
-                    // Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de ouwde.
-                    if (v.previousCharacterMovement[ch] != "down") {
-                        v.nextCharacterMovement[ch] = "up";
-                        return true;
-                    }
-                    /*
-                    Checkt of de huidge bewegingsrichting, na resetDirection wordt dit de bewegingsrichting voordat resetDirection werd uitgevoerd,
-                    niet gelijk is aan de tegenovergestelde bewegingsrichting na een botsing.
-                    */
-                    else if (v.previousNextCharacterMovement[ch] != "down" && v.collision[ch] === true) {
-                        // Zet de nieuwe bewegingsrichting na een bepaalde tijd. Dit om ervoor te zorgen dat een ghost niet meteen een nieuwe bewegingsrichting krijgt na een botsing.
-                        setTimeout(() => {
-                            v.nextCharacterMovement[ch] = "up";
-                            return true;
-                        }, 50);
-                    } // Zet meteen de nieuwe bewegingsrichting. Dit om ervoor te zorgen dat een ghost meteen een nieuwe bewegingsrichting krijgt, terwijl er geen botsing is.
-                    else if (v.previousNextCharacterMovement[ch] != "down" && v.collision[ch] === false) {
-                        v.nextCharacterMovement[ch] = "up";
-                        return true;
-                    }
-                } break;
-            case 1:
-                if (!checkCollisionInput(ch, "right") && v.characterMovement[ch] != "left" && v.characterMovement[ch] != "right") {
-                    if (v.previousCharacterMovement[ch] != "left") {
-                        v.nextCharacterMovement[ch] = "right";
-                        return true;
-                    } else if (v.previousNextCharacterMovement[ch] != "left" && v.collision[ch] === true) {
-                        setTimeout(() => {
-                            v.nextCharacterMovement[ch] = "right";
-                            return true;
-                        }, 50);
-                    } else if (v.previousNextCharacterMovement[ch] != "left" && v.collision[ch] === false) {
-                        v.nextCharacterMovement[ch] = "right";
-                        return true;
-                    }
-                } break;
-            case 2:
-                if (!checkCollisionInput(ch, "down") && v.characterMovement[ch] != "up" && v.characterMovement[ch] != "down") {
-                    if (v.previousCharacterMovement[ch] != "up") {
-                        v.nextCharacterMovement[ch] = "down";
-                        return true;
-                    } else if (v.previousNextCharacterMovement[ch] != "up" && v.collision[ch] === true) {
-                        setTimeout(() => {
-                            v.nextCharacterMovement[ch] = "down";
-                            return true;
-                        }, 50);
-                    } else if (v.previousNextCharacterMovement[ch] != "up" && v.collision[ch] === false) {
-                        v.nextCharacterMovement[ch] = "down";
-                        return true;
-                    }
-                } break;
-            case 3:
-                if (!checkCollisionInput(ch, "left") && v.characterMovement[ch] != "right" && v.characterMovement[ch] != "left") {
-                    if (v.previousCharacterMovement[ch] != "right") {
-                        v.nextCharacterMovement[ch] = "left";
-                        return true;
-                    } else if (v.previousNextCharacterMovement[ch] != "right" && v.collision[ch] === true) {
-                        setTimeout(() => {
-                            v.nextCharacterMovement[ch] = "left";
-                            return true;
-                        }, 50);
-                    } else if (v.previousNextCharacterMovement[ch] != "right" && v.collision[ch] === false) {
-                        v.nextCharacterMovement[ch] = "left";
-                        return true;
-                    }
-                } break;
-        } return false;
-    }
-    if (ch == 1) {
-        // Checkt of de voorkeursrichting is toegestaan. Anders probeert de ghost de volgende voorkeursrichting. === false zorgt ervoor dat de functie niet te vaak wordt aangeroepen.
-        if (!setDirection(checkDistance(), 0) && v.characterMovement[ch] === false) {
-            if (!setDirection(checkDistance(), 1) && v.characterMovement[ch] === false) {
-                if (!setDirection(checkDistance(), 2) && v.characterMovement[ch] === false) {
-                    setDirection(checkDistance(), 3);
+            case 0: return checkTargetDirection("up", "down");
+            case 1: return checkTargetDirection("right", "left");
+            case 2: return checkTargetDirection("down", "up");
+            case 3: return checkTargetDirection("left", "right");
+        }
+    } // Functie voor het checken of de voorkeursrichting is toegestaan. Anders probeert de ghost de volgende voorkeursrichting. == false zorgt ervoor dat de functie niet te vaak wordt aangeroepen.
+    const movementSequence = (directionOrder) => {
+        if (!setDirection(directionOrder, 0) && v.characterMovement[ch] == false) {
+            if (!setDirection(directionOrder, 1) && v.characterMovement[ch] == false) {
+                if (!setDirection(directionOrder, 2) && v.characterMovement[ch] == false) {
+                    setDirection(directionOrder, 3);
+                }
+            }
+        }
+    } // Checkt of een ghost deze functie aanroept.
+    if (ch > 0) { // Checkt in welke modus een ghost zit.
+        if (v.ghostMode[ch] == "chase") { // Checkt welke ghost moet bewegen.
+            if (ch == 1) {movementSequence(checkDistanceToHoogMan(0, 0));}
+            else if (ch == 2) {
+                let directionOrder = null;
+                // Zorgt ervoor dat de target tile voor Hoog-Mans bewegingsrichting is.
+                switch (v.characterMovement[0]) {
+                    case "up": directionOrder = checkDistanceToHoogMan(0, -4); break;
+                    case "right": directionOrder = checkDistanceToHoogMan(4, 0); break;
+                    case "down": directionOrder = checkDistanceToHoogMan(0, 4); break;
+                    case "left": directionOrder = checkDistanceToHoogMan(-4, 0); break;
+                    default:
+                        switch (v.previousCharacterMovement[0]) {
+                            case "up": directionOrder = checkDistanceToHoogMan(0, -4); break;
+                            case "right": directionOrder = checkDistanceToHoogMan(4, 0); break;
+                            case "down": directionOrder = checkDistanceToHoogMan(0, 4); break;
+                            case "left": directionOrder = checkDistanceToHoogMan(-4, 0); break;
+                            // Zorgt ervoor dat een ghost altij een doel heeft.
+                            default: directionOrder = checkDistanceToHoogMan(0, 0); break;
+                        } break;
+                } movementSequence(directionOrder);
+            } else if (ch == 3) {
+                let directionOrder = null;
+                switch (v.characterMovement[0]) {
+                    case "up": directionOrder = checkDistanceToHoogMan(-2, -2); break;
+                    case "right": directionOrder = checkDistanceToHoogMan(2, 2); break;
+                    case "down": directionOrder = checkDistanceToHoogMan(2, 2); break;
+                    case "left": directionOrder = checkDistanceToHoogMan(-2, -2); break;
+                    default:
+                        switch (v.previousCharacterMovement[0]) {
+                            case "up": directionOrder = checkDistanceToHoogMan(-2, -2); break;
+                            case "right": directionOrder = checkDistanceToHoogMan(2, 2); break;
+                            case "down": directionOrder = checkDistanceToHoogMan(2, 2); break;
+                            case "left": directionOrder = checkDistanceToHoogMan(-2, -2); break;
+                            default: directionOrder = checkDistanceToHoogMan(0, 0); break;
+                        } break;
+                } movementSequence(directionOrder);
+            } else if (ch == 4) {
+                if ( // Checkt of de ghost binnen 8 tiles is.
+                    v.xCharacter[ch] > v.xCharacter[0] + v.widthUnit * 8 || v.xCharacter[ch] < v.xCharacter[0] - v.widthUnit * 8 ||
+                    v.yCharacter[ch] > v.yCharacter[0] + v.heightUnit * 8 || v.yCharacter[ch] < v.yCharacter[0] - v.heightUnit * 8
+                ) {movementSequence(checkDistanceToHoogMan(0, 0));}
+                else {movementSequence(checkDistanceToTargetTile());}
+            }
+        } else if (v.ghostMode[ch] == "scatter") {movementSequence(checkDistanceToTargetTile());}
+        else if (v.ghostMode[ch] == "frightened") {
+                // Zorgt voor een random bewegingsrichting volgorde.
+            const directionOrder = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
+                // Zorgt voor een random nummer van 0 tot 4.
+            let randomIndex = Math.floor(Math.random() * 4);
+            if (!setDirection(directionOrder, randomIndex) && v.characterMovement[ch] == false) {
+                    // Zorgt ervoor dat je niet twee keer dezelfde bewegingsrichtingen kunt krijgen.
+                directionOrder.splice(randomIndex, 1);
+                randomIndex = Math.floor(Math.random() * 2);
+                if (!setDirection(directionOrder, randomIndex) && v.characterMovement[ch] == false) {
+                    directionOrder.splice(randomIndex, 1);
+                    randomIndex = Math.floor(Math.random() * 1);
+                } if (!setDirection(directionOrder, randomIndex) && v.characterMovement[ch] == false) {
+                    directionOrder.splice(randomIndex, 1);
+                    setDirection(directionOrder, 0)
                 }
             }
         }
     }
 } // Functie voor het checken of er een botsing plaatsvindt met een barrière.
-const checkCollision = (ch, xIndex, yIndex) => {
-    for (ob in v.obstacles) {
+const checkCollision = (ch, xPellet, yPellet, p) => {
+    // Checkt of een ghost botst met Hoog-Man.
+    if (ch > 0) {
+        if (
+            v.xCharacter[ch] + v.dCharacter[ch] / 3 >= v.xCharacter[0] - v.dCharacter[0] / 3 &&
+            v.xCharacter[ch] - v.dCharacter[ch] / 3 <= v.xCharacter[0] + v.dCharacter[0] / 3 &&
+            v.yCharacter[ch] + v.dCharacter[ch] / 3 >= v.yCharacter[0] - v.dCharacter[0] / 3 &&
+            v.yCharacter[ch] - v.dCharacter[ch] / 3 <= v.yCharacter[0] + v.dCharacter[0] / 3
+        ) {endGame(p);}
+    }
+    for (let ob in v.obstacles) {
         // Checkt of een pellet botst met een barrière.
-        if (typeof xIndex != "undefined" && typeof yIndex != "undefined") {
+        if (typeof xPellet != "undefined" && typeof yPellet != "undefined") {
             if (
-                v.xInner + v.widthUnit * (0.5 + xIndex) > v.obstacles[ob][0] && v.xInner + v.widthUnit * (0.5 + xIndex) < v.obstacles[ob][2] &&
-                v.yInner + v.heightUnit * (0.5 + yIndex) > v.obstacles[ob][1] && v.yInner + v.heightUnit * (0.5 + yIndex) < v.obstacles[ob][3]
+                v.xInner + v.widthUnit * (0.5 + xPellet) > v.obstacles[ob][0] && v.xInner + v.widthUnit * (0.5 + xPellet) < v.obstacles[ob][2] &&
+                v.yInner + v.heightUnit * (0.5 + yPellet) > v.obstacles[ob][1] && v.yInner + v.heightUnit * (0.5 + yPellet) < v.obstacles[ob][3]
             ) {return true;}
         } // Checkt of een karakter botst met een barrière.
         else if ( // -1 als marge tussen een karakter en een barrière. Anders is deze statement altijd waar.
@@ -310,8 +406,8 @@ const checkCollision = (ch, xIndex, yIndex) => {
     } return false;
 } // Functie voor het checken of er een botsing plaatsvindt met een barrière of een buitenlijn na een key input.
 const checkCollisionInput = (ch, nextCharacterMovement) => {
-    for (ob in v.obstacles) {
-        if (nextCharacterMovement === "up") {
+    for (let ob in v.obstacles) {
+        if (nextCharacterMovement == "up") {
             // Checkt of Hoog-Man door een gat in de buitenlijnen gaat.
             if (
                 v.xCharacter[ch] > v.xInner + v.widthUnit &&
@@ -333,13 +429,13 @@ const checkCollisionInput = (ch, nextCharacterMovement) => {
                 // Positie onder de barrière.
                 v.yCharacter[ch] - v.heightUnit * 0.55 <= v.obstacles[ob][3]
             ) {return true;}
-        } else if (nextCharacterMovement === "right") {
+        } else if (nextCharacterMovement == "right") {
             if (v.xCharacter[ch] > v.xInner + v.widthUnit * 16 && v.xCharacter[ch] < v.xInner + v.widthUnit * 17) {return true;}
             else if (
                 v.xCharacter[ch] + v.widthUnit * 0.55 >= v.obstacles[ob][0] && v.xCharacter[ch] - v.widthUnit * 0.45 <= v.obstacles[ob][2] &&
-                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
+                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]
             ) {return true;}
-        } else if (nextCharacterMovement === "down") {
+        } else if (nextCharacterMovement == "down") {
             if (
                 v.xCharacter[ch] > v.xInner + v.widthUnit && v.xCharacter[ch] < v.xInner + v.widthUnit * 2 &&
                 v.yCharacter[ch] > v.yInner + v.heightUnit * 13 && v.yCharacter[ch] < v.yInner + v.heightUnit * 14 && ch == 0
@@ -347,62 +443,53 @@ const checkCollisionInput = (ch, nextCharacterMovement) => {
             else if (v.yCharacter[ch] > v.yInner + v.heightUnit * 13 && v.yCharacter[ch] < v.yInner + v.heightUnit * 14) {return true;}
             else if (
                 v.xCharacter[ch] + v.widthUnit * 0.45 >= v.obstacles[ob][0] && v.xCharacter[ch] - v.widthUnit * 0.45 <= v.obstacles[ob][2] &&
-                v.yCharacter[ch] + v.heightUnit * 0.55 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
+                v.yCharacter[ch] + v.heightUnit * 0.55 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]
             ) {return true;}
-        } else if (nextCharacterMovement === "left") {
+        } else if (nextCharacterMovement == "left") {
             if (v.xCharacter[ch] > v.xInner && v.xCharacter[ch] < v.xInner + v.widthUnit) {return true;}
             else if (
                 v.xCharacter[ch] + v.widthUnit * 0.45 >= v.obstacles[ob][0] && v.xCharacter[ch] - v.widthUnit * 0.55 <= v.obstacles[ob][2] &&
-                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]                
+                v.yCharacter[ch] + v.heightUnit * 0.45 >= v.obstacles[ob][1] && v.yCharacter[ch] - v.heightUnit * 0.45 <= v.obstacles[ob][3]
             ) {return true;}
         }
     } return false;
+}
+const endGame = p => {
+    v.setPosition();
+    v.lives -= 1;
+    if (v.lives == 0) {
+        p.noLoop();
+        document.querySelector("#gameEndContainer").style.display = "flex";
+        document.querySelector("#gameEndContainer p").innerText += v.score;
+        document.querySelector("#again").addEventListener("click", () => {
+            document.querySelector("#gameEndContainer").style.display = "none";
+            v.game.remove();
+            v.game = new p5(sketch);
+        });
+        document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+    } else {
+
+    }
 } // Functie voor het simuleren van een key press.
 const checkDirection = ch => {
-    if (v.nextCharacterMovement[ch] != false) {v.previousNextCharacterMovement[ch] = v.nextCharacterMovement[ch];}
     switch (v.nextCharacterMovement[ch]) {
-        case "up": upPress(ch); break;
-        case "right": rightPress(ch); break;
-        case "down": downPress(ch); break;
-        case "left": leftPress(ch); break;
+        case "up": keyPress(ch, "up"); break;
+        case "right": keyPress(ch, "right"); break;
+        case "down": keyPress(ch, "down"); break;
+        case "left": keyPress(ch, "left"); break;
     }
 } // Functies voor het laten bewegen van een karakter.
-const upPress = ch => {
+const keyPress = (ch, targetDirection) => {
     // Checkt of er geen botsing plaatsvindt.
-    if (!checkCollisionInput(ch, "up")) {
+    if (!checkCollisionInput(ch, targetDirection)) {
         if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
         resetDirection(ch);
-        v.characterMovement[ch] = "up";
-        constrainPostion(ch);
-    }
-}
-const rightPress = ch => {
-    if (!checkCollisionInput(ch, "right")) {
-        if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
-        resetDirection(ch);
-        v.characterMovement[ch] = "right";
-        constrainPostion(ch);
-    }
-}
-const downPress = ch => {
-    if (!checkCollisionInput(ch, "down")) {
-        if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
-        resetDirection(ch);
-        v.characterMovement[ch] = "down";
-        constrainPostion(ch);
-    }
-}
-const leftPress = ch => {
-    if (!checkCollisionInput(ch, "left")) {
-        if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
-        resetDirection(ch);
-        v.characterMovement[ch] = "left";
+        v.characterMovement[ch] = targetDirection;
         constrainPostion(ch);
     }
 } // Functie voor het resetten van een karakters bewegingsrichting.
 const resetDirection = (ch, afterCollision) => {
     if (v.characterMovement[ch] != false) {v.previousCharacterMovement[ch] = v.characterMovement[ch];}
-    if (v.nextCharacterMovement[ch] != false) {v.previousNextCharacterMovement[ch] = v.nextCharacterMovement[ch];}
     v.characterMovement[ch] = false;
     v.xCharacterMovement[ch] = false;
     v.yCharacterMovement[ch] = false;
@@ -412,8 +499,8 @@ const resetDirection = (ch, afterCollision) => {
     if (afterCollision) {constrainPostion(ch);}
 } // Functie voor het beperken van een karakter zodat hij altijd een vaste x of y positie heeft.
 const constrainPostion = ch => {
-    if (v.characterMovement[ch] === "left" || v.characterMovement[ch] === "right") {v.xCharacterMovement[ch] = true;}
-    else if (v.characterMovement[ch] === "up" || v.characterMovement[ch] === "down") {v.yCharacterMovement[ch] = true;}
+    if (v.characterMovement[ch] == "left" || v.characterMovement[ch] == "right") {v.xCharacterMovement[ch] = true;}
+    else if (v.characterMovement[ch] == "up" || v.characterMovement[ch] == "down") {v.yCharacterMovement[ch] = true;}
     // Zorgt voor een vaste positie van een karakter ten opzichte van de y-as.
     if (v.xCharacterMovement[ch]) {
         for (let i = 0; i < 14; i++) {
@@ -534,8 +621,8 @@ const gameStartup = () => {
 } // Functie voor het checken welke input methode er wordt gebruikt.
 const getInputMethod = () => {
     const inputControls = document.getElementsByName("controls");
-    if (inputControls[0].checked || v.gameInput === "keyboard") {v.gameInput = "keyboard";}
-    else if (inputControls[1].checked || v.gameInput === "touch") {
+    if (inputControls[0].checked || v.gameInput == "keyboard") {v.gameInput = "keyboard";}
+    else if (inputControls[1].checked || v.gameInput == "touch") {
         v.gameInput = "touch";
         setupTouchControls();
     } else {v.gameInput = "gestures";}
@@ -545,7 +632,7 @@ const setupTouchControls = () => {
     touchControlsContainer.style.display = "flex";
     const touchControls = document.getElementsByClassName("touchControls");
     // Zorgt ervoor dat de touch besturingselementen worden aangepast voor een landscape client.
-    if (v.orientation === "landscape") {
+    if (v.orientation == "landscape") {
         const touchElementWidth = (document.querySelector("html").offsetWidth - v.canvasDimension) / 2;
         touchControlsContainer.style.width = `${touchElementWidth}px`;
         touchControlsContainer.style.height = "100%";
@@ -556,7 +643,7 @@ const setupTouchControls = () => {
             touchControls[i].classList.add("touchLandscape");
         }
     } // Zorgt ervoor dat de touch besturingselementen worden aangepast voor een portrait client.
-    else if (v.orientation === "portrait") {
+    else if (v.orientation == "portrait") {
         const touchElementHeight = (document.querySelector("html").offsetHeight - v.canvasDimension) / 2;
         touchControlsContainer.style.height = `${touchElementHeight}px`;
         touchControlsContainer.style.width = "100%";
@@ -569,7 +656,6 @@ const setupTouchControls = () => {
     }
 } // Functie voor het correcte copyright jaar. Dit is een directe functie die meteen wordt uitgevoerd.
 (() => {
-    let year = new Date;
-    year = year.getFullYear();
+    const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
 })()

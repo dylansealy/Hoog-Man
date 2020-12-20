@@ -53,7 +53,7 @@ Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code
 9. [Fetch](#Git-commandos) alles van de server en Git is klaar voor gebruik.
 10. Ga naar je bureaublad en voeg een nieuwe shortcut toe.
 11. In het dialoogvenster voer het volgende in: "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --disable-gpu --user-data-dir=~/chromeTemp
-12. Je moet alle Chrome vensters sluiten voordat deze snelkoppeling werkt. Bij deze snelkoppeling worden sommige beveiligingsmaatregelen uitgeschakeld zoals 
+12. Je moet alle Chrome vensters sluiten voordat deze snelkoppeling werkt. Bij deze snelkoppeling worden sommige beveiligingsmaatregelen uitgeschakeld zoals
 Cross-Origin Resource Sharing (CORS) dus gebruik deze alleen voor het PO.
 
 ### Gitpod
@@ -69,7 +69,7 @@ Hieronder een overzicht van alle belangrijke Git commando's. Andere commando's z
 * git help: Laat een overzicht zien van alle commando's.
 * git status: Geeft de status in jouw huidige situatie en branch.
 * git log: Laat een overzicht zien van alle commits in jouw huidige branch.
-* git switch (branch): Verandert jouw huidige branch. Let op, de naam van de branch is hoofdlettergevoelig! 
+* git switch (branch): Verandert jouw huidige branch. Let op, de naam van de branch is hoofdlettergevoelig!
 * git fetch: Downloadt alle nieuwe commits van de server.
 * git pull: Voegt de gedownloade commits samen met jouw veranderingen, ongeacht of ze gecommit zijn.
 * git add . : Voegt alle bestanden in de huidige en onderliggende mappen toe om gecommit te worden.
@@ -92,7 +92,7 @@ Dit is de branch waarin er fouten in de code worden verbeterd en waarin de code 
 ### Branch protection regels
 Voor de master branch zijn er enkele branch protection regels ingesteld. Deze regels zijn er om fouten te voorkomen. Je zult waarschijnlijk niet veel van deze regels merken, omdat ik me vooral met deze branch zal bezig houden. De regels houden in:
 1. Je kunt niet naar deze branch pushen dus zorg ervoor dat je nooit werkt in deze branch.
-2. Enkele geautomatiseerde checks moeten slagen voordat een pull request geaccepteerd kan worden. 
+2. Enkele geautomatiseerde checks moeten slagen voordat een pull request geaccepteerd kan worden.
 
 ## Adviezen en fouten
 Hieronder kun je adviezen vinden en oplossingen vinden voor fouten in Git of in je code.
