@@ -88,7 +88,7 @@ export class Character {
             return false;
         };
         this.checkNextMovement = () => {
-            if (!this.checkCollisionInput() && this.nextMovement != this.movement) {
+            if (!this.checkCollisionInput() && this.nextMovement != this.movement && this.nextMovement != null) {
                 if (this.movement != null) {
                     this.previousMovement = this.movement;
                 }

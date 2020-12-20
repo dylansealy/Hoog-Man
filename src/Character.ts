@@ -117,7 +117,7 @@ export class Character implements CharacterInterface {
         } return false;
     }
     checkNextMovement: () => void = () => {
-        if (!this.checkCollisionInput() && this.nextMovement != this.movement) {
+        if (!this.checkCollisionInput() && this.nextMovement != this.movement && this.nextMovement != null) {
             if (this.movement != null) {this.previousMovement = this.movement;}
             const newMovement = this.nextMovement;
             this.resetMovement(false);

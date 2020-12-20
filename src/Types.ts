@@ -67,7 +67,6 @@ export interface CharacterInterface {
     checkNextMovement: () => void;
     constrainPosition: () => void;
     draw: () => void;
-    keyPress: () => void;
     resetMovement: (afterCollision: boolean) => void;
 }
 export interface HoogManInterface extends CharacterInterface {

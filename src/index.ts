@@ -24,7 +24,10 @@ const sketch = (p: p5) => {
         p.noFill();
         v.gameBoard.draw();
         for (let obstacle in v.obstacles) {v.obstacles[obstacle].draw();}
-        for (let pellet in v.pellets) {v.pellets[pellet].draw();}
+        for (let pellet in v.pellets) {
+            v.pellets[pellet].draw();
+            v.pellets[pellet].checkEaten(pellet);
+        }
         v.hoogMan.draw();
         v.hoogMan.collision = false;
         v.hoogMan.checkCollision();

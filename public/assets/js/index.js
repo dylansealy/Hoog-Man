@@ -27,6 +27,7 @@ const sketch = (p) => {
         }
         for (let pellet in v.pellets) {
             v.pellets[pellet].draw();
+            v.pellets[pellet].checkEaten(pellet);
         }
         v.hoogMan.draw();
         v.hoogMan.collision = false;
