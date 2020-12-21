@@ -81,7 +81,6 @@ export interface CharacterInterface {
     yPosition: number;
     xStartPosition: number;
     yStartPosition: number;
-
     draw: () => void;
     checkCollision: () => void;
     checkNextMovement: () => void;
@@ -102,9 +101,9 @@ export interface GhostInterface extends CharacterInterface {
     scatterRound: number;
     scatterSequence: Array<number>;
     previousMode: GhostMode;
-        // Wordt voor Blinky gedefinieerd in zijn eigen class. TS(6)
+        // Property wordt voor Blinky gedefinieerd in zijn eigen class. TS(6)
     mode: GhostMode;
-    // Wordt gedefinieerd in de ghosts hun eigen class. TS(6)
+    // Properties en method worden gedefinieerd in de ghosts hun eigen class. TS(6)
     pelletCounter: number;
     pelletThreshold: number;
     xTargetTile: number;
