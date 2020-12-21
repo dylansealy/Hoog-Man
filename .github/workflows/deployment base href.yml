@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 12
       - name: Install dependencies
-        run: npm install
+        run: npm install --only=prod
       - name: Update base href
         run: node scripts/dep.js
       - name: Commit changes
