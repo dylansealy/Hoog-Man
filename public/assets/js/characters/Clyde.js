@@ -1,5 +1,5 @@
-import { Ghost } from "../assets/Ghost.js";
-export class Clyde extends Ghost {
+import Ghost from "../assets/Ghost.js";
+export default class Clyde extends Ghost {
     constructor(p, v) {
         super(p, v);
         this.setMovement = () => {

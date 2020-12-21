@@ -1,9 +1,15 @@
+import {Color, GameVariables, HoogManInterface, Name} from "../Types";
+import Character from "../assets/Character.js";
 import p5 from "p5";
-import {Character} from "../assets/Character.js";
-import {GameVariables, HoogManInterface} from "../Types";
 
-export class HoogMan extends Character implements HoogManInterface {
+export default class HoogMan extends Character implements HoogManInterface {
+    color: Color;
     lives: number;
+    name: Name;
+    xPosition: number;
+    yPosition: number;
+    xStartPosition: number;
+    yStartPosition: number;
     constructor(p: p5, v: GameVariables) {
         super(p, v);
         this.color = "yellow";

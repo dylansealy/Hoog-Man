@@ -1,7 +1,62 @@
-import { Character } from "./Character.js";
-export class Ghost extends Character {
+import Character from "./Character.js";
+export default class Ghost extends Character {
     constructor(p, v) {
         super(p, v);
+        this.iterationVariables = () => {
+            if (this.mode == null) {
+                if (this.pelletCounter == 0) {
+                    setTimeout(() => {
+                        this.mode = "scatter";
+                        this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
+                    }, 250);
+                }
+                else if (this.name == "Inky" || this.name == "Clyde") {
+                    if (this.name == "Inky") {
+                        this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);
+                    }
+                    else if (this.name == "Clyde" && this.v.inky.pelletCounter == 0) {
+                        this.pelletCounter = this.pelletThreshold + this.v.inky.pelletThreshold - (138 - this.v.pellets.length);
+                    }
+                }
+            }
+            else if (this.mode == "frightened") {
+                this.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
+                this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.8;
+                if (Math.floor(this.frightenedCounter / this.v.gameBoard.frameRate) == this.frightenedTime) {
+                    this.mode = this.previousMode;
+                    this.frightenedCounter = 0;
+                }
+                this.frightenedCounter++;
+            }
+            else {
+                this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
+                if (this.mode == "scatter") {
+                    if (Math.floor(this.scatterCounter / this.v.gameBoard.frameRate) == this.scatterSequence[this.scatterRound]) {
+                        this.mode = "chase";
+                        this.scatterCounter = 0;
+                        this.scatterRound++;
+                    }
+                    this.scatterCounter++;
+                }
+                else {
+                    if (Math.floor(this.chaseCounter / this.v.gameBoard.frameRate) == this.chaseSequence[this.chaseRound]) {
+                        this.mode = "scatter";
+                        this.chaseCounter = 0;
+                        this.chaseRound++;
+                    }
+                    this.chaseCounter++;
+                }
+            }
+        };
+        this.movementSequence = movementOrder => {
+            if (!this.setNextMovement(movementOrder, 0) && this.movement == null) {
+                if (!this.setNextMovement(movementOrder, 1)) {
+                    if (!this.setNextMovement(movementOrder, 2)) {
+                        this.setNextMovement(movementOrder, 3);
+                    }
+                }
+            }
+        };
         this.checkDistanceTarget = (target, xMargin, yMargin) => {
             let xTarget = 0;
             let yTarget = 0;
@@ -58,15 +113,6 @@ export class Ghost extends Character {
                 case 3: return checkPossibilityMovement("left", "right");
             }
         };
-        this.movementSequence = movementOrder => {
-            if (!this.setNextMovement(movementOrder, 0) && this.movement == null) {
-                if (!this.setNextMovement(movementOrder, 1)) {
-                    if (!this.setNextMovement(movementOrder, 2)) {
-                        this.setNextMovement(movementOrder, 3);
-                    }
-                }
-            }
-        };
         this.frightenedMovement = () => {
             const movementOrder = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
             let randomIndex = Math.floor(Math.random() * 4);
@@ -83,52 +129,6 @@ export class Ghost extends Character {
                 }
             }
         };
-        this.iterationVariables = () => {
-            if (this.mode == null) {
-                if (this.pelletCounter == 0) {
-                    setTimeout(() => {
-                        this.mode = "scatter";
-                        this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
-                    }, 250);
-                }
-                else if (this.name == "Inky" || this.name == "Clyde") {
-                    if (this.name == "Inky") {
-                        this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);
-                    }
-                    else if (this.name == "Clyde" && this.v.inky.pelletCounter == 0) {
-                        this.pelletCounter = this.pelletThreshold + this.v.inky.pelletThreshold - (138 - this.v.pellets.length);
-                    }
-                }
-            }
-            else if (this.mode == "frightened") {
-                this.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
-                this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.8;
-                if (Math.floor(this.frightenedCounter / this.v.gameBoard.frameRate) == this.frightenedTime) {
-                    this.mode = this.previousMode;
-                    this.frightenedCounter = 0;
-                }
-                this.frightenedCounter++;
-            }
-            else {
-                this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
-                if (this.mode == "scatter") {
-                    if (Math.floor(this.scatterCounter / this.v.gameBoard.frameRate) == this.scatterSequence[this.scatterRound]) {
-                        this.mode = "chase";
-                        this.scatterCounter = 0;
-                        this.scatterRound++;
-                    }
-                    this.scatterCounter++;
-                }
-                else {
-                    if (Math.floor(this.chaseCounter / this.v.gameBoard.frameRate) == this.chaseSequence[this.chaseRound]) {
-                        this.mode = "scatter";
-                        this.chaseCounter = 0;
-                        this.chaseRound++;
-                    }
-                    this.chaseCounter++;
-                }
-            }
-        };
         this.chaseCounter = 0;
         this.chaseRound = 0;
         this.chaseSequence = [20, 20, 20];
@@ -138,5 +138,6 @@ export class Ghost extends Character {
         this.scatterRound = 0;
         this.scatterSequence = [7, 7, 5, 5];
         this.previousMode = null;
+        this.mode = null;
     }
 }

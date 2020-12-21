@@ -1,5 +1,8 @@
+// Import om fouten in de TSC te voorkomen. TS(1)
 import p5 from "p5";
+// Definieert aan welke vorm een class/object minimaal moet voldoen. TS(2)
 export interface GameVariables {
+        // Koppelt een interface aan een propertie. TS(3)
     blinky: GhostInterface;
     clyde: GhostInterface;
     hoogMan: HoogManInterface;
@@ -7,11 +10,16 @@ export interface GameVariables {
     pinky: GhostInterface;
     game: p5;
     gameBoard: GameBoardInterface;
+        // Type geeft aan dat het datatype een array is bestaande uit alleen maar cijfers.
     gesturePosition: Array<number>;
+        // Type geeft aan dat de property alleen gelijk mag zijn aan de gedifinieerde waarden. TS(4)
     inputMethod: "keyboard" | "touch" | "gestures";
+        // Type geeft aan dat het dataype een array is die weer bestaat uit een array van cijfers.
     obstacleCoordinates: Array<Array<number>>;
+        // Type geeft aan dat het datatype een array is die bestaat uit childs van de interface.
     obstacles: Array<ObstacleInterface>;
     pellets: Array<PelletInterface>;
+        // Type geeft aan dat de functie niets returned. TS(5)
     endGame: () => void;
 }
 export interface GameBoardInterface {
@@ -43,8 +51,9 @@ export interface PelletInterface {
     xPosition: number;
     yPosition: number;
     checkCollisionObstacle: () => boolean;
-    checkEaten: (index: number) => void;
     draw: () => void;
+        // Definieert de parameter en bijbehorende datatype van een functie.
+    checkEaten: (index: number) => void;
 }
 export interface ObstacleInterface {
     height: number;
@@ -57,53 +66,58 @@ export interface ObstacleInterface {
 }
 export interface CharacterInterface {
     collision: boolean;
-    color: Color;
     diameter: number;
+        // Type geeft aan dat de property alleen gelijk mag zijn aan de waarden van de zelfgedefinieerde type. TS(4)
     previousMovement: Movement;
     movement: Movement;
     nextMovement: Movement;
-    name: Name;
     p: p5;
     speed: number;
     v: GameVariables;
+    // Properties worden gedefinieerd in de HoogMan class of in een child van de Ghost class. TS(6)
+    color: Color;
+    name: Name;
     xPosition: number;
     yPosition: number;
     xStartPosition: number;
     yStartPosition: number;
-    checkCollision: () => void;
-    checkCollisionInput: (targetDirection: Movement) => boolean;
-    checkNextMovement: () => void;
-    constrainPosition: () => void;
+
     draw: () => void;
+    checkCollision: () => void;
+    checkNextMovement: () => void;
     resetMovement: (afterCollision: boolean) => void;
+    checkCollisionInput: (targetDirection: Movement) => boolean;
+    constrainPosition: () => void;
     resetCharacter: () => void;
 }
-export interface HoogManInterface extends CharacterInterface {
-    lives: number;
-}
+// Extends zorgt ervoor dat properties en methods worden overgenomen. TS(7)
+export interface HoogManInterface extends CharacterInterface {lives: number;}
 export interface GhostInterface extends CharacterInterface {
     chaseCounter: number;
     chaseRound: number;
     chaseSequence: Array<number>;
     frightenedCounter: number;
-    frightenedRound: number;
     frightenedTime: number;
     scatterCounter: number;
     scatterRound: number;
     scatterSequence: Array<number>;
     previousMode: GhostMode;
+        // Wordt voor Blinky gedefinieerd in zijn eigen class. TS(6)
     mode: GhostMode;
+    // Wordt gedefinieerd in de ghosts hun eigen class. TS(6)
     pelletCounter: number;
     pelletThreshold: number;
     xTargetTile: number;
     yTargetTile: number;
-    checkDistanceTarget: (target: "Hoog-Man" | "Target tile", xMargin: number, yMargin: number) => Array<number>;
-    frightenedMovement: () => void;
+    setMovement: () => void;
+
     iterationVariables: () => void;
     movementSequence: (movementOrder: Array<number>) => void;
-    setMovement: () => void;
+    checkDistanceTarget: (target: "Hoog-Man" | "Target tile", xMargin: number, yMargin: number) => Array<number>;
     setNextMovement: (movementOrder: Array<number>, index: number) => boolean;
+    frightenedMovement: () => void;
 }
+// Zelfgedefinieerde typen. TS(4)
 export type Color = "yellow" | "red" | "pink" | "blue" | "orange";
 export type GhostMode = "chase" | "scatter" | "frightened";
 export type Movement = "up" | "right" | "down" | "left";

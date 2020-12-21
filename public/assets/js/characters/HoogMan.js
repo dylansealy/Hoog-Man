@@ -1,5 +1,5 @@
-import { Character } from "../assets/Character.js";
-export class HoogMan extends Character {
+import Character from "../assets/Character.js";
+export default class HoogMan extends Character {
     constructor(p, v) {
         super(p, v);
         this.color = "yellow";

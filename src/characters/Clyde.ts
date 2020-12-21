@@ -1,8 +1,18 @@
+import {Color, GameVariables, GhostInterface, Name} from "../Types";
+import Ghost from "../assets/Ghost.js";
 import p5 from "p5";
-import { Ghost } from "../assets/Ghost.js";
-import { GameVariables, GhostInterface } from "../Types";
 
-export class Clyde extends Ghost implements GhostInterface {
+export default class Clyde extends Ghost implements GhostInterface {
+    color: Color;
+    name: Name;
+    pelletCounter: number;
+    pelletThreshold: number;
+    xPosition: number;
+    yPosition: number;
+    xStartPosition: number;
+    yStartPosition: number;
+    xTargetTile: number;
+    yTargetTile: number;
     constructor(p: p5, v: GameVariables) {
         super(p, v);
         this.color = "orange";

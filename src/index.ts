@@ -1,17 +1,29 @@
+    // Import om fouten in de TSC te voorkomen. TS(1)
 import {GameVariables, GhostInterface, HoogManInterface} from "./Types";
+import Blinky from "./characters/Blinky.js";
+import Clyde from "./characters/Clyde.js";
+import HoogMan from "./characters/HoogMan.js";
+import Inky from "./characters/Inky.js";
+import Pinky from "./characters/Pinky.js";
 import GameBoard from "./gameBoard/GameBoard.js";
 import Obstacle from "./gameBoard/Obstacle.js";
 import Pellet from "./gameBoard/Pellet.js";
-import { HoogMan } from "./characters/HoogMan.js";
-import { Blinky } from "./characters/Blinky.js";
-import { Pinky } from "./characters/Pinky.js";
-import { Inky } from "./characters/Inky.js";
-import { Clyde } from "./characters/Clyde.js";
+// Sketch wordt gebruikt voor instance mode p5. HG(1)
 const sketch = (p: p5) => {
+    // Zorgt voor de volgorde waarin acties van characters gebeuren.
+    const characterSequence = (character: GhostInterface | HoogManInterface, hoogMan: boolean) => {
+        if (!hoogMan) {character.iterationVariables();}
+        character.draw();
+        character.checkCollision();
+        character.checkNextMovement();
+        if (!hoogMan) {character.setMovement();}
+    }
+    // Preload alle benodigde assets.
     p.preload = (): void => {
         p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
     }
+    // Stelt bepaalde instellingen in en zorgt ervoor dat de game kan beginnen.
     p.setup = (): void => {
         initializeVars(p);
         getInputMethod();
@@ -23,6 +35,7 @@ const sketch = (p: p5) => {
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
     }
+    // Zorgt ervoor dat alles getekend wordt en dat alle besturingselementen worden aangeroepen.
     p.draw = (): void => {
         p.background("black");
         p.noFill();
@@ -37,7 +50,9 @@ const sketch = (p: p5) => {
         characterSequence(v.pinky, false);
         characterSequence(v.inky, false);
         characterSequence(v.clyde, false);
+        // Zorgt ervoor dat alleen de gekozen input methode werkt.
         if (v.inputMethod == "keyboard") {
+            // p.keyIsDown(n) zorgt ervoor dat de WASD knoppen werken.
             if (p.keyIsDown(p.UP_ARROW) || p.keyIsDown(87)) {v.hoogMan.nextMovement = "up";}
             else if (p.keyIsDown(p.RIGHT_ARROW) || p.keyIsDown(68)) {v.hoogMan.nextMovement = "right";}
             else if (p.keyIsDown(p.DOWN_ARROW) || p.keyIsDown(83)) {v.hoogMan.nextMovement = "down";}
@@ -45,24 +60,22 @@ const sketch = (p: p5) => {
         } else if (v.inputMethod == "touch") {touchControls();}
         else if (v.inputMethod == "gestures") {gestureControls();}
     }
-    const characterSequence = (character: GhostInterface | HoogManInterface, hoogMan: boolean) => {
-        if (!hoogMan) {character.iterationVariables();}
-        character.draw();
-        character.checkCollision();
-        character.checkNextMovement();
-        if (!hoogMan) {character.setMovement();}
-    }
 }
+// Object waarin alle variabelen in de game worden opgeslagen.
 const v: GameVariables = {}
+// Zorgt ervoor dat alle benodigde variabelen voor de game worden gedeclareerd.
 const initializeVars = (p: p5): void => {
     v.gameBoard = new GameBoard(p, v);
-    v.hoogMan = new HoogMan(p, v);
     v.blinky = new Blinky(p, v);
-    v.pinky = new Pinky(p, v);
-    v.inky = new Inky(p, v);
     v.clyde = new Clyde(p, v);
+    v.hoogMan = new HoogMan(p, v);
+    v.inky = new Inky(p, v);
+    v.pinky = new Pinky(p, v);
+        // Houdt de coördinaten van de gesture inputs bij: xStart, yStart, xEnd, yEnd.
     v.gesturePosition = [null, null, null, null];
+    // Zorgt ervoor dat alle barrières gecreëerd worden in een anonieme functie. HG(2)
     (() => {
+            // Relatieve coördinaten barrières: xMin, yMin, xMax, yMax.
         v.obstacleCoordinates = [
             [1, 1, 3, 4], [4, 0, 5, 4], [6, 1, 8, 4], [9, 0, 10, 3], [11, 1, 13, 3], [14, 0, 17, 2], [0, 5, 1, 8], [2, 5, 4, 8],
             [5, 5, 7, 6], [8, 5, 9, 6], [9, 4, 10, 7], [11, 5, 12, 6], [11, 4, 16, 5], [14, 3, 16, 4], [5, 7, 6, 8], [7, 7, 8, 10],
@@ -75,9 +88,11 @@ const initializeVars = (p: p5): void => {
                 p, v, v.obstacleCoordinates[coordinates][0], v.obstacleCoordinates[coordinates][1],
                 v.obstacleCoordinates[coordinates][2], v.obstacleCoordinates[coordinates][3]
             );
+                // Zorgt ervoor dat de barrière gepusht wordt naar de obstacle array.
             v.obstacles.push(obstacle);
         }
     })();
+    // Zorgt ervoor dat alle pellets gecreëerd worden.
     (() => {
         v.pellets = [];
         for (let xPosition = 0; xPosition < 17; xPosition++) {
@@ -87,30 +102,38 @@ const initializeVars = (p: p5): void => {
             }
         }
     })();
+    // Functie voor de acties nadat Hoog-Man in contact komt met een ghost.
     v.endGame = (): void => {
-        v.hoogMan.resetCharacter();
-        v.blinky.resetCharacter();
-        v.pinky.resetCharacter();
-        v.inky.resetCharacter();
-        v.clyde.resetCharacter();
         v.hoogMan.lives--;
+        // Laat het laatste scherm zien.
         if (v.hoogMan.lives == 0) {
             p.noLoop();
-            document.querySelector("#gameEndContainer").style.display = "flex";
+            const gameEndContainer: HTMLElement = document.querySelector("#gameEndContainer");
+            gameEndContainer.style.display = "flex";
             document.querySelector("#gameEndContainer p").innerText += ` ${v.gameBoard.score}`;
             document.querySelector("#again").addEventListener("click", () => {
-                document.querySelector("#gameEndContainer").style.display = "none";
+                gameEndContainer.style.display = "none";
                 v.game.remove();
                 v.game = new p5(sketch);
             });
             document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+        } // Reset de posities van alle characters.
+        else {
+            v.blinky.resetCharacter();
+            v.clyde.resetCharacter();
+            v.hoogMan.resetCharacter();
+            v.inky.resetCharacter();
+            v.pinky.resetCharacter();
         }
     }
 }
+// Functie voor het laten werken van de touch controls.
 const touchControls = (): void => {
     const upTouch: HTMLLIElement = document.querySelector("#upTouch");
+    // Checkt of er gedrukt wordt op een knop en zet de volgende bewegingsrichting van Hoog-Man.
     upTouch.addEventListener("click", () => v.hoogMan.nextMovement = "up");
     upTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "up");
+
     const rightTouch: HTMLLIElement = document.querySelector("#rightTouch");
     rightTouch.addEventListener("click", () => v.hoogMan.nextMovement = "right");
     rightTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "right");
@@ -121,19 +144,26 @@ const touchControls = (): void => {
     leftTouch.addEventListener("click", () => v.hoogMan.nextMovement = "left");
     leftTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "left");
 }
+// Functie voor het laten werken van de gesture controls.
 const gestureControls = () => {
+    // Bepaalt welke gesture er uitgevoerd wordt.
     const checkGesture = () => {
+        // Checkt of een gesture gestart is.
         if (v.gesturePosition[0] != null && v.gesturePosition[1] != null) {
+            // v.gameBoard.*Unit als marge voor de grootte van de gesture.
             if (v.gesturePosition[3] < v.gesturePosition[1] - v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "up";}
             else if (v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.widthUnit) {v.hoogMan.nextMovement = "right";}
             else if (v.gesturePosition[3] > v.gesturePosition[1] + v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "down";}
             else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.widthUnit) {v.hoogMan.nextMovement = "left";}
         }
     }
+    // Reset de gesture.
     const resetGesture = (event: TouchEvent | MouseEvent) => {
+            // Zorgt ervoor dat de standaardactie niet gedaan wordt.
         event.preventDefault();
         v.gesturePosition = [null, null, null, null];
     }
+    // Bepaalt de start positie van een gesture.
     const main = document.querySelector("main");
     main.addEventListener("touchstart", event => {
         event.preventDefault();
@@ -145,6 +175,7 @@ const gestureControls = () => {
         v.gesturePosition[0] = event.clientX;
         v.gesturePosition[1] = event.clientY;
     });
+    // Bepaalt de eind positie van een gesture.
     main.addEventListener("touchmove", event => {
         event.preventDefault();
         v.gesturePosition[2] = event.touches[0].clientX;
@@ -157,12 +188,14 @@ const gestureControls = () => {
         v.gesturePosition[3] = event.clientY;
         checkGesture();
     });
+    // Resets de gesture nadat deze klaar is.
     main.addEventListener("touchend", event => resetGesture(event));
     main.addEventListener("mouseup", event => resetGesture(event));
     main.addEventListener("touchcancel", event => resetGesture(event));
 }
 document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
 document.querySelector("#startGame").addEventListener("click", () => {
+    // Zorgt ervoor dat de container van de game even groot wordt als het scherm.
     (() => {
         const main = document.querySelector("main");
         main.requestFullscreen();
@@ -173,22 +206,26 @@ document.querySelector("#startGame").addEventListener("click", () => {
         main.style.left = "0";
         main.style.backgroundColor = "black";
     })();
+
     v.game = new p5(sketch);
     const gameStartupContainer: HTMLElement = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
     new AudioContext;
 });
+// Zorgt ervoor dat de game responsive is.
 window.addEventListener("resize", () => {
     if (v.game) {
         v.game.remove();
         v.game = new p5(sketch);
     }
 });
+// Checkt wat de gekozen input methode is.
 const getInputMethod = () => {
     const inputMethod = document.getElementsByName("controls");
     if (inputMethod[0].checked || v.inputMethod == "keyboard") {v.inputMethod = "keyboard";}
     else if (inputMethod[1].checked || v.inputMethod == "touch") {
         v.inputMethod = "touch";
+        // Laat de touch control knoppen verschijnen.
         ((): void => {
             const touchControlsContainer = document.getElementById("touchControlsContainer");
             touchControlsContainer.style.display = "flex";
@@ -217,7 +254,8 @@ const getInputMethod = () => {
         })();
     } else {v.inputMethod = "gestures";}
 }
+// Zorgt voor het correcte copyright jaar.
 (() => {
     const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
-})()
+})();

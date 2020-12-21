@@ -1,34 +1,44 @@
+import {CharacterInterface, Color, GameVariables, Movement, Name} from "../Types";
 import p5 from "p5";
-import { CharacterInterface, Color, GameVariables, Movement, Name } from "../Types";
 
-export class Character implements CharacterInterface {
+export default class Character implements CharacterInterface {
     collision: boolean;
-    color: Color;
     diameter: number;
     previousMovement: Movement;
     movement: Movement;
-    name: Name;
     nextMovement: Movement;
     p: p5;
     speed: number;
     v: GameVariables;
+    // Properties om fouten in de TSC te voorkomen. TS(1), TS(6)
+    color: Color;
+    name: Name;
     xPosition: number;
     yPosition: number;
     xStartPosition: number;
     yStartPosition: number;
     constructor(p: p5, v: GameVariables) {
-        this.p = p;
         this.v = v;
         this.collision = false;
-        this.color = null;
         this.diameter = this.v.gameBoard.heightUnit / 2;
         this.previousMovement = null;
         this.movement = null;
-        this.name = null;
         this.nextMovement = null;
+        this.p = p;
         this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight
-        this.xPosition = null;
-        this.yPosition = null;
+    }
+    draw: () => void = () => {
+        this.p.push();
+        this.p.fill(this.color);
+        this.p.noStroke();
+        this.p.ellipse(this.xPosition, this.yPosition, this.diameter);
+        this.p.pop();
+        switch (this.movement) {
+            case "up": this.yPosition -= this.speed; break;
+            case "right": this.xPosition += this.speed; break;
+            case "down": this.yPosition += this.speed; break;
+            case "left": this.xPosition -= this.speed; break;
+        }
     }
     checkCollision: () => void = () => {
         this.collision = false;
@@ -54,6 +64,22 @@ export class Character implements CharacterInterface {
                 this.yPosition + this.v.gameBoard.heightUnit * 0.5 -1 > this.v.gameBoard.yInner + this.v.gameBoard.innerHeight
             ) {return this.resetMovement(true);}
         }
+    }
+    checkNextMovement: () => void = () => {
+        if (!this.checkCollisionInput(this.nextMovement) && this.nextMovement != this.movement && this.nextMovement != null) {
+            if (this.movement != null) {this.previousMovement = this.movement;}
+            const newMovement = this.nextMovement;
+            this.resetMovement(false);
+            this.movement = newMovement;
+            this.constrainPosition();
+        }
+    }
+    resetMovement: (afterCollision: boolean) => void = afterCollision => {
+        if (this.movement != null) {this.previousMovement = this.movement;}
+        this.collision = true;
+        this.movement = null;
+        this.nextMovement = null;
+        if (afterCollision) {this.constrainPosition();}
     }
     checkCollisionInput: (targetMovement: Movement) => boolean = targetMovement => {
         for (let obstacle in this.v.obstacles) {
@@ -127,15 +153,6 @@ export class Character implements CharacterInterface {
             }
         } return false;
     }
-    checkNextMovement: () => void = () => {
-        if (!this.checkCollisionInput(this.nextMovement) && this.nextMovement != this.movement && this.nextMovement != null) {
-            if (this.movement != null) {this.previousMovement = this.movement;}
-            const newMovement = this.nextMovement;
-            this.resetMovement(false);
-            this.movement = newMovement;
-            this.constrainPosition();
-        }
-    }
     constrainPosition: () => void = () => {
         const xConstrain = (): void => {
             for (let i = 0; i < 17; i++) {
@@ -166,34 +183,12 @@ export class Character implements CharacterInterface {
             yConstrain();
         }
     }
-    draw: () => void = () => {
-        this.p.push();
-        this.p.fill(this.color);
-        this.p.noStroke();
-        this.p.ellipse(this.xPosition, this.yPosition, this.diameter);
-        this.p.pop();
-        switch (this.movement) {
-            case "up": this.yPosition -= this.speed; break;
-            case "right": this.xPosition += this.speed; break;
-            case "down": this.yPosition += this.speed; break;
-            case "left": this.xPosition -= this.speed; break;
-        }
-    }
-    resetMovement: (afterCollision: boolean) => void = afterCollision => {
-        if (this.movement != null) {this.previousMovement = this.movement;}
-        this.collision = true;
-        this.movement = null;
-        this.nextMovement = null;
-        if (afterCollision) {this.constrainPosition();}
-    }
     resetCharacter: () => void = () => {
         this.xPosition = this.xStartPosition;
         this.yPosition = this.yStartPosition;
+        this.previousMovement = null;
         if (this.name == "Blinky") {this.movement = "left";}
         else {this.movement = null;}
-        this.previousMovement = null;
-        if (this.name != "Hoog-Man") {
-            this.mode = null;
-        }
+        if (this.name != "Hoog-Man") {this.mode = null;}
     }
 }

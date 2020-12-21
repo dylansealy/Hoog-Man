@@ -19,7 +19,6 @@ export default class GameBoard {
             this.p.pop();
         };
         this.p = p;
-        this.v = v;
         const height = document.querySelector("main").offsetHeight;
         const width = document.querySelector("main").offsetWidth;
         if (height > width) {
@@ -30,6 +29,7 @@ export default class GameBoard {
             this.canvasDimension = height - 1;
             this.orientation = "landscape";
         }
+        this.frameRate = Math.round(this.p.frameRate());
         this.xOuter = this.yOuter = this.canvasDimension / 60;
         this.xInner = this.yInner = this.xOuter * 2;
         this.innerHeight = this.canvasDimension - this.yInner * 4;
@@ -38,7 +38,7 @@ export default class GameBoard {
         this.outerWidth = this.canvasDimension - this.xOuter * 2;
         this.heightUnit = this.innerHeight / 14;
         this.widthUnit = this.innerWidth / 17;
-        this.frameRate = Math.round(this.p.frameRate());
         this.score = 0;
+        this.v = v;
     }
 }

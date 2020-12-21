@@ -1,14 +1,23 @@
+import {Color, GameVariables, GhostInterface, Name} from "../Types";
+import Ghost from "../assets/Ghost.js";
 import p5 from "p5";
-import { Ghost } from "../assets/Ghost.js";
-import { GameVariables, GhostInterface } from "../Types";
 
-export class Pinky extends Ghost implements GhostInterface {
+export default class Pinky extends Ghost implements GhostInterface {
+    color: Color;
+    name: Name;
+    pelletCounter: number;
+    pelletThreshold: number;
+    xPosition: number;
+    yPosition: number;
+    xStartPosition: number;
+    yStartPosition: number;
+    xTargetTile: number;
+    yTargetTile: number;
     constructor(p: p5, v: GameVariables) {
         super(p, v);
         this.color = "pink";
         this.name = "Pinky";
-        this.pelletCounter = 0;
-        this.pelletThreshold = 0;
+        this.pelletCounter = this.pelletThreshold = 0;
         this.xPosition = this.xStartPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 14.5;
         this.yPosition = this.yStartPosition = this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 0.5;
         this.xTargetTile = this.v.gameBoard.xOuter;

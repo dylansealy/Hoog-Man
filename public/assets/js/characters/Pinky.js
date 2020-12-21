@@ -1,5 +1,5 @@
-import { Ghost } from "../assets/Ghost.js";
-export class Pinky extends Ghost {
+import Ghost from "../assets/Ghost.js";
+export default class Pinky extends Ghost {
     constructor(p, v) {
         super(p, v);
         this.setMovement = () => {
@@ -47,8 +47,7 @@ export class Pinky extends Ghost {
         };
         this.color = "pink";
         this.name = "Pinky";
-        this.pelletCounter = 0;
-        this.pelletThreshold = 0;
+        this.pelletCounter = this.pelletThreshold = 0;
         this.xPosition = this.xStartPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 14.5;
         this.yPosition = this.yStartPosition = this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 0.5;
         this.xTargetTile = this.v.gameBoard.xOuter;

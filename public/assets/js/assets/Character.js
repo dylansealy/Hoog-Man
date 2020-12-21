@@ -1,5 +1,26 @@
-export class Character {
+export default class Character {
     constructor(p, v) {
+        this.draw = () => {
+            this.p.push();
+            this.p.fill(this.color);
+            this.p.noStroke();
+            this.p.ellipse(this.xPosition, this.yPosition, this.diameter);
+            this.p.pop();
+            switch (this.movement) {
+                case "up":
+                    this.yPosition -= this.speed;
+                    break;
+                case "right":
+                    this.xPosition += this.speed;
+                    break;
+                case "down":
+                    this.yPosition += this.speed;
+                    break;
+                case "left":
+                    this.xPosition -= this.speed;
+                    break;
+            }
+        };
         this.checkCollision = () => {
             this.collision = false;
             if (this.name != "Hoog-Man") {
@@ -23,6 +44,28 @@ export class Character {
                     this.yPosition + this.v.gameBoard.heightUnit * 0.5 - 1 > this.v.gameBoard.yInner + this.v.gameBoard.innerHeight) {
                     return this.resetMovement(true);
                 }
+            }
+        };
+        this.checkNextMovement = () => {
+            if (!this.checkCollisionInput(this.nextMovement) && this.nextMovement != this.movement && this.nextMovement != null) {
+                if (this.movement != null) {
+                    this.previousMovement = this.movement;
+                }
+                const newMovement = this.nextMovement;
+                this.resetMovement(false);
+                this.movement = newMovement;
+                this.constrainPosition();
+            }
+        };
+        this.resetMovement = afterCollision => {
+            if (this.movement != null) {
+                this.previousMovement = this.movement;
+            }
+            this.collision = true;
+            this.movement = null;
+            this.nextMovement = null;
+            if (afterCollision) {
+                this.constrainPosition();
             }
         };
         this.checkCollisionInput = targetMovement => {
@@ -96,17 +139,6 @@ export class Character {
             }
             return false;
         };
-        this.checkNextMovement = () => {
-            if (!this.checkCollisionInput(this.nextMovement) && this.nextMovement != this.movement && this.nextMovement != null) {
-                if (this.movement != null) {
-                    this.previousMovement = this.movement;
-                }
-                const newMovement = this.nextMovement;
-                this.resetMovement(false);
-                this.movement = newMovement;
-                this.constrainPosition();
-            }
-        };
         this.constrainPosition = () => {
             const xConstrain = () => {
                 for (let i = 0; i < 17; i++) {
@@ -137,63 +169,27 @@ export class Character {
                 yConstrain();
             }
         };
-        this.draw = () => {
-            this.p.push();
-            this.p.fill(this.color);
-            this.p.noStroke();
-            this.p.ellipse(this.xPosition, this.yPosition, this.diameter);
-            this.p.pop();
-            switch (this.movement) {
-                case "up":
-                    this.yPosition -= this.speed;
-                    break;
-                case "right":
-                    this.xPosition += this.speed;
-                    break;
-                case "down":
-                    this.yPosition += this.speed;
-                    break;
-                case "left":
-                    this.xPosition -= this.speed;
-                    break;
-            }
-        };
-        this.resetMovement = afterCollision => {
-            if (this.movement != null) {
-                this.previousMovement = this.movement;
-            }
-            this.collision = true;
-            this.movement = null;
-            this.nextMovement = null;
-            if (afterCollision) {
-                this.constrainPosition();
-            }
-        };
         this.resetCharacter = () => {
             this.xPosition = this.xStartPosition;
             this.yPosition = this.yStartPosition;
+            this.previousMovement = null;
             if (this.name == "Blinky") {
                 this.movement = "left";
             }
             else {
                 this.movement = null;
             }
-            this.previousMovement = null;
             if (this.name != "Hoog-Man") {
                 this.mode = null;
             }
         };
-        this.p = p;
         this.v = v;
         this.collision = false;
-        this.color = null;
         this.diameter = this.v.gameBoard.heightUnit / 2;
         this.previousMovement = null;
         this.movement = null;
-        this.name = null;
         this.nextMovement = null;
+        this.p = p;
         this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
-        this.xPosition = null;
-        this.yPosition = null;
     }
 }

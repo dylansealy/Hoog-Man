@@ -1,23 +1,18 @@
+import {GameVariables, GhostInterface, GhostMode, Movement} from "../Types";
+import Character from "./Character.js";
 import p5 from "p5";
-import { GameVariables, GhostInterface, GhostMode, Movement } from "../Types";
-import { Character } from "./Character.js";
 
-export class Ghost extends Character implements GhostInterface {
+export default class Ghost extends Character implements GhostInterface {
     chaseCounter: number;
     chaseRound: number;
     chaseSequence: Array<number>;
     frightenedCounter: number;
-    frightenedRound: number;
     frightenedTime: number;
     scatterCounter: number;
     scatterRound: number;
     scatterSequence: Array<number>;
     previousMode: GhostMode;
     mode: GhostMode;
-    pelletCounter: number;
-    pelletThreshold: number;
-    xTargetTile: number;
-    yTargetTile: number;
     constructor(p: p5, v: GameVariables) {
         super(p, v);
         this.chaseCounter = 0;
@@ -29,6 +24,54 @@ export class Ghost extends Character implements GhostInterface {
         this.scatterRound = 0;
         this.scatterSequence = [7, 7, 5, 5];
         this.previousMode = null;
+        this.mode = null;
+    }
+    iterationVariables: () => void = () => {
+        if (this.mode == null) {
+            if (this.pelletCounter == 0) {
+                setTimeout(() => {
+                    this.mode = "scatter";
+                    this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
+                }, 250);
+            } else if (this.name == "Inky" || this.name == "Clyde") {
+                if (this.name == "Inky") {this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);}
+                else if (this.name == "Clyde" && this.v.inky.pelletCounter == 0) {
+                    this.pelletCounter = this.pelletThreshold + this.v.inky.pelletThreshold - (138 - this.v.pellets.length);
+                }
+            }
+        }
+        else if (this.mode == "frightened") {
+            this.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
+            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.8;
+            if (Math.floor(this.frightenedCounter / this.v.gameBoard.frameRate) == this.frightenedTime) {
+                this.mode = this.previousMode;
+                this.frightenedCounter = 0;
+            } this.frightenedCounter++;
+        } else {
+            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
+            if (this.mode == "scatter") {
+                if (Math.floor(this.scatterCounter / this.v.gameBoard.frameRate) == this.scatterSequence[this.scatterRound]) {
+                    this.mode = "chase";
+                    this.scatterCounter = 0;
+                    this.scatterRound++;
+                } this.scatterCounter++;
+            } else {
+                if (Math.floor(this.chaseCounter / this.v.gameBoard.frameRate) == this.chaseSequence[this.chaseRound]) {
+                    this.mode = "scatter";
+                    this.chaseCounter = 0;
+                    this.chaseRound++;
+                } this.chaseCounter++;
+            }
+        }
+    }
+    movementSequence: (movementOrder: Array<number>) => void = movementOrder => {
+        if (!this.setNextMovement(movementOrder, 0) && this.movement == null) {
+            if (!this.setNextMovement(movementOrder, 1)) {
+                if (!this.setNextMovement(movementOrder, 2)) {
+                    this.setNextMovement(movementOrder, 3);
+                }
+            }
+        }
     }
     checkDistanceTarget: (target: "Hoog-Man" | "Target tile", xMargin: number, yMargin: number) => Array<number> = (target, xMargin, yMargin) => {
         let xTarget: number = 0;
@@ -77,15 +120,6 @@ export class Ghost extends Character implements GhostInterface {
             case 3: return checkPossibilityMovement("left", "right");
         }
     }
-    movementSequence: (movementOrder: Array<number>) => void = movementOrder => {
-        if (!this.setNextMovement(movementOrder, 0) && this.movement == null) {
-            if (!this.setNextMovement(movementOrder, 1)) {
-                if (!this.setNextMovement(movementOrder, 2)) {
-                    this.setNextMovement(movementOrder, 3);
-                }
-            }
-        }
-    }
     frightenedMovement: () => void = () => {
         const movementOrder = [0, 1, 2, 3].sort(() => Math.random() - 0.5);
         let randomIndex = Math.floor(Math.random() * 4);
@@ -99,44 +133,6 @@ export class Ghost extends Character implements GhostInterface {
                     movementOrder.splice(randomIndex, 1);
                     this.setNextMovement(movementOrder, 0);
                 }
-            }
-        }
-    }
-    iterationVariables: () => void = () => {
-        if (this.mode == null) {
-            if (this.pelletCounter == 0) {
-                setTimeout(() => {
-                    this.mode = "scatter";
-                    this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
-                }, 250);
-            } else if (this.name == "Inky" || this.name == "Clyde") {
-                if (this.name == "Inky") {this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);}
-                else if (this.name == "Clyde" && this.v.inky.pelletCounter == 0) {
-                    this.pelletCounter = this.pelletThreshold + this.v.inky.pelletThreshold - (138 - this.v.pellets.length);
-                }
-            }
-        }
-        else if (this.mode == "frightened") {
-            this.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
-            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.8;
-            if (Math.floor(this.frightenedCounter / this.v.gameBoard.frameRate) == this.frightenedTime) {
-                this.mode = this.previousMode;
-                this.frightenedCounter = 0;
-            } this.frightenedCounter++;
-        } else {
-            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
-            if (this.mode == "scatter") {
-                if (Math.floor(this.scatterCounter / this.v.gameBoard.frameRate) == this.scatterSequence[this.scatterRound]) {
-                    this.mode = "chase";
-                    this.scatterCounter = 0;
-                    this.scatterRound++;
-                } this.scatterCounter++;
-            } else {
-                if (Math.floor(this.chaseCounter / this.v.gameBoard.frameRate) == this.chaseSequence[this.chaseRound]) {
-                    this.mode = "scatter";
-                    this.chaseCounter = 0;
-                    this.chaseRound++;
-                } this.chaseCounter++;
             }
         }
     }

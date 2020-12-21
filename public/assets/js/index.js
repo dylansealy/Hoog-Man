@@ -1,12 +1,23 @@
+import Blinky from "./characters/Blinky.js";
+import Clyde from "./characters/Clyde.js";
+import HoogMan from "./characters/HoogMan.js";
+import Inky from "./characters/Inky.js";
+import Pinky from "./characters/Pinky.js";
 import GameBoard from "./gameBoard/GameBoard.js";
 import Obstacle from "./gameBoard/Obstacle.js";
 import Pellet from "./gameBoard/Pellet.js";
-import { HoogMan } from "./characters/HoogMan.js";
-import { Blinky } from "./characters/Blinky.js";
-import { Pinky } from "./characters/Pinky.js";
-import { Inky } from "./characters/Inky.js";
-import { Clyde } from "./characters/Clyde.js";
 const sketch = (p) => {
+    const characterSequence = (character, hoogMan) => {
+        if (!hoogMan) {
+            character.iterationVariables();
+        }
+        character.draw();
+        character.checkCollision();
+        character.checkNextMovement();
+        if (!hoogMan) {
+            character.setMovement();
+        }
+    };
     p.preload = () => {
         p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
@@ -59,26 +70,15 @@ const sketch = (p) => {
             gestureControls();
         }
     };
-    const characterSequence = (character, hoogMan) => {
-        if (!hoogMan) {
-            character.iterationVariables();
-        }
-        character.draw();
-        character.checkCollision();
-        character.checkNextMovement();
-        if (!hoogMan) {
-            character.setMovement();
-        }
-    };
 };
 const v = {};
 const initializeVars = (p) => {
     v.gameBoard = new GameBoard(p, v);
-    v.hoogMan = new HoogMan(p, v);
     v.blinky = new Blinky(p, v);
-    v.pinky = new Pinky(p, v);
-    v.inky = new Inky(p, v);
     v.clyde = new Clyde(p, v);
+    v.hoogMan = new HoogMan(p, v);
+    v.inky = new Inky(p, v);
+    v.pinky = new Pinky(p, v);
     v.gesturePosition = [null, null, null, null];
     (() => {
         v.obstacleCoordinates = [
@@ -105,22 +105,25 @@ const initializeVars = (p) => {
         }
     })();
     v.endGame = () => {
-        v.hoogMan.resetCharacter();
-        v.blinky.resetCharacter();
-        v.pinky.resetCharacter();
-        v.inky.resetCharacter();
-        v.clyde.resetCharacter();
         v.hoogMan.lives--;
         if (v.hoogMan.lives == 0) {
             p.noLoop();
-            document.querySelector("#gameEndContainer").style.display = "flex";
+            const gameEndContainer = document.querySelector("#gameEndContainer");
+            gameEndContainer.style.display = "flex";
             document.querySelector("#gameEndContainer p").innerText += ` ${v.gameBoard.score}`;
             document.querySelector("#again").addEventListener("click", () => {
-                document.querySelector("#gameEndContainer").style.display = "none";
+                gameEndContainer.style.display = "none";
                 v.game.remove();
                 v.game = new p5(sketch);
             });
             document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+        }
+        else {
+            v.blinky.resetCharacter();
+            v.clyde.resetCharacter();
+            v.hoogMan.resetCharacter();
+            v.inky.resetCharacter();
+            v.pinky.resetCharacter();
         }
     };
 };
