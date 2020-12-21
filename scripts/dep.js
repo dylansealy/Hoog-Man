@@ -1,5 +1,10 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-var-requires */
+// eslint-disable-next-line no-undef
 const core = require("@actions/core");
+// eslint-disable-next-line no-undef
 const glob = require("@actions/glob");
+// eslint-disable-next-line no-undef
 const fs = require("fs");
 const changeBaseHref = async () => {
     try {
@@ -20,5 +25,5 @@ const changeBaseHref = async () => {
             }
         }
     } catch (error) {core.setFailed(error);}
-}
+};
 changeBaseHref();

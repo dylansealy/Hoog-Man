@@ -25,7 +25,7 @@ export default class Character implements CharacterInterface {
         this.movement = null;
         this.nextMovement = null;
         this.p = p;
-        this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight
+        this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
     }
     draw: () => void = () => {
         this.p.push();
@@ -34,10 +34,10 @@ export default class Character implements CharacterInterface {
         this.p.ellipse(this.xPosition, this.yPosition, this.diameter);
         this.p.pop();
         switch (this.movement) {
-            case "up": this.yPosition -= this.speed; break;
-            case "right": this.xPosition += this.speed; break;
-            case "down": this.yPosition += this.speed; break;
-            case "left": this.xPosition -= this.speed; break;
+        case "up": this.yPosition -= this.speed; break;
+        case "right": this.xPosition += this.speed; break;
+        case "down": this.yPosition += this.speed; break;
+        case "left": this.xPosition -= this.speed; break;
         }
     }
     checkCollision: () => void = () => {
@@ -50,7 +50,7 @@ export default class Character implements CharacterInterface {
                 this.yPosition - this.diameter / 2 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 2
             ) {return this.v.endGame();}
         }
-        for (let obstacle in this.v.obstacles) {
+        for (const obstacle in this.v.obstacles) {
             if (
                 this.xPosition - this.v.gameBoard.widthUnit * 0.5 + 1 < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
                 this.xPosition + this.v.gameBoard.widthUnit * 0.5 - 1 > this.v.obstacles[obstacle].xPosition &&
@@ -63,7 +63,7 @@ export default class Character implements CharacterInterface {
                 this.yPosition - this.v.gameBoard.heightUnit * 0.5 + 1 < this.v.gameBoard.yInner ||
                 this.yPosition + this.v.gameBoard.heightUnit * 0.5 -1 > this.v.gameBoard.yInner + this.v.gameBoard.innerHeight
             ) {return this.resetMovement(true);}
-        }
+        } return undefined;
     }
     checkNextMovement: () => void = () => {
         if (!this.checkCollisionInput(this.nextMovement) && this.nextMovement != this.movement && this.nextMovement != null) {
@@ -82,74 +82,74 @@ export default class Character implements CharacterInterface {
         if (afterCollision) {this.constrainPosition();}
     }
     checkCollisionInput: (targetMovement: Movement) => boolean = targetMovement => {
-        for (let obstacle in this.v.obstacles) {
+        for (const obstacle in this.v.obstacles) {
             switch (targetMovement) {
-                case "up":
-                    if (
-                        this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 2 &&
-                        this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit &&
-                        this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit &&
-                        this.yPosition > this.v.gameBoard.yInner &&
-                        this.name == "Hoog-Man"
-                    ) {
-                        this.yPosition = this.v.gameBoard.yInner + this.v.gameBoard.innerHeight;
-                        return false;
-                    } else if (
-                        this.yPosition > this.v.gameBoard.yInner &&
-                        this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit
-                    ) {return true;}
-                    else if (
-                        this.xPosition - this.v.gameBoard.widthUnit * 0.45 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
-                        this.xPosition + this.v.gameBoard.widthUnit * 0.45 >= this.v.obstacles[obstacle].xPosition &&
-                        this.yPosition - this.v.gameBoard.heightUnit * 0.55 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
-                        this.yPosition + this.v.gameBoard.heightUnit * 0.45 >= this.v.obstacles[obstacle].yPosition
-                    ) {return true;}
-                    break;
-                case "right":
-                    if (
-                        this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 16 &&
-                        this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 17
-                    ) {return true;}
-                    else if (
-                        this.xPosition - this.v.gameBoard.widthUnit * 0.45 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
-                        this.xPosition + this.v.gameBoard.widthUnit * 0.55 >= this.v.obstacles[obstacle].xPosition &&
-                        this.yPosition - this.v.gameBoard.heightUnit * 0.45 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
-                        this.yPosition + this.v.gameBoard.heightUnit * 0.45 >= this.v.obstacles[obstacle].yPosition
-                    ) {return true;}
-                    break;
-                case "down":
-                    if (
-                        this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 2 &&
-                        this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit &&
-                        this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 14 &&
-                        this.yPosition > this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 13 &&
-                        this.name == "Hoog-Man"
-                    ) {
-                        this.yPosition = this.v.gameBoard.yInner
-                        return false;
-                    } else if (
-                        this.yPosition > this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 13 &&
-                        this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 14
-                    ) {return true;}
-                    else if (
-                        this.xPosition - this.v.gameBoard.widthUnit * 0.45 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
-                        this.xPosition + this.v.gameBoard.widthUnit * 0.45 >= this.v.obstacles[obstacle].xPosition &&
-                        this.yPosition - this.v.gameBoard.heightUnit * 0.45 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
-                        this.yPosition + this.v.gameBoard.heightUnit * 0.55 >= this.v.obstacles[obstacle].yPosition
-                    ) {return true;}
-                    break;
-                case "left":
-                    if (
-                        this.xPosition > this.v.gameBoard.xInner &&
-                        this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit
-                    ) {return true;}
-                    else if (
-                        this.xPosition - this.v.gameBoard.widthUnit * 0.55 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
-                        this.xPosition + this.v.gameBoard.widthUnit * 0.45 >= this.v.obstacles[obstacle].xPosition &&
-                        this.yPosition - this.v.gameBoard.heightUnit * 0.45 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
-                        this.yPosition + this.v.gameBoard.heightUnit * 0.45 >= this.v.obstacles[obstacle].yPosition
-                    ) {return true;}
-                    break;
+            case "up":
+                if (
+                    this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 2 &&
+                    this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit &&
+                    this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit &&
+                    this.yPosition > this.v.gameBoard.yInner &&
+                    this.name == "Hoog-Man"
+                ) {
+                    this.yPosition = this.v.gameBoard.yInner + this.v.gameBoard.innerHeight;
+                    return false;
+                } else if (
+                    this.yPosition > this.v.gameBoard.yInner &&
+                    this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit
+                ) {return true;}
+                else if (
+                    this.xPosition - this.v.gameBoard.widthUnit * 0.45 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
+                    this.xPosition + this.v.gameBoard.widthUnit * 0.45 >= this.v.obstacles[obstacle].xPosition &&
+                    this.yPosition - this.v.gameBoard.heightUnit * 0.55 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
+                    this.yPosition + this.v.gameBoard.heightUnit * 0.45 >= this.v.obstacles[obstacle].yPosition
+                ) {return true;}
+                break;
+            case "right":
+                if (
+                    this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 16 &&
+                    this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 17
+                ) {return true;}
+                else if (
+                    this.xPosition - this.v.gameBoard.widthUnit * 0.45 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
+                    this.xPosition + this.v.gameBoard.widthUnit * 0.55 >= this.v.obstacles[obstacle].xPosition &&
+                    this.yPosition - this.v.gameBoard.heightUnit * 0.45 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
+                    this.yPosition + this.v.gameBoard.heightUnit * 0.45 >= this.v.obstacles[obstacle].yPosition
+                ) {return true;}
+                break;
+            case "down":
+                if (
+                    this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 2 &&
+                    this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit &&
+                    this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 14 &&
+                    this.yPosition > this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 13 &&
+                    this.name == "Hoog-Man"
+                ) {
+                    this.yPosition = this.v.gameBoard.yInner;
+                    return false;
+                } else if (
+                    this.yPosition > this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 13 &&
+                    this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 14
+                ) {return true;}
+                else if (
+                    this.xPosition - this.v.gameBoard.widthUnit * 0.45 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
+                    this.xPosition + this.v.gameBoard.widthUnit * 0.45 >= this.v.obstacles[obstacle].xPosition &&
+                    this.yPosition - this.v.gameBoard.heightUnit * 0.45 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
+                    this.yPosition + this.v.gameBoard.heightUnit * 0.55 >= this.v.obstacles[obstacle].yPosition
+                ) {return true;}
+                break;
+            case "left":
+                if (
+                    this.xPosition > this.v.gameBoard.xInner &&
+                    this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit
+                ) {return true;}
+                else if (
+                    this.xPosition - this.v.gameBoard.widthUnit * 0.55 <= this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
+                    this.xPosition + this.v.gameBoard.widthUnit * 0.45 >= this.v.obstacles[obstacle].xPosition &&
+                    this.yPosition - this.v.gameBoard.heightUnit * 0.45 <= this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
+                    this.yPosition + this.v.gameBoard.heightUnit * 0.45 >= this.v.obstacles[obstacle].yPosition
+                ) {return true;}
+                break;
             }
         } return false;
     }
@@ -164,7 +164,7 @@ export default class Character implements CharacterInterface {
                     break;
                 }
             }
-        }
+        };
         const yConstrain = (): void => {
             for (let i = 0; i < 14; i++) {
                 if (
@@ -175,7 +175,7 @@ export default class Character implements CharacterInterface {
                     break;
                 }
             }
-        }
+        };
         if (this.movement == "left" || this.movement == "right") {yConstrain();}
         else if (this.movement == "up" || this.movement == "down") {xConstrain();}
         else {

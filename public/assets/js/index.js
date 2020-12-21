@@ -37,10 +37,10 @@ const sketch = (p) => {
         p.background("black");
         p.noFill();
         v.gameBoard.draw();
-        for (let obstacle in v.obstacles) {
+        for (const obstacle in v.obstacles) {
             v.obstacles[obstacle].draw();
         }
-        for (let pellet in v.pellets) {
+        for (const pellet in v.pellets) {
             v.pellets[pellet].draw();
             v.pellets[pellet].checkEaten(pellet);
         }
@@ -88,7 +88,7 @@ const initializeVars = (p) => {
             [8, 12, 9, 13], [12, 9, 13, 12], [14, 9, 17, 10], [4, 13, 7, 14], [10, 12, 11, 14], [11, 13, 14, 14], [14, 11, 16, 12], [15, 12, 16, 13]
         ];
         v.obstacles = [];
-        for (let coordinates in v.obstacleCoordinates) {
+        for (const coordinates in v.obstacleCoordinates) {
             const obstacle = new Obstacle(p, v, v.obstacleCoordinates[coordinates][0], v.obstacleCoordinates[coordinates][1], v.obstacleCoordinates[coordinates][2], v.obstacleCoordinates[coordinates][3]);
             v.obstacles.push(obstacle);
         }

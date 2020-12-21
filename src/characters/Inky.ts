@@ -26,18 +26,18 @@ export default class Inky extends Ghost implements GhostInterface {
     setMovement: () => void = () => {
         if (this.mode == "chase") {
             switch (this.v.hoogMan.movement) {
+            case "up": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -2, -2)); break;
+            case "right": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 2, 2)); break;
+            case "down": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 2, 2)); break;
+            case "left": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -2, -2)); break;
+            default:
+                switch(this.v.hoogMan.previousMovement) {
                 case "up": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -2, -2)); break;
                 case "right": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 2, 2)); break;
                 case "down": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 2, 2)); break;
                 case "left": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -2, -2)); break;
-                default:
-                    switch(this.v.hoogMan.previousMovement) {
-                        case "up": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -2, -2)); break;
-                        case "right": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 2, 2)); break;
-                        case "down": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 2, 2)); break;
-                        case "left": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -2, -2)); break;
-                        default: this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, 0)); break;
-                    } break;
+                default: this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, 0)); break;
+                } break;
             }
         }
         else if (this.mode == "scatter") {this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0));}

@@ -20,7 +20,7 @@ export default class Pellet implements PelletInterface {
         this.yPosition = this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * (0.5 + yPosition);
     }
     checkCollisionObstacle: () => boolean = () => {
-        for (let obstacle in this.v.obstacles) {
+        for (const obstacle in this.v.obstacles) {
             if (
                 this.xPosition < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
                 this.xPosition > this.v.obstacles[obstacle].xPosition &&

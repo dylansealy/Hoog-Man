@@ -30,8 +30,8 @@ export default class Clyde extends Ghost implements GhostInterface {
                 this.xPosition < this.v.hoogMan.xPosition - this.v.gameBoard.widthUnit * 8 ||
                 this.yPosition > this.v.hoogMan.yPosition + this.v.gameBoard.heightUnit * 8 ||
                 this.yPosition < this.v.hoogMan.yPosition - this.v.gameBoard.heightUnit * 8
-            ) {this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0 , 0));}
-            else {this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0))}
+            ) {this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, 0));}
+            else {this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0));}
         }
         else if (this.mode == "scatter") {this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0));}
         else if (this.mode == "frightened") {this.frightenedMovement();}

@@ -74,8 +74,8 @@ export default class Ghost extends Character implements GhostInterface {
         }
     }
     checkDistanceTarget: (target: "Hoog-Man" | "Target tile", xMargin: number, yMargin: number) => Array<number> = (target, xMargin, yMargin) => {
-        let xTarget: number = 0;
-        let yTarget: number = 0;
+        let xTarget = 0;
+        let yTarget = 0;
         if (target == "Hoog-Man") {
             xTarget = this.v.hoogMan.xPosition + this.v.gameBoard.widthUnit * xMargin;
             yTarget = this.v.hoogMan.yPosition + this.v.gameBoard.heightUnit * yMargin;
@@ -104,20 +104,21 @@ export default class Ghost extends Character implements GhostInterface {
     setNextMovement: (movementOrder: Array<number>, index: number) => boolean = (movementOrder, index) => {
         const checkPossibilityMovement = (targetMovement: Movement, forbiddenMovement: Movement) => {
             if (!this.checkCollisionInput(targetMovement) && this.movement != forbiddenMovement && this.movement != targetMovement) {
-                if (this.previousMovement != forbiddenMovement || (this.movement == forbiddenMovement && this.collision == false)) {
+                if (this.previousMovement != forbiddenMovement || this.movement == forbiddenMovement && this.collision == false) {
                     this.nextMovement = targetMovement;
                     return true;
                 } else if (this.previousMovement == forbiddenMovement && this.collision == true) {
                     setTimeout(() => this.nextMovement = targetMovement, 50);
                     return true;
-                } else {return false;}
-            } else {return false;}
-        }
+                }
+            } return false;
+        };
         switch(movementOrder[index]) {
-            case 0: return checkPossibilityMovement("up", "down");
-            case 1: return checkPossibilityMovement("right", "left");
-            case 2: return checkPossibilityMovement("down", "up");
-            case 3: return checkPossibilityMovement("left", "right");
+        case 0: return checkPossibilityMovement("up", "down");
+        case 1: return checkPossibilityMovement("right", "left");
+        case 2: return checkPossibilityMovement("down", "up");
+        case 3: return checkPossibilityMovement("left", "right");
+        default: return false;
         }
     }
     frightenedMovement: () => void = () => {

@@ -90,7 +90,7 @@ export default class Ghost extends Character {
         this.setNextMovement = (movementOrder, index) => {
             const checkPossibilityMovement = (targetMovement, forbiddenMovement) => {
                 if (!this.checkCollisionInput(targetMovement) && this.movement != forbiddenMovement && this.movement != targetMovement) {
-                    if (this.previousMovement != forbiddenMovement || (this.movement == forbiddenMovement && this.collision == false)) {
+                    if (this.previousMovement != forbiddenMovement || this.movement == forbiddenMovement && this.collision == false) {
                         this.nextMovement = targetMovement;
                         return true;
                     }
@@ -98,19 +98,15 @@ export default class Ghost extends Character {
                         setTimeout(() => this.nextMovement = targetMovement, 50);
                         return true;
                     }
-                    else {
-                        return false;
-                    }
                 }
-                else {
-                    return false;
-                }
+                return false;
             };
             switch (movementOrder[index]) {
                 case 0: return checkPossibilityMovement("up", "down");
                 case 1: return checkPossibilityMovement("right", "left");
                 case 2: return checkPossibilityMovement("down", "up");
                 case 3: return checkPossibilityMovement("left", "right");
+                default: return false;
             }
         };
         this.frightenedMovement = () => {

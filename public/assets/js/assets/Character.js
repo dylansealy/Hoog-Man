@@ -31,7 +31,7 @@ export default class Character {
                     return this.v.endGame();
                 }
             }
-            for (let obstacle in this.v.obstacles) {
+            for (const obstacle in this.v.obstacles) {
                 if (this.xPosition - this.v.gameBoard.widthUnit * 0.5 + 1 < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
                     this.xPosition + this.v.gameBoard.widthUnit * 0.5 - 1 > this.v.obstacles[obstacle].xPosition &&
                     this.yPosition - this.v.gameBoard.heightUnit * 0.5 + 1 < this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&
@@ -45,6 +45,7 @@ export default class Character {
                     return this.resetMovement(true);
                 }
             }
+            return undefined;
         };
         this.checkNextMovement = () => {
             if (!this.checkCollisionInput(this.nextMovement) && this.nextMovement != this.movement && this.nextMovement != null) {
@@ -69,7 +70,7 @@ export default class Character {
             }
         };
         this.checkCollisionInput = targetMovement => {
-            for (let obstacle in this.v.obstacles) {
+            for (const obstacle in this.v.obstacles) {
                 switch (targetMovement) {
                     case "up":
                         if (this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 2 &&

@@ -1,7 +1,7 @@
 export default class Pellet {
     constructor(p, v, xPosition, yPosition) {
         this.checkCollisionObstacle = () => {
-            for (let obstacle in this.v.obstacles) {
+            for (const obstacle in this.v.obstacles) {
                 if (this.xPosition < this.v.obstacles[obstacle].xPosition + this.v.obstacles[obstacle].width &&
                     this.xPosition > this.v.obstacles[obstacle].xPosition &&
                     this.yPosition < this.v.obstacles[obstacle].yPosition + this.v.obstacles[obstacle].height &&

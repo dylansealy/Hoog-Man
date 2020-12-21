@@ -1,5 +1,4 @@
-    // Import om fouten in de TSC te voorkomen. TS(1)
-import {GameVariables, GhostInterface, HoogManInterface} from "./Types";
+import {GameVariables, GhostInterface, HoogManInterface} from "./Types"; // Import om fouten in de TSC te voorkomen. TS(1)
 import Blinky from "./characters/Blinky.js";
 import Clyde from "./characters/Clyde.js";
 import HoogMan from "./characters/HoogMan.js";
@@ -17,12 +16,12 @@ const sketch = (p: p5) => {
         character.checkCollision();
         character.checkNextMovement();
         if (!hoogMan) {character.setMovement();}
-    }
+    };
     // Preload alle benodigde assets.
     p.preload = (): void => {
         p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
-    }
+    };
     // Stelt bepaalde instellingen in en zorgt ervoor dat de game kan beginnen.
     p.setup = (): void => {
         initializeVars(p);
@@ -34,14 +33,14 @@ const sketch = (p: p5) => {
         p.textSize(v.gameBoard.widthUnit / 1.5);
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
-    }
+    };
     // Zorgt ervoor dat alles getekend wordt en dat alle besturingselementen worden aangeroepen.
     p.draw = (): void => {
         p.background("black");
         p.noFill();
         v.gameBoard.draw();
-        for (let obstacle in v.obstacles) {v.obstacles[obstacle].draw();}
-        for (let pellet in v.pellets) {
+        for (const obstacle in v.obstacles) {v.obstacles[obstacle].draw();}
+        for (const pellet in v.pellets) {
             v.pellets[pellet].draw();
             v.pellets[pellet].checkEaten(pellet);
         }
@@ -59,10 +58,10 @@ const sketch = (p: p5) => {
             else if (p.keyIsDown(p.LEFT_ARROW) || p.keyIsDown(65)) {v.hoogMan.nextMovement = "left";}
         } else if (v.inputMethod == "touch") {touchControls();}
         else if (v.inputMethod == "gestures") {gestureControls();}
-    }
-}
+    };
+};
 // Object waarin alle variabelen in de game worden opgeslagen.
-const v: GameVariables = {}
+const v: GameVariables = {};
 // Zorgt ervoor dat alle benodigde variabelen voor de game worden gedeclareerd.
 const initializeVars = (p: p5): void => {
     v.gameBoard = new GameBoard(p, v);
@@ -71,19 +70,17 @@ const initializeVars = (p: p5): void => {
     v.hoogMan = new HoogMan(p, v);
     v.inky = new Inky(p, v);
     v.pinky = new Pinky(p, v);
-        // Houdt de coördinaten van de gesture inputs bij: xStart, yStart, xEnd, yEnd.
-    v.gesturePosition = [null, null, null, null];
+    v.gesturePosition = [null, null, null, null]; // Houdt de coördinaten van de gesture inputs bij: xStart, yStart, xEnd, yEnd.
     // Zorgt ervoor dat alle barrières gecreëerd worden in een anonieme functie. HG(2)
     (() => {
-            // Relatieve coördinaten barrières: xMin, yMin, xMax, yMax.
-        v.obstacleCoordinates = [
+        v.obstacleCoordinates = [ // Relatieve coördinaten barrières: xMin, yMin, xMax, yMax.
             [1, 1, 3, 4], [4, 0, 5, 4], [6, 1, 8, 4], [9, 0, 10, 3], [11, 1, 13, 3], [14, 0, 17, 2], [0, 5, 1, 8], [2, 5, 4, 8],
             [5, 5, 7, 6], [8, 5, 9, 6], [9, 4, 10, 7], [11, 5, 12, 6], [11, 4, 16, 5], [14, 3, 16, 4], [5, 7, 6, 8], [7, 7, 8, 10],
             [9, 8, 10, 10], [10, 9, 11, 11], [11, 7, 14, 8], [13, 6, 14, 7], [15, 6, 16, 8], [1, 9, 3, 13], [4, 9, 6, 12], [7, 11, 9, 12],
             [8, 12, 9, 13], [12, 9, 13, 12], [14, 9, 17, 10], [4, 13, 7, 14], [10, 12, 11, 14], [11, 13, 14, 14], [14, 11, 16, 12], [15, 12, 16, 13]
         ];
         v.obstacles = [];
-        for (let coordinates in v.obstacleCoordinates) {
+        for (const coordinates in v.obstacleCoordinates) {
             const obstacle = new Obstacle(
                 p, v, v.obstacleCoordinates[coordinates][0], v.obstacleCoordinates[coordinates][1],
                 v.obstacleCoordinates[coordinates][2], v.obstacleCoordinates[coordinates][3]
@@ -125,8 +122,8 @@ const initializeVars = (p: p5): void => {
             v.inky.resetCharacter();
             v.pinky.resetCharacter();
         }
-    }
-}
+    };
+};
 // Functie voor het laten werken van de touch controls.
 const touchControls = (): void => {
     const upTouch: HTMLLIElement = document.querySelector("#upTouch");
@@ -143,7 +140,7 @@ const touchControls = (): void => {
     const leftTouch: HTMLLIElement = document.querySelector("#leftTouch");
     leftTouch.addEventListener("click", () => v.hoogMan.nextMovement = "left");
     leftTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "left");
-}
+};
 // Functie voor het laten werken van de gesture controls.
 const gestureControls = () => {
     // Bepaalt welke gesture er uitgevoerd wordt.
@@ -156,13 +153,12 @@ const gestureControls = () => {
             else if (v.gesturePosition[3] > v.gesturePosition[1] + v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "down";}
             else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.widthUnit) {v.hoogMan.nextMovement = "left";}
         }
-    }
+    };
     // Reset de gesture.
     const resetGesture = (event: TouchEvent | MouseEvent) => {
-            // Zorgt ervoor dat de standaardactie niet gedaan wordt.
-        event.preventDefault();
+        event.preventDefault(); // Zorgt ervoor dat de standaardactie niet gedaan wordt.
         v.gesturePosition = [null, null, null, null];
-    }
+    };
     // Bepaalt de start positie van een gesture.
     const main = document.querySelector("main");
     main.addEventListener("touchstart", event => {
@@ -192,7 +188,7 @@ const gestureControls = () => {
     main.addEventListener("touchend", event => resetGesture(event));
     main.addEventListener("mouseup", event => resetGesture(event));
     main.addEventListener("touchcancel", event => resetGesture(event));
-}
+};
 document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
 document.querySelector("#startGame").addEventListener("click", () => {
     // Zorgt ervoor dat de container van de game even groot wordt als het scherm.
@@ -253,7 +249,7 @@ const getInputMethod = () => {
             }
         })();
     } else {v.inputMethod = "gestures";}
-}
+};
 // Zorgt voor het correcte copyright jaar.
 (() => {
     const year = new Date().getFullYear();
