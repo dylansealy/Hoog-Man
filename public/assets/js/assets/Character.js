@@ -24,10 +24,10 @@ export default class Character {
         this.checkCollision = () => {
             this.collision = false;
             if (this.name != "Hoog-Man") {
-                if (this.xPosition + this.diameter / 2 >= this.v.hoogMan.xPosition - this.v.hoogMan.diameter / 2 &&
-                    this.xPosition - this.diameter / 2 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 2 &&
-                    this.yPosition + this.diameter / 2 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 2 &&
-                    this.yPosition - this.diameter / 2 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 2) {
+                if (this.xPosition + this.diameter / 3 >= this.v.hoogMan.xPosition - this.v.hoogMan.diameter / 2 &&
+                    this.xPosition - this.diameter / 3 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 2 &&
+                    this.yPosition + this.diameter / 3 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 2 &&
+                    this.yPosition - this.diameter / 3 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 2) {
                     return this.v.endGame();
                 }
             }
@@ -180,7 +180,7 @@ export default class Character {
             else {
                 this.movement = null;
             }
-            if (this.name != "Hoog-Man") {
+            if (this.name != "Hoog-Man" && this.name != "Blinky") {
                 this.mode = null;
             }
         };

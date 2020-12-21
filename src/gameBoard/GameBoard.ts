@@ -27,7 +27,7 @@ export default class GameBoard implements GameBoardInterface {
         } else {
             this.canvasDimension = height - 1;
             this.orientation = "landscape";
-        }
+        } // Bepaalt de frame rate. Hierdoor weet je hoeveel tikken er in een seconde zitten.
         this.frameRate = Math.round(this.p.frameRate());
         this.xOuter = this.yOuter = this.canvasDimension / 60;
         this.xInner = this.yInner = this.xOuter * 2;
@@ -43,16 +43,19 @@ export default class GameBoard implements GameBoardInterface {
     draw: () => void = () => {
         this.frameRate = Math.round(this.p.frameRate());
         this.p.push();
+        // Tekent de buitenlijnen.
         this.p.stroke("#2121DE");
         this.p.strokeWeight(3);
         this.p.rect(this.xInner, this.yInner, this.innerWidth, this.innerHeight, 4);
         this.p.rect(this.xOuter, this.yOuter, this.outerWidth, this.outerHeight, 10);
+        // Tekent de gaten in de buitenlijnen.
         this.p.stroke("black");
         this.p.strokeWeight(4);
         this.p.rect(this.xInner + this.widthUnit, this.yInner + this.innerHeight, this.widthUnit, 0);
         this.p.rect(this.xInner + this.widthUnit, this.yInner, this.widthUnit, 0);
         this.p.rect(this.xInner + this.widthUnit, this.yOuter + this.outerHeight, this.widthUnit, 0);
         this.p.rect(this.xInner + this.widthUnit, this.yOuter, this.widthUnit, 0);
+        // Weergeeft de tekst.
         this.p.fill("white");
         this.p.text(`Score: ${this.score}`, this.xInner, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);
         this.p.text(`Aantal levens: ${this.v.hoogMan.lives}`, this.xInner + this.widthUnit * 4, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);

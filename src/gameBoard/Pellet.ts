@@ -18,7 +18,7 @@ export default class Pellet implements PelletInterface {
         this.yMargin = this.v.gameBoard.heightUnit * 0.2;
         this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * (0.5 + xPosition);
         this.yPosition = this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * (0.5 + yPosition);
-    }
+    } // Checkt of een pellet niet op een barrière ligt.
     checkCollisionObstacle: () => boolean = () => {
         for (const obstacle in this.v.obstacles) {
             if (
@@ -36,7 +36,7 @@ export default class Pellet implements PelletInterface {
         this.p.strokeWeight(4);
         this.p.circle(this.xPosition, this.yPosition, this.diameter);
         this.p.pop();
-    }
+    } // Checkt of een pellet wordt gegeten door Hoog-Man.
     checkEaten: (index: number) => void = index => {
         if (
             this.v.hoogMan.xPosition - this.xMargin < this.xPosition &&

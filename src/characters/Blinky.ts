@@ -26,8 +26,9 @@ export default class Blinky extends Ghost implements GhostInterface {
         this.yPosition = this.yStartPosition = this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 0.5;
         this.xTargetTile = this.v.gameBoard.xOuter;
         this.yTargetTile = this.v.gameBoard.yOuter + v.gameBoard.outerHeight;
-    }
+    } // Zorgt ervoor dat de correcte beweginsrichting functie wordt aangeroepen voor elke modus.
     setMovement: () => void = () => {
+        // 0, 0 zijn marges tussen een ghost en zijn doelwit.
         if (this.mode == "chase") {this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, 0));}
         else if (this.mode == "scatter") {this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0));}
         else if (this.mode == "frightened") {this.frightenedMovement();}

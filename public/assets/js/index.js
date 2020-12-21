@@ -7,14 +7,14 @@ import GameBoard from "./gameBoard/GameBoard.js";
 import Obstacle from "./gameBoard/Obstacle.js";
 import Pellet from "./gameBoard/Pellet.js";
 const sketch = (p) => {
-    const characterSequence = (character, hoogMan) => {
-        if (!hoogMan) {
+    const characterSequence = (character) => {
+        if (character.name != "Hoog-Man") {
             character.iterationVariables();
         }
         character.draw();
         character.checkCollision();
         character.checkNextMovement();
-        if (!hoogMan) {
+        if (character.name != "Hoog-Man") {
             character.setMovement();
         }
     };
@@ -44,11 +44,11 @@ const sketch = (p) => {
             v.pellets[pellet].draw();
             v.pellets[pellet].checkEaten(pellet);
         }
-        characterSequence(v.hoogMan, true);
-        characterSequence(v.blinky, false);
-        characterSequence(v.pinky, false);
-        characterSequence(v.inky, false);
-        characterSequence(v.clyde, false);
+        characterSequence(v.hoogMan);
+        characterSequence(v.blinky);
+        characterSequence(v.pinky);
+        characterSequence(v.inky);
+        characterSequence(v.clyde);
         if (v.inputMethod == "keyboard") {
             if (p.keyIsDown(p.UP_ARROW) || p.keyIsDown(87)) {
                 v.hoogMan.nextMovement = "up";
@@ -110,7 +110,8 @@ const initializeVars = (p) => {
             p.noLoop();
             const gameEndContainer = document.querySelector("#gameEndContainer");
             gameEndContainer.style.display = "flex";
-            document.querySelector("#gameEndContainer p").innerText += ` ${v.gameBoard.score}`;
+            const paragraph = document.querySelector("#gameEndContainer p");
+            paragraph.innerText += ` ${v.gameBoard.score}`;
             document.querySelector("#again").addEventListener("click", () => {
                 gameEndContainer.style.display = "none";
                 v.game.remove();

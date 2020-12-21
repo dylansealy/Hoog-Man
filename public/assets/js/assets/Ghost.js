@@ -8,7 +8,7 @@ export default class Ghost extends Character {
                     setTimeout(() => {
                         this.mode = "scatter";
                         this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
-                    }, 250);
+                    }, 400);
                 }
                 else if (this.name == "Inky" || this.name == "Clyde") {
                     if (this.name == "Inky") {
@@ -72,11 +72,6 @@ export default class Ghost extends Character {
             const rightDistance = this.p.dist(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
             const downDistance = this.p.dist(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
             const leftDistance = this.p.dist(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
-            this.p.stroke("white");
-            this.p.line(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
-            this.p.line(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
-            this.p.line(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
-            this.p.line(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
             const distance = [upDistance, rightDistance, downDistance, leftDistance];
             const movementOrder = [];
             for (let i = 0; i < distance.length; i++) {
