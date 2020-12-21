@@ -66,7 +66,7 @@ const initializeVars = (p: p5): void => {
     v.pinky = new Pinky(p, v);
     v.gesturePosition = [null, null, null, null]; // Houdt de coördinaten van de gesture inputs bij: xStart, yStart, xEnd, yEnd.
     (() => { // Zorgt ervoor dat alle barrières gecreëerd worden in een anonieme functie. HG(2)
-        v.obstacleCoordinates = [ // Relatieve coördinaten barrières: xMin, yMin, xMax, yMax.
+        v.obstacleCoordinates = [ // Relatieve coördinaten barrières: xMin, yMin, xMax, yMax. Zie /maps/1.jpg
             [1, 1, 3, 4], [4, 0, 5, 4], [6, 1, 8, 4], [9, 0, 10, 3], [11, 1, 13, 3], [14, 0, 17, 2], [0, 5, 1, 8], [2, 5, 4, 8],
             [5, 5, 7, 6], [8, 5, 9, 6], [9, 4, 10, 7], [11, 5, 12, 6], [11, 4, 16, 5], [14, 3, 16, 4], [5, 7, 6, 8], [7, 7, 8, 10],
             [9, 8, 10, 10], [10, 9, 11, 11], [11, 7, 14, 8], [13, 6, 14, 7], [15, 6, 16, 8], [1, 9, 3, 13], [4, 9, 6, 12], [7, 11, 9, 12],
