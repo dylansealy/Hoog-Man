@@ -52,7 +52,7 @@ const sketch = (p: p5) => { // Sketch wordt gebruikt voor instance mode p5. HG(1
             else if (p.keyIsDown(p.DOWN_ARROW) || p.keyIsDown(83)) {v.hoogMan.nextMovement = "down";}
             else if (p.keyIsDown(p.LEFT_ARROW) || p.keyIsDown(65)) {v.hoogMan.nextMovement = "left";}
         } else if (v.inputMethod == "touch") {touchControls();}
-        else if (v.inputMethod == "gestures") {gestureControls();}
+        else {gestureControls();}
     };
 }; // Object waarin alle variabelen in de game worden opgeslagen.
 const v: GameVariables = {};
@@ -89,7 +89,7 @@ const initializeVars = (p: p5): void => {
                 if (!pellet.checkCollisionObstacle()) {v.pellets.push(pellet);}
             }
         }
-    })(); // Functie voor de acties nadat Hoog-Man in contact komt met een ghost.
+    })(); // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
     v.endGame = (): void => {
         v.hoogMan.lives--;
         // Laat het laatste scherm zien.
@@ -137,13 +137,13 @@ const gestureControls = () => {
         if (v.gesturePosition[0] != null && v.gesturePosition[1] != null) {
             // v.gameBoard.*Unit als marge voor de grootte van de gesture.
             if (v.gesturePosition[3] < v.gesturePosition[1] - v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "up";}
-            else if (v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.widthUnit) {v.hoogMan.nextMovement = "right";}
+            else if (v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "right";}
             else if (v.gesturePosition[3] > v.gesturePosition[1] + v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "down";}
-            else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.widthUnit) {v.hoogMan.nextMovement = "left";}
+            else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "left";}
         }
     }; // Resets de gesture.
     const resetGesture = (event: TouchEvent | MouseEvent) => {
-        event.preventDefault(); // Zorgt ervoor dat de standaardactie niet gedaan wordt.
+        event.preventDefault(); // Zorgt ervoor dat de standaardactie niet uitgevoerd wordt.
         v.gesturePosition = [null, null, null, null];
     }; // Bepaalt de start positie van een gesture.
     const main = document.querySelector("main");
@@ -191,7 +191,7 @@ document.querySelector("#startGame").addEventListener("click", () => {
     new AudioContext;
 }); // Zorgt ervoor dat de game responsive is.
 window.addEventListener("resize", () => {
-    if (v.game) {
+    if (v.game && v.hoogMan.lives != 0) {
         v.game.remove();
         v.game = new p5(sketch);
     }
@@ -215,7 +215,7 @@ const getInputMethod = () => {
                     touchControls[i].classList.remove("touchPortrait");
                     touchControls[i].classList.add("touchLandscape");
                 }
-            } else if (v.gameBoard.orientation == "portrait") {
+            } else {
                 const touchElementHeight = (document.querySelector("html").offsetHeight - v.gameBoard.canvasDimension) / 2;
                 touchControlsContainer.style.height = `${touchElementHeight}px`;
                 touchControlsContainer.style.width = "100%";

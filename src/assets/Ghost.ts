@@ -40,8 +40,7 @@ export default class Ghost extends Character implements GhostInterface {
                     this.pelletCounter = this.pelletThreshold + this.v.inky.pelletThreshold - (138 - this.v.pellets.length);
                 }
             }
-        }
-        else if (this.mode == "frightened") {
+        } else if (this.mode == "frightened") {
             this.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
             this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.8;
             if (Math.floor(this.frightenedCounter / this.v.gameBoard.frameRate) == this.frightenedTime) { // Checkt of een ghost lang genoeg frightened is geweest.

@@ -34,6 +34,6 @@ export default class Clyde extends Ghost implements GhostInterface {
             else {this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0));}
         }
         else if (this.mode == "scatter") {this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0));}
-        else if (this.mode == "frightened") {this.frightenedMovement();}
+        else {this.frightenedMovement();}
     }
 }

@@ -31,6 +31,6 @@ export default class Blinky extends Ghost implements GhostInterface {
         // 0, 0 zijn marges tussen een ghost en zijn doelwit.
         if (this.mode == "chase") {this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, 0));}
         else if (this.mode == "scatter") {this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0));}
-        else if (this.mode == "frightened") {this.frightenedMovement();}
+        else {this.frightenedMovement();}
     }
 }

@@ -41,6 +41,6 @@ export default class Pinky extends Ghost implements GhostInterface {
             }
         }
         else if (this.mode == "scatter") {this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0));}
-        else if (this.mode == "frightened") {this.frightenedMovement();}
+        else {this.frightenedMovement();}
     }
 }

@@ -66,7 +66,7 @@ const sketch = (p) => {
         else if (v.inputMethod == "touch") {
             touchControls();
         }
-        else if (v.inputMethod == "gestures") {
+        else {
             gestureControls();
         }
     };
@@ -148,13 +148,13 @@ const gestureControls = () => {
             if (v.gesturePosition[3] < v.gesturePosition[1] - v.gameBoard.heightUnit) {
                 v.hoogMan.nextMovement = "up";
             }
-            else if (v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.widthUnit) {
+            else if (v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.heightUnit) {
                 v.hoogMan.nextMovement = "right";
             }
             else if (v.gesturePosition[3] > v.gesturePosition[1] + v.gameBoard.heightUnit) {
                 v.hoogMan.nextMovement = "down";
             }
-            else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.widthUnit) {
+            else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.heightUnit) {
                 v.hoogMan.nextMovement = "left";
             }
         }
@@ -208,7 +208,7 @@ document.querySelector("#startGame").addEventListener("click", () => {
     new AudioContext;
 });
 window.addEventListener("resize", () => {
-    if (v.game) {
+    if (v.game && v.hoogMan.lives != 0) {
         v.game.remove();
         v.game = new p5(sketch);
     }
@@ -235,7 +235,7 @@ const getInputMethod = () => {
                     touchControls[i].classList.add("touchLandscape");
                 }
             }
-            else if (v.gameBoard.orientation == "portrait") {
+            else {
                 const touchElementHeight = (document.querySelector("html").offsetHeight - v.gameBoard.canvasDimension) / 2;
                 touchControlsContainer.style.height = `${touchElementHeight}px`;
                 touchControlsContainer.style.width = "100%";

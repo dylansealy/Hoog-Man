@@ -17,7 +17,7 @@ export default class Clyde extends Ghost {
             else if (this.mode == "scatter") {
                 this.movementSequence(this.checkDistanceTarget("Target tile", 0, 0));
             }
-            else if (this.mode == "frightened") {
+            else {
                 this.frightenedMovement();
             }
         };
