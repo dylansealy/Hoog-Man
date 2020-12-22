@@ -8,7 +8,7 @@
         "noUncheckedIndexedAccess": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
-        "outDir": "./public/assets/js/",
+        "outDir": "./dist/assets/js/",
         "removeComments": true,
         "rootDir": "./src/",
         "skipLibCheck": true,

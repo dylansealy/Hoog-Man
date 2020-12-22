@@ -106,7 +106,7 @@ button {
     width: 15%;
     font-size: 7vh
 }
-#gameEndContainer {
+#gameEndContainer, #gameFinishedContainer {
     height: 100%;
     width: 100%;
     display: none;
@@ -120,7 +120,7 @@ button {
     color: white;
     text-align: center;
 }
-#gameEndContainer button {
+#gameEndContainer button, #gameFinishedContainer button {
     background-color: white;
     border: none;
     outline: none;
