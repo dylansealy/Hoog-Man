@@ -23,5 +23,3 @@ jobs:
           author_email: 66305635+DylanSealy@users.noreply.github.com
           message: "GitHub action: deployment base href"
           push: true
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
