@@ -18,9 +18,6 @@ const sketch = (p) => {
             character.setMovement();
         }
     };
-    p.preload = () => {
-        p.loadFont("assets/fonts/Roboto-Light.ttf");
-    };
     p.setup = () => {
         initializeVars(p);
         getInputMethod();
@@ -195,36 +192,32 @@ const gestureControls = () => {
             }
         }
     };
-    const resetGesture = (event) => {
-        event.preventDefault();
-        v.gesturePosition = [null, null, null, null];
-    };
+    const resetGesture = () => { v.gesturePosition = [null, null, null, null]; };
     const main = document.querySelector("main");
     main.addEventListener("touchstart", (event) => {
-        event.preventDefault();
+        if (v.hoogMan.lives != 0 && v.pellets.length != 0) {
+            event.preventDefault();
+        }
         v.gesturePosition[0] = event.touches[0].clientX;
         v.gesturePosition[1] = event.touches[0].clientY;
     });
     main.addEventListener("mousedown", (event) => {
-        event.preventDefault();
         v.gesturePosition[0] = event.clientX;
         v.gesturePosition[1] = event.clientY;
     });
     main.addEventListener("touchmove", (event) => {
-        event.preventDefault();
         v.gesturePosition[2] = event.touches[0].clientX;
         v.gesturePosition[3] = event.touches[0].clientY;
         checkGesture();
     });
     main.addEventListener("mousemove", (event) => {
-        event.preventDefault();
         v.gesturePosition[2] = event.clientX;
         v.gesturePosition[3] = event.clientY;
         checkGesture();
     });
-    main.addEventListener("touchend", (event) => resetGesture(event));
-    main.addEventListener("mouseup", (event) => resetGesture(event));
-    main.addEventListener("touchcancel", (event) => resetGesture(event));
+    main.addEventListener("touchend", () => resetGesture());
+    main.addEventListener("mouseup", () => resetGesture());
+    main.addEventListener("touchcancel", () => resetGesture());
 };
 document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
 document.querySelector("#startGame").addEventListener("click", () => {

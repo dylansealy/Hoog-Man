@@ -15,9 +15,6 @@ const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5
         character.checkCollision();
         character.checkNextMovement();
         if (character.name != "Hoog-Man") {character.setMovement();}
-    }; // Preload alle benodigde assets.
-    p.preload = (): void => {
-        p.loadFont("assets/fonts/Roboto-Light.ttf");
     }; // Stelt bepaalde instellingen in en zorgt ervoor dat de game kan beginnen.
     p.setup = (): void => {
         initializeVars(p);
@@ -179,36 +176,32 @@ const gestureControls = (): void => {
             else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "left";}
         }
     }; // Resets de gesture.
-    const resetGesture = (event: TouchEvent | MouseEvent): void => {
-        event.preventDefault(); // Zorgt ervoor dat de standaardactie niet uitgevoerd wordt.
-        v.gesturePosition = [null, null, null, null];
-    }; // Bepaalt de start positie van een gesture.
+    const resetGesture = (): void => {v.gesturePosition = [null, null, null, null];};
+    // Bepaalt de start positie van een gesture.
     const main = document.querySelector("main");
     main.addEventListener("touchstart", (event): void => {
-        event.preventDefault();
+        // Zorgt ervoor dat de pagina niet herlaat, maar dat de endGame button click wel werkt.
+        if (v.hoogMan.lives != 0 && v.pellets.length != 0) {event.preventDefault();} // Zorgt ervoor dat de standaardactie niet uitgevoerd wordt.
         v.gesturePosition[0] = event.touches[0].clientX;
         v.gesturePosition[1] = event.touches[0].clientY;
     });
     main.addEventListener("mousedown", (event): void => {
-        event.preventDefault();
         v.gesturePosition[0] = event.clientX;
         v.gesturePosition[1] = event.clientY;
     }); // Bepaalt de eind positie van een gesture.
     main.addEventListener("touchmove", (event): void => {
-        event.preventDefault();
         v.gesturePosition[2] = event.touches[0].clientX;
         v.gesturePosition[3] = event.touches[0].clientY;
         checkGesture();
     });
     main.addEventListener("mousemove", (event): void => {
-        event.preventDefault();
         v.gesturePosition[2] = event.clientX;
         v.gesturePosition[3] = event.clientY;
         checkGesture();
     }); // Resets de gesture nadat deze klaar is.
-    main.addEventListener("touchend", (event): void => resetGesture(event));
-    main.addEventListener("mouseup", (event): void => resetGesture(event));
-    main.addEventListener("touchcancel", (event): void => resetGesture(event));
+    main.addEventListener("touchend", (): void => resetGesture());
+    main.addEventListener("mouseup", (): void => resetGesture());
+    main.addEventListener("touchcancel", (): void => resetGesture());
 };
 document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
 document.querySelector("#startGame").addEventListener("click", (): void => {
