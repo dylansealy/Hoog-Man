@@ -28,7 +28,7 @@ export default class Character {
                     this.xPosition - this.diameter / 3 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 2 &&
                     this.yPosition + this.diameter / 3 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 2 &&
                     this.yPosition - this.diameter / 3 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 2) {
-                    return this.v.endGame();
+                    return this.v.endGame(this.p);
                 }
             }
             for (const obstacle in this.v.obstacles) {

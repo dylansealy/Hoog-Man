@@ -7,7 +7,7 @@ import Pinky from "./characters/Pinky.js";
 import GameBoard from "./gameBoard/GameBoard.js";
 import Obstacle from "./gameBoard/Obstacle.js";
 import Pellet from "./gameBoard/Pellet.js";
-const sketch = (p: p5) => { // Sketch wordt gebruikt voor instance mode p5. HG(1)
+const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5. HG(1)
     const characterSequence = (character: GhostInterface | HoogManInterface) => { // Zorgt voor de volgorde waarin acties van characters gebeuren.
         if (character.name != "Hoog-Man") {character.iterationVariables();}
         character.draw();
@@ -16,7 +16,6 @@ const sketch = (p: p5) => { // Sketch wordt gebruikt voor instance mode p5. HG(1
         if (character.name != "Hoog-Man") {character.setMovement();}
     }; // Preload alle benodigde assets.
     p.preload = (): void => {
-        p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
     }; // Stelt bepaalde instellingen in en zorgt ervoor dat de game kan beginnen.
     p.setup = (): void => {
@@ -29,6 +28,7 @@ const sketch = (p: p5) => { // Sketch wordt gebruikt voor instance mode p5. HG(1
         p.textSize(v.gameBoard.widthUnit / 1.5);
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
+        fadeIn(v.backgroundMusic, 0.55);
     }; // Zorgt ervoor dat alles getekend wordt en dat alle besturingselementen worden aangeroepen.
     p.draw = (): void => {
         p.background("black");
@@ -55,9 +55,46 @@ const sketch = (p: p5) => { // Sketch wordt gebruikt voor instance mode p5. HG(1
         else {gestureControls();}
     };
 }; // Object waarin alle variabelen in de game worden opgeslagen.
-const v: GameVariables = {};
+const v: GameVariables = {
+    backgroundMusic: new Audio("assets/audio/background.webm"),
+    deathSound: new Audio("assets/audio/death.webm"),
+    gameOverSound: new Audio("assets/audio/gameOver.webm"),
+    pelletSound: new Audio("assets/audio/pellet.webm"),
+    endGame: (p: p5): void => { // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
+        p.noLoop();
+        v.hoogMan.lives--;
+        responsiveGame(false, false);
+        // Laat het laatste scherm zien.
+        if (v.hoogMan.lives == 0) {
+            v.gameOverSound.play();
+            const gameEndContainer: HTMLElement = document.querySelector("#gameEndContainer");
+            gameEndContainer.style.display = "flex";
+            const paragraph: HTMLElement = document.querySelector("#gameEndContainer p");
+            paragraph.innerText += ` ${v.gameBoard.score}`;
+            document.querySelector("#again").addEventListener("click", () => {
+                gameEndContainer.style.display = "none";
+                responsiveGame(true, true);
+            });
+            document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+        } // Resets de posities van alle characters.
+        else {
+            v.deathSound.play();
+            setTimeout((): void => {
+                v.blinky.resetCharacter();
+                v.clyde.resetCharacter();
+                v.hoogMan.resetCharacter();
+                v.inky.resetCharacter();
+                v.pinky.resetCharacter();
+                fadeIn(v.backgroundMusic, 0.55);
+                p.loop();
+            }, 650);
+        }
+    }
+};
 // Zorgt ervoor dat alle benodigde variabelen voor de game worden gedeclareerd.
 const initializeVars = (p: p5): void => {
+    v.backgroundMusic.loop = true;
+    v.backgroundMusic.volume = v.deathSound.volume = v.gameOverSound.volume = v.pelletSound.volume = 0.55;
     v.gameBoard = new GameBoard(p, v);
     v.blinky = new Blinky(p, v);
     v.clyde = new Clyde(p, v);
@@ -65,7 +102,7 @@ const initializeVars = (p: p5): void => {
     v.inky = new Inky(p, v);
     v.pinky = new Pinky(p, v);
     v.gesturePosition = [null, null, null, null]; // Houdt de coördinaten van de gesture inputs bij: xStart, yStart, xEnd, yEnd.
-    (() => { // Zorgt ervoor dat alle barrières gecreëerd worden in een anonieme functie. HG(2)
+    ((): void => { // Zorgt ervoor dat alle barrières gecreëerd worden in een anonieme functie. HG(2)
         v.obstacleCoordinates = [ // Relatieve coördinaten barrières: xMin, yMin, xMax, yMax. Zie /maps/1.jpg
             [1, 1, 3, 4], [4, 0, 5, 4], [6, 1, 8, 4], [9, 0, 10, 3], [11, 1, 13, 3], [14, 0, 17, 2], [0, 5, 1, 8], [2, 5, 4, 8],
             [5, 5, 7, 6], [8, 5, 9, 6], [9, 4, 10, 7], [11, 5, 12, 6], [11, 4, 16, 5], [14, 3, 16, 4], [5, 7, 6, 8], [7, 7, 8, 10],
@@ -81,7 +118,7 @@ const initializeVars = (p: p5): void => {
             v.obstacles.push(obstacle); // Zorgt ervoor dat de barrière gepusht wordt naar de obstacle array.
         }
     })();
-    (() => { // Zorgt ervoor dat alle pellets gecreëerd worden.
+    ((): void => { // Zorgt ervoor dat alle pellets gecreëerd worden.
         v.pellets = [];
         for (let xPosition = 0; xPosition < 17; xPosition++) {
             for (let yPosition = 0; yPosition < 14; yPosition++) {
@@ -89,31 +126,7 @@ const initializeVars = (p: p5): void => {
                 if (!pellet.checkCollisionObstacle()) {v.pellets.push(pellet);}
             }
         }
-    })(); // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
-    v.endGame = (): void => {
-        v.hoogMan.lives--;
-        // Laat het laatste scherm zien.
-        if (v.hoogMan.lives == 0) {
-            p.noLoop();
-            const gameEndContainer: HTMLElement = document.querySelector("#gameEndContainer");
-            gameEndContainer.style.display = "flex";
-            const paragraph: HTMLElement = document.querySelector("#gameEndContainer p");
-            paragraph.innerText += ` ${v.gameBoard.score}`;
-            document.querySelector("#again").addEventListener("click", () => {
-                gameEndContainer.style.display = "none";
-                v.game.remove();
-                v.game = new p5(sketch);
-            });
-            document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
-        } // Resets de posities van alle characters.
-        else {
-            v.blinky.resetCharacter();
-            v.clyde.resetCharacter();
-            v.hoogMan.resetCharacter();
-            v.inky.resetCharacter();
-            v.pinky.resetCharacter();
-        }
-    };
+    })();
 }; // Functie voor het laten werken van de touch controls.
 const touchControls = (): void => {
     const upTouch: HTMLLIElement = document.querySelector("#upTouch");
@@ -131,8 +144,8 @@ const touchControls = (): void => {
     leftTouch.addEventListener("click", () => v.hoogMan.nextMovement = "left");
     leftTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "left");
 }; // Functie voor het laten werken van de gesture controls.
-const gestureControls = () => {
-    const checkGesture = () => { // Bepaalt welke gesture er uitgevoerd wordt.
+const gestureControls = (): void => {
+    const checkGesture = (): void => { // Bepaalt welke gesture er uitgevoerd wordt.
         // Checkt of een gesture gestart is.
         if (v.gesturePosition[0] != null && v.gesturePosition[1] != null) {
             // v.gameBoard.*Unit als marge voor de grootte van de gesture.
@@ -142,40 +155,40 @@ const gestureControls = () => {
             else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "left";}
         }
     }; // Resets de gesture.
-    const resetGesture = (event: TouchEvent | MouseEvent) => {
+    const resetGesture = (event: TouchEvent | MouseEvent): void => {
         event.preventDefault(); // Zorgt ervoor dat de standaardactie niet uitgevoerd wordt.
         v.gesturePosition = [null, null, null, null];
     }; // Bepaalt de start positie van een gesture.
     const main = document.querySelector("main");
-    main.addEventListener("touchstart", event => {
+    main.addEventListener("touchstart", (event): void => {
         event.preventDefault();
         v.gesturePosition[0] = event.touches[0].clientX;
         v.gesturePosition[1] = event.touches[0].clientY;
     });
-    main.addEventListener("mousedown", event => {
+    main.addEventListener("mousedown", (event): void => {
         event.preventDefault();
         v.gesturePosition[0] = event.clientX;
         v.gesturePosition[1] = event.clientY;
     }); // Bepaalt de eind positie van een gesture.
-    main.addEventListener("touchmove", event => {
+    main.addEventListener("touchmove", (event): void => {
         event.preventDefault();
         v.gesturePosition[2] = event.touches[0].clientX;
         v.gesturePosition[3] = event.touches[0].clientY;
         checkGesture();
     });
-    main.addEventListener("mousemove", event => {
+    main.addEventListener("mousemove", (event): void => {
         event.preventDefault();
         v.gesturePosition[2] = event.clientX;
         v.gesturePosition[3] = event.clientY;
         checkGesture();
     }); // Resets de gesture nadat deze klaar is.
-    main.addEventListener("touchend", event => resetGesture(event));
-    main.addEventListener("mouseup", event => resetGesture(event));
-    main.addEventListener("touchcancel", event => resetGesture(event));
+    main.addEventListener("touchend", (event): void => resetGesture(event));
+    main.addEventListener("mouseup", (event): void => resetGesture(event));
+    main.addEventListener("touchcancel", (event): void => resetGesture(event));
 };
 document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
-document.querySelector("#startGame").addEventListener("click", () => {
-    (() => { // Zorgt ervoor dat de container van de game even groot wordt als het scherm.
+document.querySelector("#startGame").addEventListener("click", (): void => {
+    ((): void => { // Zorgt ervoor dat de container van de game even groot wordt als het scherm.
         const main = document.querySelector("main");
         main.requestFullscreen();
         main.style.height = "100%";
@@ -188,15 +201,11 @@ document.querySelector("#startGame").addEventListener("click", () => {
     v.game = new p5(sketch);
     const gameStartupContainer: HTMLElement = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
-    new AudioContext;
 }); // Zorgt ervoor dat de game responsive is.
-window.addEventListener("resize", () => {
-    if (v.game && v.hoogMan.lives != 0) {
-        v.game.remove();
-        v.game = new p5(sketch);
-    }
+window.addEventListener("resize", (): void => {
+    if (v.game && v.hoogMan.lives != 0) {responsiveGame(true, true);}
 }); // Checkt wat de gekozen input methode is.
-const getInputMethod = () => {
+const getInputMethod = (): void => {
     const inputMethod = document.getElementsByName("controls");
     if (inputMethod[0].checked || v.inputMethod == "keyboard") {v.inputMethod = "keyboard";}
     else if (inputMethod[1].checked || v.inputMethod == "touch") {
@@ -228,8 +237,42 @@ const getInputMethod = () => {
             }
         })();
     } else {v.inputMethod = "gestures";}
-}; // Zorgt voor het correcte copyright jaar.
-(() => {
+}; // Zorgt ervoor dat de game correct functioneert na een wijziging in de grootte van het scherm.
+const responsiveGame = (resetAudio: boolean, newGame: boolean): void => {
+    v.backgroundMusic.pause();
+    v.deathSound.pause();
+    v.gameOverSound.pause();
+    v.pelletSound.pause();
+    if (resetAudio) { // Zorgt ervoor dat de audio bij het begin is.
+        v.backgroundMusic.currentTime = 0;
+        v.deathSound.currentTime = 0;
+        v.gameOverSound.currentTime = 0;
+        v.pelletSound.currentTime = 0;
+    }
+    if (newGame) { // Creëert een nieuwe game.
+        v.game.remove();
+        v.game = new p5(sketch);
+    }
+}; /// Zorgt voor een fadeIn effect van de audio.
+const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
+    audio.volume = 0.00;
+    audio.play();
+    const fade = setInterval((): void => { // Zorgt ervoor dat het volume omhoog gaat na een interval.
+        audio.volume += 0.03;
+        if (audio.volume >= threshold) {
+            clearInterval(fade);
+            audio.volume = threshold;
+        }
+    }, 110);
+};
+((): void => { // Zorgt voor het correcte copyright jaar.
     const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
+})();
+((): void => { // Checkt of het een mobiel apparaat is zet de aanbevolen input method.
+    const userAgent = navigator.userAgent;
+    if (userAgent.indexOf("Mobile") != -1) {
+        const inputMethod = document.getElementsByName("controls");
+        inputMethod[2].checked = true;
+    }
 })();

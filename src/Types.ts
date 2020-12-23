@@ -2,6 +2,10 @@
 import p5 from "p5";
 // Definieert aan welke vorm een class/object minimaal moet voldoen. TS(2)
 export interface GameVariables {
+    backgroundMusic: HTMLAudioElement;
+    deathSound: HTMLAudioElement;
+    gameOverSound: HTMLAudioElement;
+    pelletSound: HTMLAudioElement;
     blinky: GhostInterface; // Koppelt een interface aan een property. TS(3)
     clyde: GhostInterface;
     hoogMan: HoogManInterface;
@@ -14,7 +18,7 @@ export interface GameVariables {
     obstacleCoordinates: Array<Array<number>>; // Type geeft aan dat het dataype een array is die weer bestaat uit een array van cijfers.
     obstacles: Array<ObstacleInterface>; // Type geeft aan dat het datatype een array is die bestaat uit childs van de class die gebruik maakt van de interface.
     pellets: Array<PelletInterface>;
-    endGame: () => void; // Type geeft aan dat de functie niets returned. TS(5)
+    endGame: (p: p5) => void; // Type geeft aan dat de functie niets returned. TS(5)
 }
 export interface GameBoardInterface {
     canvasDimension: number;

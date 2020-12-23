@@ -24,6 +24,9 @@ export default class Pellet {
                 this.v.hoogMan.xPosition + this.xMargin > this.xPosition &&
                 this.v.hoogMan.yPosition - this.yMargin < this.yPosition &&
                 this.v.hoogMan.yPosition + this.yMargin > this.yPosition) {
+                this.v.pelletSound.pause();
+                this.v.pelletSound.currentTime = 0;
+                this.v.pelletSound.play();
                 this.v.gameBoard.score += 100;
                 this.v.pellets.splice(index, 1);
             }

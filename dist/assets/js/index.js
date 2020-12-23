@@ -19,7 +19,6 @@ const sketch = (p) => {
         }
     };
     p.preload = () => {
-        p.soundFormats("mp3");
         p.loadFont("assets/fonts/Roboto-Light.ttf");
     };
     p.setup = () => {
@@ -32,6 +31,7 @@ const sketch = (p) => {
         p.textSize(v.gameBoard.widthUnit / 1.5);
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
+        fadeIn(v.backgroundMusic, 0.55);
     };
     p.draw = () => {
         p.background("black");
@@ -71,8 +71,44 @@ const sketch = (p) => {
         }
     };
 };
-const v = {};
+const v = {
+    backgroundMusic: new Audio("assets/audio/background.webm"),
+    deathSound: new Audio("assets/audio/death.webm"),
+    gameOverSound: new Audio("assets/audio/gameOver.webm"),
+    pelletSound: new Audio("assets/audio/pellet.webm"),
+    endGame: (p) => {
+        p.noLoop();
+        v.hoogMan.lives--;
+        responsiveGame(false, false);
+        if (v.hoogMan.lives == 0) {
+            v.gameOverSound.play();
+            const gameEndContainer = document.querySelector("#gameEndContainer");
+            gameEndContainer.style.display = "flex";
+            const paragraph = document.querySelector("#gameEndContainer p");
+            paragraph.innerText += ` ${v.gameBoard.score}`;
+            document.querySelector("#again").addEventListener("click", () => {
+                gameEndContainer.style.display = "none";
+                responsiveGame(true, true);
+            });
+            document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+        }
+        else {
+            v.deathSound.play();
+            setTimeout(() => {
+                v.blinky.resetCharacter();
+                v.clyde.resetCharacter();
+                v.hoogMan.resetCharacter();
+                v.inky.resetCharacter();
+                v.pinky.resetCharacter();
+                fadeIn(v.backgroundMusic, 0.55);
+                p.loop();
+            }, 650);
+        }
+    }
+};
 const initializeVars = (p) => {
+    v.backgroundMusic.loop = true;
+    v.backgroundMusic.volume = v.deathSound.volume = v.gameOverSound.volume = v.pelletSound.volume = 0.55;
     v.gameBoard = new GameBoard(p, v);
     v.blinky = new Blinky(p, v);
     v.clyde = new Clyde(p, v);
@@ -104,29 +140,6 @@ const initializeVars = (p) => {
             }
         }
     })();
-    v.endGame = () => {
-        v.hoogMan.lives--;
-        if (v.hoogMan.lives == 0) {
-            p.noLoop();
-            const gameEndContainer = document.querySelector("#gameEndContainer");
-            gameEndContainer.style.display = "flex";
-            const paragraph = document.querySelector("#gameEndContainer p");
-            paragraph.innerText += ` ${v.gameBoard.score}`;
-            document.querySelector("#again").addEventListener("click", () => {
-                gameEndContainer.style.display = "none";
-                v.game.remove();
-                v.game = new p5(sketch);
-            });
-            document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
-        }
-        else {
-            v.blinky.resetCharacter();
-            v.clyde.resetCharacter();
-            v.hoogMan.resetCharacter();
-            v.inky.resetCharacter();
-            v.pinky.resetCharacter();
-        }
-    };
 };
 const touchControls = () => {
     const upTouch = document.querySelector("#upTouch");
@@ -164,31 +177,31 @@ const gestureControls = () => {
         v.gesturePosition = [null, null, null, null];
     };
     const main = document.querySelector("main");
-    main.addEventListener("touchstart", event => {
+    main.addEventListener("touchstart", (event) => {
         event.preventDefault();
         v.gesturePosition[0] = event.touches[0].clientX;
         v.gesturePosition[1] = event.touches[0].clientY;
     });
-    main.addEventListener("mousedown", event => {
+    main.addEventListener("mousedown", (event) => {
         event.preventDefault();
         v.gesturePosition[0] = event.clientX;
         v.gesturePosition[1] = event.clientY;
     });
-    main.addEventListener("touchmove", event => {
+    main.addEventListener("touchmove", (event) => {
         event.preventDefault();
         v.gesturePosition[2] = event.touches[0].clientX;
         v.gesturePosition[3] = event.touches[0].clientY;
         checkGesture();
     });
-    main.addEventListener("mousemove", event => {
+    main.addEventListener("mousemove", (event) => {
         event.preventDefault();
         v.gesturePosition[2] = event.clientX;
         v.gesturePosition[3] = event.clientY;
         checkGesture();
     });
-    main.addEventListener("touchend", event => resetGesture(event));
-    main.addEventListener("mouseup", event => resetGesture(event));
-    main.addEventListener("touchcancel", event => resetGesture(event));
+    main.addEventListener("touchend", (event) => resetGesture(event));
+    main.addEventListener("mouseup", (event) => resetGesture(event));
+    main.addEventListener("touchcancel", (event) => resetGesture(event));
 };
 document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
 document.querySelector("#startGame").addEventListener("click", () => {
@@ -205,12 +218,10 @@ document.querySelector("#startGame").addEventListener("click", () => {
     v.game = new p5(sketch);
     const gameStartupContainer = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
-    new AudioContext;
 });
 window.addEventListener("resize", () => {
     if (v.game && v.hoogMan.lives != 0) {
-        v.game.remove();
-        v.game = new p5(sketch);
+        responsiveGame(true, true);
     }
 });
 const getInputMethod = () => {
@@ -252,7 +263,41 @@ const getInputMethod = () => {
         v.inputMethod = "gestures";
     }
 };
+const responsiveGame = (resetAudio, newGame) => {
+    v.backgroundMusic.pause();
+    v.deathSound.pause();
+    v.gameOverSound.pause();
+    v.pelletSound.pause();
+    if (resetAudio) {
+        v.backgroundMusic.currentTime = 0;
+        v.deathSound.currentTime = 0;
+        v.gameOverSound.currentTime = 0;
+        v.pelletSound.currentTime = 0;
+    }
+    if (newGame) {
+        v.game.remove();
+        v.game = new p5(sketch);
+    }
+};
+const fadeIn = (audio, threshold) => {
+    audio.volume = 0.00;
+    audio.play();
+    const fade = setInterval(() => {
+        audio.volume += 0.03;
+        if (audio.volume >= threshold) {
+            clearInterval(fade);
+            audio.volume = threshold;
+        }
+    }, 110);
+};
 (() => {
     const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
+})();
+(() => {
+    const userAgent = navigator.userAgent;
+    if (userAgent.indexOf("Mobile") != -1) {
+        const inputMethod = document.getElementsByName("controls");
+        inputMethod[2].checked = true;
+    }
 })();

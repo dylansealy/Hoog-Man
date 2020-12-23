@@ -13,3 +13,8 @@ Dit document heeft als doel om alle gebruikte bronnen bij te houden. Dus zet all
 * [Pac-Man design](https://www.slideshare.net/grimlockt/pac-man-6561257)
 * [Pac-Man p5 voorbeeld](https://coursescript.com/notes/interactivecomputing/game/pacman/sketch.js)
 * [Pac-Man ghost behavior](https://gameinternals.com/understanding-pac-man-ghost-behavior)
+
+## Audio
+* [Background](https://www.youtube.com/watch?v=OuRvOCf9mJ4&list=PLwJjxqYuirCLkq42mGw4XKGQlpZSfxsYd&index=3)
+* [Game over trombone](https://mixkit.co/free-sound-effects/game-over/)
+* [Pellet & death](https://opengameart.org/content/512-sound-effects-8-bit-style)
