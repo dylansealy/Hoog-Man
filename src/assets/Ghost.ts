@@ -87,7 +87,7 @@ export default class Ghost extends Character implements GhostInterface {
             yTarget = this.yTargetTile;
         } // Bepaalt de afstand tussen een ghost zijn doelwit
         const upDistance = this.p.dist(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
-        const rightDistance = this.p.dist( this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+        const rightDistance = this.p.dist(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
         const downDistance = this.p.dist(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
         const leftDistance = this.p.dist(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
         const distance = [upDistance, rightDistance, downDistance, leftDistance]; // Standaard bewegingsrichtingvolgorde.
@@ -101,9 +101,11 @@ export default class Ghost extends Character implements GhostInterface {
     } // Zorgt ervoor dat de nieuwe bewegingsrichting wordt gedefinieerd.
     setNextMovement: (movementOrder: Array<number>, index: number) => boolean = (movementOrder, index) => {
         const checkPossibilityMovement = (targetMovement: Movement, forbiddenMovement: Movement) => { // Checkt of de nieuwe bewegingsrichting mogelijk is.
-            // * Checkt of er geen botsing plaatsvindt na de nieuwe bewegingsrichting.
-            // * Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de huidige.
-            // * Checkt of de nieuwe bewegingsrichting niet gelijk is aan de huidige. Dit voorkomt dat previousMovement wordt overschreven.
+            /*
+             * Checkt of er geen botsing plaatsvindt na de nieuwe bewegingsrichting.
+             * Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de huidige.
+             * Checkt of de nieuwe bewegingsrichting niet gelijk is aan de huidige. Dit voorkomt dat previousMovement wordt overschreven.
+             */
             if (!this.checkCollisionInput(targetMovement) && this.movement != forbiddenMovement && this.movement != targetMovement) {
                 // Checkt of de nieuwe bewegingsrichting niet tegenovergesteld is aan de bewegingsrichting voor de huidige.
                 if (this.previousMovement != forbiddenMovement || this.movement == forbiddenMovement && this.collision == false) {
@@ -116,7 +118,7 @@ export default class Ghost extends Character implements GhostInterface {
                 }
             } return false;
         }; // Checkt voor elke voorkeursbewegingsrichting of dit mogelijk is.
-        switch(movementOrder[index]) {
+        switch (movementOrder[index]) {
         case 0: return checkPossibilityMovement("up", "down");
         case 1: return checkPossibilityMovement("right", "left");
         case 2: return checkPossibilityMovement("down", "up");

@@ -4,6 +4,7 @@ import Clyde from "./characters/Clyde.js";
 import HoogMan from "./characters/HoogMan.js";
 import Inky from "./characters/Inky.js";
 import Pinky from "./characters/Pinky.js";
+// eslint-disable-next-line sort-imports
 import GameBoard from "./gameBoard/GameBoard.js";
 import Obstacle from "./gameBoard/Obstacle.js";
 import Pellet from "./gameBoard/Pellet.js";
@@ -46,6 +47,7 @@ const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5
         characterSequence(v.clyde);
         // Zorgt ervoor dat alleen de gekozen input methode werkt.
         if (v.inputMethod == "keyboard") {
+            // eslint-disable-next-line capitalized-comments
             // p.keyIsDown(n) zorgt ervoor dat de WASD knoppen werken.
             if (p.keyIsDown(p.UP_ARROW) || p.keyIsDown(87)) {v.hoogMan.nextMovement = "up";}
             else if (p.keyIsDown(p.RIGHT_ARROW) || p.keyIsDown(68)) {v.hoogMan.nextMovement = "right";}
@@ -62,6 +64,7 @@ const v: GameVariables = {
     gameCompletedSound: new Audio("assets/audio/gameCompleted.webm"),
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
+    // eslint-disable-next-line sort-keys
     endGame: (p: p5): void => { // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
         p.noLoop();
         v.hoogMan.lives--;
@@ -168,6 +171,7 @@ const gestureControls = (): void => {
     const checkGesture = (): void => { // Bepaalt welke gesture er uitgevoerd wordt.
         // Checkt of een gesture gestart is.
         if (v.gesturePosition[0] != null && v.gesturePosition[1] != null) {
+            // eslint-disable-next-line capitalized-comments
             // v.gameBoard.*Unit als marge voor de grootte van de gesture.
             if (v.gesturePosition[3] < v.gesturePosition[1] - v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "up";}
             else if (v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.heightUnit) {v.hoogMan.nextMovement = "right";}
@@ -277,7 +281,7 @@ const responsiveGame = (resetAudio: boolean, newGame: boolean): void => {
         v.game.remove();
         v.game = new p5(sketch);
     }
-}; /// Zorgt voor een fadeIn effect van de audio.
+}; // Zorgt voor een fadeIn effect van de audio.
 const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
     audio.volume = 0.00;
     audio.play();

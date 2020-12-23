@@ -31,7 +31,7 @@ export default class Inky extends Ghost implements GhostInterface {
             case "down": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 2, 2)); break;
             case "left": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -2, -2)); break;
             default:
-                switch(this.v.hoogMan.previousMovement) {
+                switch (this.v.hoogMan.previousMovement) {
                 case "up": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -2, -2)); break;
                 case "right": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 2, 2)); break;
                 case "down": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 2, 2)); break;
