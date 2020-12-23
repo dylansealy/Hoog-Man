@@ -45,11 +45,17 @@ export default class Character implements CharacterInterface {
         this.collision = false;
         if (this.name != "Hoog-Man") { // Checkt of een ghost in aanraking komt met Hoog-Man.
             if ( // / 2, of / 3 als marge.
-                this.xPosition + this.diameter / 3 >= this.v.hoogMan.xPosition - this.v.hoogMan.diameter / 2 &&
-                this.xPosition - this.diameter / 3 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 2 &&
-                this.yPosition + this.diameter / 3 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 2 &&
-                this.yPosition - this.diameter / 3 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 2
-            ) {return this.v.endGame(this.p);}
+                this.xPosition + this.diameter / 3 >= this.v.hoogMan.xPosition - this.v.hoogMan.diameter / 3 &&
+                this.xPosition - this.diameter / 3 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 3 &&
+                this.yPosition + this.diameter / 3 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 3 &&
+                this.yPosition - this.diameter / 3 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 3
+            ) {
+                if (this.mode == "frightened") {
+                    this.v.gameBoard.score += 1000;
+                    return this.resetCharacter();
+                }
+                this.v.gameBoard.score -= 1000;
+                return this.v.endGame(this.p);}
         }
         for (const obstacle in this.v.obstacles) {
             if ( // Checkt of een character botst met een barrière. 1 als marge, want anders is deze statement altijd waar.

@@ -4,6 +4,8 @@ import p5 from "p5";
 export interface GameVariables {
     backgroundMusic: HTMLAudioElement;
     deathSound: HTMLAudioElement;
+    frightenedSound: HTMLAudioElement;
+    gameCompletedSound: HTMLAudioElement;
     gameOverSound: HTMLAudioElement;
     pelletSound: HTMLAudioElement;
     blinky: GhostInterface; // Koppelt een interface aan een property. TS(3)
@@ -43,6 +45,7 @@ export interface PelletInterface {
     color: string;
     diameter: number;
     p: p5;
+    powerPellet: boolean;
     v: GameVariables;
     xMargin: number;
     yMargin: number;

@@ -42,10 +42,12 @@ export default class Ghost extends Character implements GhostInterface {
             }
         } else if (this.mode == "frightened") {
             this.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
-            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.8;
+            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.65;
             if (Math.floor(this.frightenedCounter / this.v.gameBoard.frameRate) == this.frightenedTime) { // Checkt of een ghost lang genoeg frightened is geweest.
                 this.mode = this.previousMode;
                 this.frightenedCounter = 0;
+                this.v.frightenedSound.pause();
+                this.v.backgroundMusic.volume = 0.55;
             } this.frightenedCounter++;
         } else {
             this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;

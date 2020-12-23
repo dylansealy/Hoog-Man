@@ -74,23 +74,37 @@ const sketch = (p) => {
 const v = {
     backgroundMusic: new Audio("assets/audio/background.webm"),
     deathSound: new Audio("assets/audio/death.webm"),
+    frightenedSound: new Audio("assets/audio/frightened.webm"),
+    gameCompletedSound: new Audio("assets/audio/gameCompleted.webm"),
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
     endGame: (p) => {
         p.noLoop();
         v.hoogMan.lives--;
         responsiveGame(false, false);
-        if (v.hoogMan.lives == 0) {
-            v.gameOverSound.play();
-            const gameEndContainer = document.querySelector("#gameEndContainer");
-            gameEndContainer.style.display = "flex";
-            const paragraph = document.querySelector("#gameEndContainer p");
+        if (v.hoogMan.lives == 0 || v.pellets.length == 0) {
+            let container;
+            let paragraph;
+            let index;
+            if (v.hoogMan.lives == 0) {
+                v.gameOverSound.play();
+                index = 0;
+                container = document.querySelector("#gameEndContainer");
+                paragraph = document.querySelector("#gameEndContainer p");
+            }
+            else {
+                v.gameCompletedSound.play();
+                index = 1;
+                container = document.querySelector("#gameFinishedContainer");
+                paragraph = document.querySelector("#gameFinishedContainer p");
+            }
+            container.style.display = "flex";
             paragraph.innerText += ` ${v.gameBoard.score}`;
-            document.querySelector("#again").addEventListener("click", () => {
-                gameEndContainer.style.display = "none";
+            document.querySelectorAll(".again")[index].addEventListener("click", () => {
+                container.style.display = "none";
                 responsiveGame(true, true);
             });
-            document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+            document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
         }
         else {
             v.deathSound.play();
@@ -107,8 +121,9 @@ const v = {
     }
 };
 const initializeVars = (p) => {
-    v.backgroundMusic.loop = true;
+    v.backgroundMusic.loop = v.frightenedSound.loop = true;
     v.backgroundMusic.volume = v.deathSound.volume = v.gameOverSound.volume = v.pelletSound.volume = 0.55;
+    v.gameCompletedSound.volume = 0.60;
     v.gameBoard = new GameBoard(p, v);
     v.blinky = new Blinky(p, v);
     v.clyde = new Clyde(p, v);
@@ -133,7 +148,15 @@ const initializeVars = (p) => {
         v.pellets = [];
         for (let xPosition = 0; xPosition < 17; xPosition++) {
             for (let yPosition = 0; yPosition < 14; yPosition++) {
-                const pellet = new Pellet(p, v, xPosition, yPosition);
+                let pellet;
+                if (xPosition == 16 && yPosition == 13 ||
+                    xPosition == 13 && yPosition == 0 ||
+                    xPosition == 4 && yPosition == 6) {
+                    pellet = new Pellet(p, v, xPosition, yPosition, true);
+                }
+                else {
+                    pellet = new Pellet(p, v, xPosition, yPosition, false);
+                }
                 if (!pellet.checkCollisionObstacle()) {
                     v.pellets.push(pellet);
                 }
@@ -266,11 +289,15 @@ const getInputMethod = () => {
 const responsiveGame = (resetAudio, newGame) => {
     v.backgroundMusic.pause();
     v.deathSound.pause();
+    v.frightenedSound.pause();
+    v.gameCompletedSound.pause();
     v.gameOverSound.pause();
     v.pelletSound.pause();
     if (resetAudio) {
         v.backgroundMusic.currentTime = 0;
         v.deathSound.currentTime = 0;
+        v.frightenedSound.currentTime = 0;
+        v.gameCompletedSound.currentTime = 0;
         v.gameOverSound.currentTime = 0;
         v.pelletSound.currentTime = 0;
     }

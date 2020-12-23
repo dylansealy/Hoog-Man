@@ -18,3 +18,5 @@ Dit document heeft als doel om alle gebruikte bronnen bij te houden. Dus zet all
 * [Background](https://www.youtube.com/watch?v=OuRvOCf9mJ4&list=PLwJjxqYuirCLkq42mGw4XKGQlpZSfxsYd&index=3)
 * [Game over trombone](https://mixkit.co/free-sound-effects/game-over/)
 * [Pellet & death](https://opengameart.org/content/512-sound-effects-8-bit-style)
+* [Game completed](https://www.youtube.com/watch?v=5FiWRmMzVbo)
+* [Frightened](http://soundbible.com/1258-Tick-Tock.html)

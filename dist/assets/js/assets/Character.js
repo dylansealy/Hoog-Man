@@ -24,10 +24,15 @@ export default class Character {
         this.checkCollision = () => {
             this.collision = false;
             if (this.name != "Hoog-Man") {
-                if (this.xPosition + this.diameter / 3 >= this.v.hoogMan.xPosition - this.v.hoogMan.diameter / 2 &&
-                    this.xPosition - this.diameter / 3 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 2 &&
-                    this.yPosition + this.diameter / 3 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 2 &&
-                    this.yPosition - this.diameter / 3 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 2) {
+                if (this.xPosition + this.diameter / 3 >= this.v.hoogMan.xPosition - this.v.hoogMan.diameter / 3 &&
+                    this.xPosition - this.diameter / 3 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 3 &&
+                    this.yPosition + this.diameter / 3 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 3 &&
+                    this.yPosition - this.diameter / 3 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 3) {
+                    if (this.mode == "frightened") {
+                        this.v.gameBoard.score += 1000;
+                        return this.resetCharacter();
+                    }
+                    this.v.gameBoard.score -= 1000;
                     return this.v.endGame(this.p);
                 }
             }

@@ -58,6 +58,8 @@ const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5
 const v: GameVariables = {
     backgroundMusic: new Audio("assets/audio/background.webm"),
     deathSound: new Audio("assets/audio/death.webm"),
+    frightenedSound: new Audio("assets/audio/frightened.webm"),
+    gameCompletedSound: new Audio("assets/audio/gameCompleted.webm"),
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
     endGame: (p: p5): void => { // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
@@ -65,17 +67,28 @@ const v: GameVariables = {
         v.hoogMan.lives--;
         responsiveGame(false, false);
         // Laat het laatste scherm zien.
-        if (v.hoogMan.lives == 0) {
-            v.gameOverSound.play();
-            const gameEndContainer: HTMLElement = document.querySelector("#gameEndContainer");
-            gameEndContainer.style.display = "flex";
-            const paragraph: HTMLElement = document.querySelector("#gameEndContainer p");
+        if (v.hoogMan.lives == 0 || v.pellets.length == 0) {
+            let container: HTMLElement;
+            let paragraph: HTMLElement;
+            let index: number;
+            if (v.hoogMan.lives == 0) {
+                v.gameOverSound.play();
+                index = 0;
+                container = document.querySelector("#gameEndContainer");
+                paragraph = document.querySelector("#gameEndContainer p");
+            } else {
+                v.gameCompletedSound.play();
+                index = 1;
+                container = document.querySelector("#gameFinishedContainer");
+                paragraph = document.querySelector("#gameFinishedContainer p");
+            }
+            container.style.display = "flex";
             paragraph.innerText += ` ${v.gameBoard.score}`;
-            document.querySelector("#again").addEventListener("click", () => {
-                gameEndContainer.style.display = "none";
+            document.querySelectorAll(".again")[index].addEventListener("click", () => {
+                container.style.display = "none";
                 responsiveGame(true, true);
             });
-            document.querySelector("#stop").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+            document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
         } // Resets de posities van alle characters.
         else {
             v.deathSound.play();
@@ -93,8 +106,9 @@ const v: GameVariables = {
 };
 // Zorgt ervoor dat alle benodigde variabelen voor de game worden gedeclareerd.
 const initializeVars = (p: p5): void => {
-    v.backgroundMusic.loop = true;
+    v.backgroundMusic.loop = v.frightenedSound.loop = true;
     v.backgroundMusic.volume = v.deathSound.volume = v.gameOverSound.volume = v.pelletSound.volume = 0.55;
+    v.gameCompletedSound.volume = 0.60;
     v.gameBoard = new GameBoard(p, v);
     v.blinky = new Blinky(p, v);
     v.clyde = new Clyde(p, v);
@@ -122,7 +136,13 @@ const initializeVars = (p: p5): void => {
         v.pellets = [];
         for (let xPosition = 0; xPosition < 17; xPosition++) {
             for (let yPosition = 0; yPosition < 14; yPosition++) {
-                const pellet = new Pellet(p, v, xPosition, yPosition);
+                let pellet: Pellet;
+                if (
+                    xPosition == 16 && yPosition == 13 ||
+                    xPosition == 13 && yPosition == 0 ||
+                    xPosition == 4 && yPosition == 6
+                ) {pellet = new Pellet(p, v, xPosition, yPosition, true);}
+                else {pellet = new Pellet(p, v, xPosition, yPosition, false);}
                 if (!pellet.checkCollisionObstacle()) {v.pellets.push(pellet);}
             }
         }
@@ -241,11 +261,15 @@ const getInputMethod = (): void => {
 const responsiveGame = (resetAudio: boolean, newGame: boolean): void => {
     v.backgroundMusic.pause();
     v.deathSound.pause();
+    v.frightenedSound.pause();
+    v.gameCompletedSound.pause();
     v.gameOverSound.pause();
     v.pelletSound.pause();
     if (resetAudio) { // Zorgt ervoor dat de audio bij het begin is.
         v.backgroundMusic.currentTime = 0;
         v.deathSound.currentTime = 0;
+        v.frightenedSound.currentTime = 0;
+        v.gameCompletedSound.currentTime = 0;
         v.gameOverSound.currentTime = 0;
         v.pelletSound.currentTime = 0;
     }

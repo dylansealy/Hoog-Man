@@ -18,6 +18,7 @@ Een README-bestand is normaal gesproken bedoeld om mensen te informeren over de 
 * [Belangrijke informatie](#Belangrijke-informatie)
 * [Handige links en bronnen](#Handige-links-en-bronnen)
 * [Bekende problemen](#Bekende-problemen)
+* [Credits](#Credits)
 
 ## Installatie en set-up
 Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code](#Git-met-VSC) (VSC) en op school van [Gitpod](#Gitpod).
@@ -125,3 +126,6 @@ In het bestand [Bronnen.md](/Bronnen.md) kun je handige links en gebruikte bronn
 
 # Bekende problemen
 GitHub heeft een functie waarbij je bekende problemen in de code kunt aangeven. Dit is de [issues sectie](https://github.com/DylanSealy/PO-2D-games-maken/issues) in GitHub. Ik ben van plan om dit ook te gaan gebruiken, want hiermee kun je gemakkelijk bijhouden welke problemen er zijn en welke er zijn opgelost. Daarnaast kun je het oplossen van issues aan mensen toekennen. Dus als je een bekend probleem hebt in je code, maak hier dan een issue van.
+
+# Credits
+Het originele [geluidseffect](dist/assets/audio/frightened.webm) wanneer de ghosts frightened zijn is geproduceerd door [Mike Koenig](http://soundbible.com/1258-Tick-Tock.html). Dit geluidseffect is lichtelijk aangepast om het beter bij Hoog-Man te laten passen.

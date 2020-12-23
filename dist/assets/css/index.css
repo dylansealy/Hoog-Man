@@ -118,13 +118,14 @@ button {
     margin: auto;
     background-color: #662f2fda;
     color: white;
-    text-align: center;
+    text-align: center
 }
 #gameEndContainer button, #gameFinishedContainer button {
     background-color: white;
     border: none;
-    outline: none;
+    outline: none
 }
+#gameFinishedContainer {background-color: #4e662fbd}
 footer {
     grid-area: 3 / 1 / 4 / 2;
     display: flex;
