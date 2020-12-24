@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "ESNext",
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitReturns": true,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "outDir": "./dist/assets/js/",
+        "removeComments": true,
+        "rootDir": "./src/",
+        "skipLibCheck": true,
+        "strict": true,
+        "strictNullChecks": false,
+        "target": "ESNext",
+        "watch": true
+    },
+    "include": ["./src/"]
+}

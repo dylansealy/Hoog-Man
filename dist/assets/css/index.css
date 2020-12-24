@@ -16,7 +16,7 @@ body {
     width: 100%;
     display: grid; /* Grid is een 2D manier om vakken te creëren waar content in kan. Zie Chrome developer tools en bij elements hover en/of klik op body. */
     grid: 60px 1fr 30px / 100%; /* Specificeert de grid vakken. */
-    font-size: 16px;
+    font-size: 20px;
     font-family: "Roboto", sans-serif, Arial
 }
 a {
@@ -25,6 +25,9 @@ a {
 }
 a:hover {color: #ffff00}
 a:active {text-decoration: underline}
+p, label {
+    font-size: 1.1rem;
+}
 header {
     grid-area: 1 / 1 / 2 / 2; /* Geeft aan welk grid vak het element tot zijn beschikking heeft. */
     display: flex; /*Flexbox is een 1D variant van grid. Hiermee kun je gemakkelijk content alignen. */
@@ -106,25 +109,26 @@ button {
     width: 15%;
     font-size: 7vh
 }
-#gameEndContainer {
+#gameEndContainer, #gameFinishedContainer {
     height: 100%;
     width: 100%;
     display: none;
     flex-flow: column nowrap;
     place-items: center center;
     place-content: center center;
-    gap: 1rem;
+    gap: 1.5rem;
     position: absolute;
     margin: auto;
     background-color: #662f2fda;
     color: white;
-    text-align: center;
+    text-align: center
 }
-#gameEndContainer button {
+#gameEndContainer button, #gameFinishedContainer button {
     background-color: white;
     border: none;
-    outline: none;
+    outline: none
 }
+#gameFinishedContainer {background-color: #4e662fbd}
 footer {
     grid-area: 3 / 1 / 4 / 2;
     display: flex;

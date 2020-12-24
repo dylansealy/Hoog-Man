@@ -1,5 +1,10 @@
+/* eslint-disable no-console */
+/* eslint-disable @typescript-eslint/no-var-requires */
+// eslint-disable-next-line no-undef
 const core = require("@actions/core");
+// eslint-disable-next-line no-undef
 const glob = require("@actions/glob");
+// eslint-disable-next-line no-undef
 const fs = require("fs");
 const changeBaseHref = async () => {
     try {
@@ -11,7 +16,7 @@ const changeBaseHref = async () => {
             console.log(files.length + " files found.");
             for (let i = 0; i < files.length; i++) {
                 const originalBaseHref = fs.readFileSync(files[i], "utf-8");
-                const updatedBaseHref = originalBaseHref.replace(/<base ([^>]*href=["'])([^'"]*)(["'][^>]*)>/, "<base href=\"https://dylansealy.github.io/PO-2D-games-maken/public/\">");
+                const updatedBaseHref = originalBaseHref.replace(/<base ([^>]*href=["'])([^'"]*)(["'][^>]*)>/, "<base href=\"https://dylansealy.github.io/PO-2D-games-maken/dist/\">");
                 if (originalBaseHref != updatedBaseHref) {
                     fs.writeFileSync(files[i], updatedBaseHref);
                     console.log(`${files[i]} changed.`);
@@ -20,5 +25,5 @@ const changeBaseHref = async () => {
             }
         }
     } catch (error) {core.setFailed(error);}
-}
+};
 changeBaseHref();

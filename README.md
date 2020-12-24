@@ -18,6 +18,7 @@ Een README-bestand is normaal gesproken bedoeld om mensen te informeren over de 
 * [Belangrijke informatie](#Belangrijke-informatie)
 * [Handige links en bronnen](#Handige-links-en-bronnen)
 * [Bekende problemen](#Bekende-problemen)
+* [Credits](#Credits)
 
 ## Installatie en set-up
 Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code](#Git-met-VSC) (VSC) en op school van [Gitpod](#Gitpod).
@@ -118,10 +119,13 @@ Jullie hebben genoeg ervaring met JavaScript. Toch zijn hier enkele adviezen:
 5. Zet comments bij dingen die je doet. Dit zorgt ervoor dat anderen je code kunnen begrijpen.
 
 # Belangrijke informatie
-De website waarin de game verwerkt wordt, is een Progressive Web App (PWA). Dit houdt in dat het een soort van downloadbare app is die je offline kunt gebruiken. Deze functionaliteit werkt als het goed is al helemaal, maar dit zorgt er echter wel voor dat de website zich lokaal anders gedraagt dan op het internet. Als je lokaal bezig bent dan zul je niets merken, want dan werkt de PWA niet. Via [deze](https://dylansealy.github.io/PO-2D-games-maken/public/) link kun je de PWA proberen. Doormiddel van een GitHub action hoef je echter de base href niet telkens te veranderen. Deze wordt namelijk automatisch aangepast voor elke branch nadat de code is veranderd.
+De website waarin de game verwerkt wordt, is een Progressive Web App (PWA). Dit houdt in dat het een soort van downloadbare app is die je offline kunt gebruiken. Deze functionaliteit werkt als het goed is al helemaal, maar dit zorgt er echter wel voor dat de website zich lokaal anders gedraagt dan op het internet. Als je lokaal bezig bent dan zul je niets merken, want dan werkt de PWA niet. Via [deze](https://dylansealy.github.io/PO-2D-games-maken/dist/) link kun je de PWA proberen. Doormiddel van een GitHub action hoef je echter de base href niet telkens te veranderen. Deze wordt namelijk automatisch aangepast voor elke branch nadat de code is veranderd.
 
 # Handige links en bronnen
 In het bestand [Bronnen.md](/Bronnen.md) kun je handige links en gebruikte bronnen terug vinden. Vul deze aan met alle bronnen die je gebruikt hebt!
 
 # Bekende problemen
 GitHub heeft een functie waarbij je bekende problemen in de code kunt aangeven. Dit is de [issues sectie](https://github.com/DylanSealy/PO-2D-games-maken/issues) in GitHub. Ik ben van plan om dit ook te gaan gebruiken, want hiermee kun je gemakkelijk bijhouden welke problemen er zijn en welke er zijn opgelost. Daarnaast kun je het oplossen van issues aan mensen toekennen. Dus als je een bekend probleem hebt in je code, maak hier dan een issue van.
+
+# Credits
+Het originele [geluidseffect](dist/assets/audio/frightened.webm) wanneer de ghosts frightened zijn is geproduceerd door [Mike Koenig](http://soundbible.com/1258-Tick-Tock.html). Dit geluidseffect is lichtelijk aangepast om het beter bij Hoog-Man te laten passen.

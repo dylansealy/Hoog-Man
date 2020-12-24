@@ -11,17 +11,16 @@
     <script>
 		(() => {
 			try {if ("serviceWorker" in navigator) {navigator.serviceWorker.register("sw.js");}}
-			catch (error) {console.log(error);}
-		})()
+            catch (error) {console.log(error);}
+		})();
     </script>
     <!-- PWA web components om het werken met PWA's gemakkelijker te maken. -->
     <script async type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwaupdate"></script>
     <script async type="module" src="https://cdn.jsdelivr.net/npm/@pwabuilder/pwainstall"></script>
     <!-- p5 library -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/p5.min.js" integrity="sha512-WIklPM6qPCIp6d3fSSr90j+1unQHUOoWDS4sdTiR8gxUTnyZ8S2Mr8e10sKKJ/bhJgpAa/qG068RDkg6fIlNFA==" crossorigin="anonymous"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.1.9/addons/p5.sound.min.js" integrity="sha512-wM+t5MzLiNHl2fwT5rWSXr2JMeymTtixiw2lWyVk1JK/jDM4RBSFoH4J8LjucwlDdY6Mu84Kj0gPXp7rLGaDyA==" crossorigin="anonymous"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.2.0/p5.min.js" integrity="sha512-b/htz6gIyFi3dwSoZ0Uv3cuv3Ony7EeKkacgrcVg8CMzu90n777qveu0PBcbZUA7TzyENGtU+qZRuFAkfqgyoQ==" crossorigin="anonymous"></script>
     <!-- Bestand voor alle JS. Deze wordt als laatste uitgevoerd (defer). -->
-    <script defer src="assets/js/index.js"></script>
+    <script defer type="module" src="assets/js/index.js"></script>
 </head>
 <body>
     <!-- Header -->
@@ -48,10 +47,16 @@
             <div id="downTouch" class="touchControls">&darr;</div>
         </div>
         <div id="gameEndContainer">
-            <h1>Bedankt voor het spelen!</h1>
-            <p>Jouw score is: </p>
-            <button id="stop">Stoppen</button>
-            <button id="again">Opnieuw</button>
+            <h1>Game over</h1>
+            <p>Jouw score is:</p>
+            <button class="stop">Stoppen</button>
+            <button class="again">Opnieuw</button>
+        </div>
+        <div id="gameFinishedContainer">
+            <h1>Game completed</h1>
+            <p>Jouw score is:</p>
+            <button class="stop">Stoppen</button>
+            <button class="again">Opnieuw</button>
         </div>
     </main>
     <!-- Footer -->
