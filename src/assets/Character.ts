@@ -29,10 +29,18 @@ export default class Character implements CharacterInterface {
         this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
     } // Tekent een character en zorgt ervoor dat de x, y positie wordt geupdatet.
     draw: () => void = () => {
+        let diameter: number;
         this.p.push();
+        if (this.mode == "frightened") {
+            this.p.stroke("white");
+            this.p.strokeWeight(3);
+            diameter = this.diameter * 0.75
+        } else {
+            this.p.noStroke();
+            diameter = this.diameter;
+        }
         this.p.fill(this.color);
-        this.p.noStroke();
-        this.p.ellipse(this.xPosition, this.yPosition, this.diameter);
+        this.p.ellipse(this.xPosition, this.yPosition, diameter);
         this.p.pop();
         switch (this.movement) {
         case "up": this.yPosition -= this.speed; break;

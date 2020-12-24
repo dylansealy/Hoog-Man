@@ -1,10 +1,19 @@
 export default class Character {
     constructor(p, v) {
         this.draw = () => {
+            let diameter;
             this.p.push();
+            if (this.mode == "frightened") {
+                this.p.stroke("white");
+                this.p.strokeWeight(3);
+                diameter = this.diameter * 0.75;
+            }
+            else {
+                this.p.noStroke();
+                diameter = this.diameter;
+            }
             this.p.fill(this.color);
-            this.p.noStroke();
-            this.p.ellipse(this.xPosition, this.yPosition, this.diameter);
+            this.p.ellipse(this.xPosition, this.yPosition, diameter);
             this.p.pop();
             switch (this.movement) {
                 case "up":

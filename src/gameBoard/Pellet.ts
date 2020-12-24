@@ -66,7 +66,10 @@ export default class Pellet implements PelletInterface {
                 this.v.inky.previousMode = this.v.inky.mode;
                 this.v.pinky.previousMode = this.v.pinky.mode;
                 this.v.clyde.previousMode = this.v.clyde.mode;
-                this.v.blinky.mode = this.v.pinky.mode = this.v.inky.mode = this.v.clyde.mode = "frightened";
+                this.v.frightenedCounter = 0;
+                if (this.v.inky.mode != null) {this.v.inky.mode = "frightened";}
+                if (this.v.clyde.mode != null) {this.v.clyde.mode = "frightened";}
+                this.v.blinky.mode = this.v.pinky.mode = "frightened";
             }
         }
     }

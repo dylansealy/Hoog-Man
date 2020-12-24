@@ -13,6 +13,8 @@ export interface GameVariables {
     hoogMan: HoogManInterface;
     inky: GhostInterface;
     pinky: GhostInterface;
+    frightenedCounter: number;
+    frightenedTime: number;
     game: p5;
     gameBoard: GameBoardInterface;
     gesturePosition: Array<number>; // Type geeft aan dat het datatype een array is bestaande uit alleen maar cijfers.
@@ -94,8 +96,6 @@ export interface GhostInterface extends CharacterInterface {
     chaseCounter: number;
     chaseRound: number;
     chaseSequence: Array<number>;
-    frightenedCounter: number;
-    frightenedTime: number;
     scatterCounter: number;
     scatterRound: number;
     scatterSequence: Array<number>;
