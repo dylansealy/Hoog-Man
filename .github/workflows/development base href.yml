@@ -2,6 +2,8 @@ name: Development_base_href
 on:
   push:
     branches: [ontwikkeling]
+    paths:
+      - "**/*.html"
 jobs:
   Change_base_href:
     runs-on: ubuntu-latest
