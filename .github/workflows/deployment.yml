@@ -4,7 +4,9 @@ on:
     branches: [master, opruiming]
     paths:
       - "src/**/*.html"
+      - "dist/**/*.html"
       - "src/**/*.css"
+      - "dist/**/*.css"
 jobs:
   Deployment:
     runs-on: ubuntu-latest

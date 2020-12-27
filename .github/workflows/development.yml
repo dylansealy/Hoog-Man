@@ -3,6 +3,7 @@ on:
   push:
     branches: [ontwikkeling]
     paths:
+      - "dist/**/*.html"
       - "src/**/*.html"
 jobs:
   Change-base-href:
