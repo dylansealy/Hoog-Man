@@ -21,8 +21,9 @@ jobs:
         run: node scripts/dep.js
       - name: Minify HTML
         run: npm run html-minify
-      - name: Minify CSS
+      - name: Create CSS directory
         run: mkdir -p dist/assets/css/
+      - name: Minify CSS
         run: npm run css-minify
       - name: Commit changes
         uses: EndBug/add-and-commit@v6.1.0
