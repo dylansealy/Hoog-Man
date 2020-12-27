@@ -23,5 +23,5 @@ jobs:
         with:
           author_name: "Dylan Sealy"
           author_email: 66305635+DylanSealy@users.noreply.github.com
-          message: "GitHub action: development base href"
+          message: "GitHub action: Development"
           push: true
