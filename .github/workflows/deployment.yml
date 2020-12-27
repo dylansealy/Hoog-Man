@@ -6,7 +6,7 @@ on:
     #   - "src/**/*.html"
     #   - "src/**/*.css"
 jobs:
-  Set-up-Node:
+  Deployment:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,25 +17,12 @@ jobs:
           node-version: 12
       - name: Install dependencies
         run: npm install --only=prod
-  Change-base-href:
-    needs: Set-up-Node
-    runs-on: ubuntu-latest
-    steps:
       - name: Update base href
         run: node scripts/dep.js
-  Minify-Resources:
-    needs: [Set-up-Node, Change-base-href]
-    runs-on: ubuntu-latest
-    steps:
       - name: Minify HTML
         run: npm run html-minify
       - name: Minify CSS
         run: npm run css-minify
-  Commit-changes:
-    if: always()
-    needs: [Change-base-href, Minify-Resources]
-    runs-on: ubuntu-latest
-    steps:
       - name: Commit changes
         uses: EndBug/add-and-commit@v6.1.0
         with:
