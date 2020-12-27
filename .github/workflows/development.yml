@@ -1,9 +1,11 @@
-name: Development_base_href
+name: Development
 on:
   push:
     branches: [ontwikkeling]
+    paths:
+      - "src/**/*.html"
 jobs:
-  Change_base_href:
+  Change-base-href:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -21,5 +23,5 @@ jobs:
         with:
           author_name: "Dylan Sealy"
           author_email: 66305635+DylanSealy@users.noreply.github.com
-          message: "GitHub action: development base href"
+          message: "GitHub action: Development"
           push: true

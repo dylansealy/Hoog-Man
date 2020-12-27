@@ -6,8 +6,10 @@
     "url": "git+https://github.com/DylanSealy/PO-2D-games-maken.git"
   },
   "scripts": {
-    "http-server": "http-server ./dist/ -c-1",
-    "deploy": "erase dist\\assets\\js\\Types.js && git add ."
+    "http-server": "npx http-server ./dist/ -c-1",
+    "deploy": "erase dist\\assets\\js\\Types.js && git add .",
+    "html-minify": "npx html-minifier -c HTMLMinifierconfig.json --input-dir ./src/ --output-dir ./dist/ --file-ext html",
+    "css-minify": "npx csso -i ./src/assets/css/index.css -o ./dist/assets/css/index.css && npx csso -i ./src/assets/css/media.css -o ./dist/assets/css/media.css"
   },
   "author": "Dylan Sealy",
   "license": "GPLv3",
@@ -18,7 +20,9 @@
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",
-    "@actions/glob": "^0.1.1"
+    "@actions/glob": "^0.1.1",
+    "csso": "^4.2.0",
+    "html-minifier": "^4.0.0"
   },
   "devDependencies": {
     "@types/p5": "^0.9.1",

@@ -17,8 +17,7 @@ export default class Blinky extends Ghost {
         this.mode = "scatter";
         this.movement = "left";
         this.name = "Blinky";
-        this.pelletCounter = 0;
-        this.pelletThreshold = 0;
+        this.pelletCounter = this.pelletThreshold = 0;
         this.xPosition = this.xStartPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
         this.yPosition = this.yStartPosition = this.v.gameBoard.yInner + this.v.gameBoard.heightUnit * 0.5;
         this.xTargetTile = this.v.gameBoard.xOuter;

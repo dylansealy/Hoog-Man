@@ -62,6 +62,10 @@ const v: GameVariables = {
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
     // eslint-disable-next-line sort-keys
+    frightenedTime: 0,
+    // eslint-disable-next-line sort-keys
+    frightenedCounter: 0,
+    // eslint-disable-next-line sort-keys
     endGame: (p: p5): void => { // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
         p.noLoop();
         v.hoogMan.lives--;

@@ -75,6 +75,8 @@ const v = {
     gameCompletedSound: new Audio("assets/audio/gameCompleted.webm"),
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
+    frightenedTime: 0,
+    frightenedCounter: 0,
     endGame: (p) => {
         p.noLoop();
         v.hoogMan.lives--;
