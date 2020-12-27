@@ -18,6 +18,7 @@ Een README-bestand is normaal gesproken bedoeld om mensen te informeren over de 
 * [Belangrijke informatie](#Belangrijke-informatie)
 * [Handige links en bronnen](#Handige-links-en-bronnen)
 * [Bekende problemen](#Bekende-problemen)
+* [Credits](#Credits)
 
 ## Installatie en set-up
 Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code](#Git-met-VSC) (VSC) en op school van [Gitpod](#Gitpod).
@@ -53,7 +54,7 @@ Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code
 9. [Fetch](#Git-commandos) alles van de server en Git is klaar voor gebruik.
 10. Ga naar je bureaublad en voeg een nieuwe shortcut toe.
 11. In het dialoogvenster voer het volgende in: "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --disable-gpu --user-data-dir=~/chromeTemp
-12. Je moet alle Chrome vensters sluiten voordat deze snelkoppeling werkt. Bij deze snelkoppeling worden sommige beveiligingsmaatregelen uitgeschakeld zoals 
+12. Je moet alle Chrome vensters sluiten voordat deze snelkoppeling werkt. Bij deze snelkoppeling worden sommige beveiligingsmaatregelen uitgeschakeld zoals
 Cross-Origin Resource Sharing (CORS) dus gebruik deze alleen voor het PO.
 
 ### Gitpod
@@ -69,7 +70,7 @@ Hieronder een overzicht van alle belangrijke Git commando's. Andere commando's z
 * git help: Laat een overzicht zien van alle commando's.
 * git status: Geeft de status in jouw huidige situatie en branch.
 * git log: Laat een overzicht zien van alle commits in jouw huidige branch.
-* git switch (branch): Verandert jouw huidige branch. Let op, de naam van de branch is hoofdlettergevoelig! 
+* git switch (branch): Verandert jouw huidige branch. Let op, de naam van de branch is hoofdlettergevoelig!
 * git fetch: Downloadt alle nieuwe commits van de server.
 * git pull: Voegt de gedownloade commits samen met jouw veranderingen, ongeacht of ze gecommit zijn.
 * git add . : Voegt alle bestanden in de huidige en onderliggende mappen toe om gecommit te worden.
@@ -92,7 +93,7 @@ Dit is de branch waarin er fouten in de code worden verbeterd en waarin de code 
 ### Branch protection regels
 Voor de master branch zijn er enkele branch protection regels ingesteld. Deze regels zijn er om fouten te voorkomen. Je zult waarschijnlijk niet veel van deze regels merken, omdat ik me vooral met deze branch zal bezig houden. De regels houden in:
 1. Je kunt niet naar deze branch pushen dus zorg ervoor dat je nooit werkt in deze branch.
-2. Enkele geautomatiseerde checks moeten slagen voordat een pull request geaccepteerd kan worden. 
+2. Enkele geautomatiseerde checks moeten slagen voordat een pull request geaccepteerd kan worden.
 
 ## Adviezen en fouten
 Hieronder kun je adviezen vinden en oplossingen vinden voor fouten in Git of in je code.
@@ -118,10 +119,13 @@ Jullie hebben genoeg ervaring met JavaScript. Toch zijn hier enkele adviezen:
 5. Zet comments bij dingen die je doet. Dit zorgt ervoor dat anderen je code kunnen begrijpen.
 
 # Belangrijke informatie
-De website waarin de game verwerkt wordt, is een Progressive Web App (PWA). Dit houdt in dat het een soort van downloadbare app is die je offline kunt gebruiken. Deze functionaliteit werkt als het goed is al helemaal, maar dit zorgt er echter wel voor dat de website zich lokaal anders gedraagt dan op het internet. Als je lokaal bezig bent dan zul je niets merken, want dan werkt de PWA niet. Via [deze](https://dylansealy.github.io/PO-2D-games-maken/public/) link kun je de PWA proberen. Doormiddel van een GitHub action hoef je echter de base href niet telkens te veranderen. Deze wordt namelijk automatisch aangepast voor elke branch nadat de code is veranderd.
+De website waarin de game verwerkt wordt, is een Progressive Web App (PWA). Dit houdt in dat het een soort van downloadbare app is die je offline kunt gebruiken. Deze functionaliteit werkt als het goed is al helemaal, maar dit zorgt er echter wel voor dat de website zich lokaal anders gedraagt dan op het internet. Als je lokaal bezig bent dan zul je niets merken, want dan werkt de PWA niet. Via [deze](https://dylansealy.github.io/PO-2D-games-maken/dist/) link kun je de PWA proberen. Doormiddel van een GitHub action hoef je echter de base href niet telkens te veranderen. Deze wordt namelijk automatisch aangepast voor elke branch nadat de code is veranderd.
 
 # Handige links en bronnen
 In het bestand [Bronnen.md](/Bronnen.md) kun je handige links en gebruikte bronnen terug vinden. Vul deze aan met alle bronnen die je gebruikt hebt!
 
 # Bekende problemen
 GitHub heeft een functie waarbij je bekende problemen in de code kunt aangeven. Dit is de [issues sectie](https://github.com/DylanSealy/PO-2D-games-maken/issues) in GitHub. Ik ben van plan om dit ook te gaan gebruiken, want hiermee kun je gemakkelijk bijhouden welke problemen er zijn en welke er zijn opgelost. Daarnaast kun je het oplossen van issues aan mensen toekennen. Dus als je een bekend probleem hebt in je code, maak hier dan een issue van.
+
+# Credits
+Het originele [geluidseffect](dist/assets/audio/frightened.webm) wanneer de ghosts frightened zijn is geproduceerd door [Mike Koenig](http://soundbible.com/1258-Tick-Tock.html). Dit geluidseffect is lichtelijk aangepast om het beter bij Hoog-Man te laten passen.

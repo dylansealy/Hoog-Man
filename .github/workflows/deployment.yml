@@ -1,9 +1,14 @@
-name: Deployment_base_href
+name: Deployment
 on:
   push:
     branches: [master, opruiming]
+    paths:
+      - "src/**/*.html"
+      - "dist/**/*.html"
+      - "src/**/*.css"
+      - "dist/**/*.css"
 jobs:
-  Change_base_href:
+  Deployment:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -13,15 +18,19 @@ jobs:
         with:
           node-version: 12
       - name: Install dependencies
-        run: npm install
+        run: npm install --only=prod
       - name: Update base href
         run: node scripts/dep.js
+      - name: Minify HTML
+        run: npm run html-minify
+      - name: Create CSS directory
+        run: mkdir -p dist/assets/css/
+      - name: Minify CSS
+        run: npm run css-minify
       - name: Commit changes
-        uses: EndBug/add-and-commit@v5
+        uses: EndBug/add-and-commit@v6.1.0
         with:
           author_name: "Dylan Sealy"
           author_email: 66305635+DylanSealy@users.noreply.github.com
-          message: "GitHub action: deployment base href"
+          message: "GitHub action: Deployment"
           push: true
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
