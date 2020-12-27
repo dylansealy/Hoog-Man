@@ -16,7 +16,7 @@ const changeBaseHref = async () => {
             console.log(files.length + " files found.");
             for (let i = 0; i < files.length; i++) {
                 const originalBaseHref = fs.readFileSync(files[i], "utf-8");
-                const updatedBaseHref = originalBaseHref.replace(/<base ([^>]*href=["'])([^'"]*)(["'][^>]*)>/, "<base href=\"https://dylansealy.github.io/PO-2D-games-maken/dist/\">");
+                const updatedBaseHref = originalBaseHref.replace(/<base ([^>]*href=["']?)([^'"]*)(["']?[^>]*)>/, "<base href=\"https://dylansealy.github.io/PO-2D-games-maken/dist/\">");
                 if (originalBaseHref != updatedBaseHref) {
                     fs.writeFileSync(files[i], updatedBaseHref);
                     console.log(`${files[i]} changed.`);
