@@ -34,6 +34,7 @@ jobs:
   Commit-changes:
     if: always()
     needs: [Change-base-href, Minify-Resources]
+    runs-on: ubuntu-latest
     steps:
       - name: Commit changes
         uses: EndBug/add-and-commit@v6.1.0
