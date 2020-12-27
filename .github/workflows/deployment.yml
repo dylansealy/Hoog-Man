@@ -18,12 +18,14 @@ jobs:
       - name: Install dependencies
         run: npm install --only=prod
   Change-base-href:
-    meeds: Set-up-Node
+    needs: Set-up-Node
+    runs-on: ubuntu-latest
     steps:
       - name: Update base href
         run: node scripts/dep.js
   Minify-Resources:
     needs: [Set-up-Node, Change-base-href]
+    runs-on: ubuntu-latest
     steps:
       - name: Minify HTML
         run: npm run html-minify
