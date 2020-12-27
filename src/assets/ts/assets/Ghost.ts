@@ -25,11 +25,18 @@ export default class Ghost extends Character implements GhostInterface {
     iterationVariables: () => void = () => {
         if (this.mode == null) {
             if (this.pelletCounter <= 0) { // Checkt of een ghost het huis mag verlaten.
-                setTimeout(() => { // Zorgt ervoor dat een ghost uit het huis gaat na minimaal 400 ms.
-                    if (this.v.blinky.mode == "frightened") {this.mode = "frightened";}
-                    else {this.mode = "scatter";}
-                    this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
-                }, 400);
+                const freeGhost = (delay: number) => {
+                    setTimeout(() => { // Zorgt ervoor dat een ghost uit het huis gaat na een bepaalde tijd.
+                        this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
+                        if (this.v.blinky.mode == "frightened") {this.mode = "frightened";}
+                        else {this.mode = "scatter";}
+                    }, delay);
+                };
+                switch (this.name) {
+                case "Pinky": if (this.v.blinky.movement != null) {freeGhost(500);} break;
+                case "Inky": if (this.v.pinky.movement != null) {freeGhost(1000);} break;
+                case "Clyde": if (this.v.inky.movement != null) {freeGhost(1000);} break;
+                }
             } else if (this.name == "Inky" || this.name == "Clyde") {
                 // Zorgt ervoor dat de plletCounter omlaag gaat.
                 if (this.name == "Inky") {this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);}
@@ -92,6 +99,11 @@ export default class Ghost extends Character implements GhostInterface {
         const rightDistance = this.p.dist(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
         const downDistance = this.p.dist(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
         const leftDistance = this.p.dist(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+        this.p.stroke("white");
+        this.p.line(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
+        this.p.line(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+        this.p.line(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
+        this.p.line(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
         const distance = [upDistance, rightDistance, downDistance, leftDistance]; // Standaard bewegingsrichtingvolgorde.
         const movementOrder = []; // Houdt bij wat de volgorde is van de voorkeursbewegingrichting.
         for (let i = 0; i < distance.length; i++) {

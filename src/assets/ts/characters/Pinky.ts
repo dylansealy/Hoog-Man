@@ -26,13 +26,13 @@ export default class Pinky extends Ghost implements GhostInterface {
     setMovement: () => void = () => {
         if (this.mode == "chase") {
             switch (this.v.hoogMan.movement) {
-            case "up": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, -4)); break;
+            case "up": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -4, -4)); break;
             case "right": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 4, 0)); break;
             case "down": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, 4)); break;
             case "left": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -4, 0)); break;
             default:
                 switch (this.v.hoogMan.previousMovement) {
-                case "up": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, -4)); break;
+                case "up": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -4, -4)); break;
                 case "right": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 4, 0)); break;
                 case "down": this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, 4)); break;
                 case "left": this.movementSequence(this.checkDistanceTarget("Hoog-Man", -4, 0)); break;

@@ -5,15 +5,34 @@ export default class Ghost extends Character {
         this.iterationVariables = () => {
             if (this.mode == null) {
                 if (this.pelletCounter <= 0) {
-                    setTimeout(() => {
-                        if (this.v.blinky.mode == "frightened") {
-                            this.mode = "frightened";
-                        }
-                        else {
-                            this.mode = "scatter";
-                        }
-                        this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
-                    }, 400);
+                    const freeGhost = (delay) => {
+                        setTimeout(() => {
+                            this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
+                            if (this.v.blinky.mode == "frightened") {
+                                this.mode = "frightened";
+                            }
+                            else {
+                                this.mode = "scatter";
+                            }
+                        }, delay);
+                    };
+                    switch (this.name) {
+                        case "Pinky":
+                            if (this.v.blinky.movement != null) {
+                                freeGhost(500);
+                            }
+                            break;
+                        case "Inky":
+                            if (this.v.pinky.movement != null) {
+                                freeGhost(1000);
+                            }
+                            break;
+                        case "Clyde":
+                            if (this.v.inky.movement != null) {
+                                freeGhost(1000);
+                            }
+                            break;
+                    }
                 }
                 else if (this.name == "Inky" || this.name == "Clyde") {
                     if (this.name == "Inky") {
@@ -90,6 +109,11 @@ export default class Ghost extends Character {
             const rightDistance = this.p.dist(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
             const downDistance = this.p.dist(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
             const leftDistance = this.p.dist(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+            this.p.stroke("white");
+            this.p.line(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
+            this.p.line(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+            this.p.line(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
+            this.p.line(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
             const distance = [upDistance, rightDistance, downDistance, leftDistance];
             const movementOrder = [];
             for (let i = 0; i < distance.length; i++) {
