@@ -2,7 +2,7 @@ name: Development
 on:
   push:
     branches: [ontwikkeling]
-    aths:
+    paths:
       - "src/**/*.html"
 jobs:
   Change-base-href:
