@@ -2,6 +2,9 @@ name: Deployment
 on:
   push:
     branches: [master, opruiming]
+    paths:
+      - "src/**/*.html"
+      - "src/**/*.css"
 jobs:
   Set-up-Node:
     runs-on: ubuntu-latest
