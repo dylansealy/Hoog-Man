@@ -10,12 +10,12 @@
         "noUnusedParameters": true,
         "outDir": "./dist/assets/js/",
         "removeComments": true,
-        "rootDir": "./src/",
+        "rootDir": "./src/assets/ts/",
         "skipLibCheck": true,
         "strict": true,
         "strictNullChecks": false,
         "target": "ESNext",
         "watch": true
     },
-    "include": ["./src/"]
+    "include": ["./src/assets/ts/"]
 }

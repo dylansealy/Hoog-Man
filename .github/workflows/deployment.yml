@@ -1,11 +1,12 @@
-name: Deployment_base_href
+name: Deployment
 on:
   push:
     branches: [master, opruiming]
     paths:
-      - "**/*.html"
+      - "src/**/*.html"
+      - "src/**/*.css"
 jobs:
-  Change_base_href:
+  Set-up-Node:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -16,8 +17,22 @@ jobs:
           node-version: 12
       - name: Install dependencies
         run: npm install --only=prod
+  Change-base-href:
+    meeds: Set-up-Node
+    steps:
       - name: Update base href
         run: node scripts/dep.js
+  Minify-Resources:
+    needs: [Set-up-Node, Change-base-href]
+    steps:
+      - name: Minify HTML
+        run: npm run html-minify
+      - name: Minify CSS
+        run: npm run css-minify
+  Commit-changes:
+    if: always()
+    needs: [Change-base-href, Minify-Resources]
+    steps:
       - name: Commit changes
         uses: EndBug/add-and-commit@v6.1.0
         with:

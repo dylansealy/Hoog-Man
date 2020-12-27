@@ -1,11 +1,11 @@
-name: Development_base_href
+name: Development
 on:
   push:
     branches: [ontwikkeling]
     paths:
-      - "**/*.html"
+      - "src/**/*.html"
 jobs:
-  Change_base_href:
+  Change-base-href:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
