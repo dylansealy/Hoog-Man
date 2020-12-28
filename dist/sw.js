@@ -5,7 +5,13 @@ const cacheAssets = [
     "/Hoog-Man/dist/assets/css/index.css",
     "/Hoog-Man/dist/assets/css/media.css",
     "/Hoog-Man/dist/assets/js/index.js",
-    "/Hoog-Man/dist/assets/html/fallback.html"
+    "/Hoog-Man/dist/assets/html/fallback.html",
+    "/Hoog-Man/dist/assets/audio/background.webm",
+    "/Hoog-Man/dist/assets/audio/death.webm",
+    "/Hoog-Man/dist/assets/audio/frightened.webm",
+    "/Hoog-Man/dist/assets/audio/gameCompleted.webm",
+    "/Hoog-Man/dist/assets/audio/gameOver.webm",
+    "/Hoog-Man/dist/assets/audio/pellet.webm"
 ];
 const limitCacheSize = async (name, size) => {
     try {
