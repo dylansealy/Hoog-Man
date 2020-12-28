@@ -16,6 +16,9 @@ export default class GameBoard {
             this.p.fill("white");
             this.p.text(`Score: ${this.score}`, this.xInner, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);
             this.p.text(`Aantal levens: ${this.v.hoogMan.lives}`, this.xInner + this.widthUnit * 4, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);
+            if (this.v.blinky.mode == "frightened") {
+                this.p.text(`Modus: ${this.v.blinky.mode}`, this.xInner + this.widthUnit * 9.5, this.canvasDimension - (this.canvasDimension - this.outerHeight) / 2.5);
+            }
             this.p.pop();
         };
         this.p = p;

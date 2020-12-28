@@ -77,6 +77,7 @@ const v = {
     pelletSound: new Audio("assets/audio/pellet.webm"),
     frightenedTime: 0,
     frightenedCounter: 0,
+    pelletCounter: 0,
     endGame: (p) => {
         p.noLoop();
         v.hoogMan.lives--;
@@ -103,9 +104,10 @@ const v = {
                 container.style.display = "none";
                 responsiveGame(true, true);
             });
-            document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+            document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/Hoog-Man/");
         }
         else {
+            v.pelletCounter = 0;
             v.deathSound.play();
             setTimeout(() => {
                 v.blinky.resetCharacter();
@@ -221,8 +223,12 @@ const gestureControls = () => {
     main.addEventListener("mouseup", () => resetGesture());
     main.addEventListener("touchcancel", () => resetGesture());
 };
-document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
-document.querySelector("#startGame").addEventListener("click", () => {
+document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/Hoog-Man/");
+document.querySelector("#startGame").addEventListener("click", () => startGame());
+window.addEventListener("resize", () => { if (v.game && v.hoogMan.lives != 0) {
+    responsiveGame(true, true);
+} });
+const startGame = () => {
     (() => {
         const main = document.querySelector("main");
         main.requestFullscreen();
@@ -236,12 +242,7 @@ document.querySelector("#startGame").addEventListener("click", () => {
     v.game = new p5(sketch);
     const gameStartupContainer = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
-});
-window.addEventListener("resize", () => {
-    if (v.game && v.hoogMan.lives != 0) {
-        responsiveGame(true, true);
-    }
-});
+};
 const getInputMethod = () => {
     const inputMethod = document.getElementsByName("controls");
     if (inputMethod[0].checked || v.inputMethod == "keyboard") {
@@ -312,6 +313,12 @@ const fadeIn = (audio, threshold) => {
         }
     }, 110);
 };
+const keyCheck = (event) => {
+    if (event.code === "Enter") {
+        startGame();
+        window.removeEventListener("keydown", keyCheck);
+    }
+};
 (() => {
     const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
@@ -323,3 +330,4 @@ const fadeIn = (audio, threshold) => {
         inputMethod[2].checked = true;
     }
 })();
+window.addEventListener("keydown", keyCheck);

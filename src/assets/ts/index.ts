@@ -65,6 +65,7 @@ const v: GameVariables = {
     frightenedTime: 0,
     // eslint-disable-next-line sort-keys
     frightenedCounter: 0,
+    pelletCounter: 0,
     // eslint-disable-next-line sort-keys
     endGame: (p: p5): void => { // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
         p.noLoop();
@@ -92,9 +93,10 @@ const v: GameVariables = {
                 container.style.display = "none";
                 responsiveGame(true, true);
             });
-            document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+            document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/Hoog-Man/");
         } // Resets de posities van alle characters.
         else {
+            v.pelletCounter = 0;
             v.deathSound.play();
             setTimeout((): void => {
                 v.blinky.resetCharacter();
@@ -207,8 +209,12 @@ const gestureControls = (): void => {
     main.addEventListener("mouseup", (): void => resetGesture());
     main.addEventListener("touchcancel", (): void => resetGesture());
 };
-document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
-document.querySelector("#startGame").addEventListener("click", (): void => {
+document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/Hoog-Man/");
+document.querySelector("#startGame").addEventListener("click", (): void => startGame());
+// Zorgt ervoor dat de game responsive is.
+window.addEventListener("resize", (): void => {if (v.game && v.hoogMan.lives != 0) {responsiveGame(true, true);}});
+// Functie voor het starten van de game.
+const startGame = (): void => {
     ((): void => { // Zorgt ervoor dat de container van de game even groot wordt als het scherm.
         const main = document.querySelector("main");
         main.requestFullscreen();
@@ -222,10 +228,7 @@ document.querySelector("#startGame").addEventListener("click", (): void => {
     v.game = new p5(sketch);
     const gameStartupContainer: HTMLElement = document.querySelector("#gameStartupContainer");
     gameStartupContainer.style.display = "none";
-}); // Zorgt ervoor dat de game responsive is.
-window.addEventListener("resize", (): void => {
-    if (v.game && v.hoogMan.lives != 0) {responsiveGame(true, true);}
-}); // Checkt wat de gekozen input methode is.
+}; // Checkt wat de gekozen input methode is.
 const getInputMethod = (): void => {
     const inputMethod = document.getElementsByName("controls");
     if (inputMethod[0].checked || v.inputMethod == "keyboard") {v.inputMethod = "keyboard";}
@@ -290,6 +293,13 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
         }
     }, 110);
 };
+// Checkt welke toets wordt ingedrukt.
+const keyCheck = (event: KeyboardEvent) => {
+    if (event.code === "Enter") {
+        startGame();
+        window.removeEventListener("keydown", keyCheck);
+    }
+};
 ((): void => { // Zorgt voor het correcte copyright jaar.
     const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
@@ -301,3 +311,5 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
         inputMethod[2].checked = true;
     }
 })();
+// Checkt of er op een toets wordt gedrukt.
+window.addEventListener("keydown", keyCheck);

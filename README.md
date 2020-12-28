@@ -1,131 +1,14 @@
-# Praktische opdracht 2D games maken
-Een README-bestand is normaal gesproken bedoeld om mensen te informeren over de repository en het project. Zie [hier](https://github.com/DylanSealy/Ganzenbord/blob/master/README.md) voor een voorbeeld. In eerste instantie gaan wij dit README-bestand daar niet voor gebruiken. Wij gaan eerst dit bestand gebruiken als handleiding over Git en GitHub en in dit bestand kun je enkele adviezen vinden over hoe om te gaan met Git, GitHub en het samenwerken met anderen.
-
-## Inhoud
-* [Installatie en set-up](#Installatie-en-set-up)
-    * [Git met VSC](#Git-met-VSC)
-    * [Gitpod](#Gitpod)
-* [Samenwerken via Git](#Samenwerken-via-git)
-    * [Git commando's](#Git-commandos)
-    * [Werken met branches](#Werken-met-branches)
-        * [Master branch](#master)
-        * [Ontwikkeling branch](#ontwikkeling)
-        * [Opruim branch](#opruiming)
-    * [Branch protection regels](#Branch-protection-regels)
-* [Adviezen en fouten](#Adviezen-en-fouten)
-    * [Git](#Git)
-    * [JavaScript](#JavaScript)
-* [Belangrijke informatie](#Belangrijke-informatie)
-* [Handige links en bronnen](#Handige-links-en-bronnen)
-* [Bekende problemen](#Bekende-problemen)
-* [Credits](#Credits)
-
-## Installatie en set-up
-Ik raad zeer sterk aan om thuis gebruik te maken van [Git met Visual Studio Code](#Git-met-VSC) (VSC) en op school van [Gitpod](#Gitpod).
-
-### Git met VSC
-1. Download [VSC](https://code.visualstudio.com/) en [Git](https://git-scm.com/downloads).
-2. Installeer VSC. De instellingen van het installatieprogramma kun je naar wens aanpassen.
-3. Installeer Git met respectievelijk de onderstaande instellingen. De rest kun je naar wens aanpassen.
-    * Git LFS aan
-    * Associate .git files uit
-    * Associate .sh files uit
-    * Use a TrueType font uit
-    * Stel VSC in als standaard editor
-    * Let Git decide
-    * Git from command line
-    * Use OpenSSL
-    * Checkout Windows-style
-    * Use Windows' default console
-    * Default
-    * None
-4. Plaats jouw id_ed25519 bestand in jouw vergelijkbare "C:\Users\dylan\\.ssh" pad. Verander de bestandsnaam niet!
-5. Creëer de map "Projects" in het pad "C:\" en creëer daarin de map "PO 2D games".
-6. Open deze map in VSC.
-7. Ga in VSC naar de terminal door linksonder te klikken.
-8. Voer de onderstaande regels code uit in PowerShell of Opdrachtprompt.
-<br>\* GitHub heeft een privacy vriendelijke email die je kunt gebruiken. Check hiervoor je [e-mailinstellingen](https://github.com/settings/emails) in GitHub.
-
-        git config --global user.name "John Doe" (Naam)
-        git config --global user.email test@github.com (Email)
-        git init
-        git remote add origin git@github.com:DylanSealy/PO-2D-games-maken.git
-
-9. [Fetch](#Git-commandos) alles van de server en Git is klaar voor gebruik.
-10. Ga naar je bureaublad en voeg een nieuwe shortcut toe.
-11. In het dialoogvenster voer het volgende in: "C:\Program Files\Google\Chrome\Application\chrome.exe" --disable-web-security --disable-gpu --user-data-dir=~/chromeTemp
-12. Je moet alle Chrome vensters sluiten voordat deze snelkoppeling werkt. Bij deze snelkoppeling worden sommige beveiligingsmaatregelen uitgeschakeld zoals
-Cross-Origin Resource Sharing (CORS) dus gebruik deze alleen voor het PO.
-
-### Gitpod
-1. Ga naar de volgende [link](https://gitpod.io/#https://github.com/DylanSealy/PO-2D-games-maken).
-2. Log in met je GitHub account.
-3. Volg alle verdere stappen op.
-
-## Samenwerken via Git
-Git en GitHub zijn hele handige tools. Je moet echter wel weten hoe Git werkt en hoe je kunt samenwerken via Git en GitHub. Hieronder een overzicht van alles wat je moet weten.
-
-### Git commando's
-Hieronder een overzicht van alle belangrijke Git commando's. Andere commando's zul je waarschijnlijk niet nodig hebben.
-* git help: Laat een overzicht zien van alle commando's.
-* git status: Geeft de status in jouw huidige situatie en branch.
-* git log: Laat een overzicht zien van alle commits in jouw huidige branch.
-* git switch (branch): Verandert jouw huidige branch. Let op, de naam van de branch is hoofdlettergevoelig!
-* git fetch: Downloadt alle nieuwe commits van de server.
-* git pull: Voegt de gedownloade commits samen met jouw veranderingen, ongeacht of ze gecommit zijn.
-* git add . : Voegt alle bestanden in de huidige en onderliggende mappen toe om gecommit te worden.
-* git commit: Slaat alle veranderingen op.
-* git push: Uploadt alle nieuwe commits naar de server.
-* git reset --hard: Verwijdert al jouw veranderingen die nog niet gecommit zijn. Let op, nieuwe bestanden worden niet verwijderd!
-
-### Werken met branches
-In Git kun je werken met verschillende branches. Dit is handige om code overzichtelijker te maken. Mijn idee is om met de 3 onderstaande branches te gaan werken. Het is soms lastig om te bepalen in welke branch je moet zitten. Daarom zijn het ook richtlijnen. Bij eventuele twijfel ga naar de opruim branch.
-
-#### master
-Dit is de hoofdbranch. Hierin komt de code waarvan we zeker weten dat het werkt. Je moet dit zien als de branch voor de stabiele versie van het project. De code uit deze branch wordt dus gebruikt voor het programma die de eindgebruiker gaat gebruiken. Je zult nooit in deze branch werken vanwege de [branch protection regels](#Branch-protection-regels).
-
-#### ontwikkeling
-Dit is de branch waarin wordt gewerkt aan nieuwe functies. Het is belangrijk dat je code commit die werkt, maar in deze branch heb je daarin meer vrijheid. Je zult daarom het meeste van de tijd in deze branch werken.
-
-#### opruiming
-Dit is de branch waarin er fouten in de code worden verbeterd en waarin de code wordt aangepast om het netter te maken. Dus als er een fout in de code zit die je gecommit hebt dan moet je dat in deze branch aanpassen. Daarnaast zullen dus de andere branches vanuit deze branch geüpdatet worden met verbeterde code.
-
-### Branch protection regels
-Voor de master branch zijn er enkele branch protection regels ingesteld. Deze regels zijn er om fouten te voorkomen. Je zult waarschijnlijk niet veel van deze regels merken, omdat ik me vooral met deze branch zal bezig houden. De regels houden in:
-1. Je kunt niet naar deze branch pushen dus zorg ervoor dat je nooit werkt in deze branch.
-2. Enkele geautomatiseerde checks moeten slagen voordat een pull request geaccepteerd kan worden.
-
-## Adviezen en fouten
-Hieronder kun je adviezen vinden en oplossingen vinden voor fouten in Git of in je code.
-
-### Git
-1. In VSC kun je je wijzigingen bijhouden die nog niet gecommit zijn. Een M betekent dat het bestand is aangepast en een U betekent dat het bestand nog niet wordt gevolgd door Git. Je moet hiervoor het git add commando gebruiken. Zie [Git commando's](#Git-commandos). Een gele/groene kleur naast een regelnummer geeft aan dat het een nieuwe regel is. Een blauwe kleur geeft aan dat de regel is aangepast en een klein rood driehoekje geeft aan dat er een regel is verwijderd. Let op, het draait hier om de inhoud van de regel en niet om het regelnummer. Dus als alleen het regelnummer verandert en de inhoud van de regel niet dan is dat geen verandering.
-2. Als er iets misgaat in Git dan kun je de inhoud van de map waarin je het project hebt opgeslagen verwijderen, inclusief de map .git. Met de commando's bij [Git met VSC](#Git-met-VSC) kun je dan Git weer instellen. Je gaat dan naar de situatie van de laatst gepubliceerde commit. Let op, alles wat nog niet gecommit en gepubliceerd is, gaat verloren. Dus commit dat en push dat naar de server of sla dit tijdelijk op in een andere locatie.
-3. Je kan in een situatie terechtkomen waarin meerdere mensen werken aan dezelfde code. Wanneer je dan een commit fetched en pulled van de server dan krijg je te maken met een merge conflict. Dit conflict moet zo snel mogelijk worden opgelost. Ga in VSC naar het bestand of de bestanden waar een C bij staat. VSC laat dan op de plaats waar het conflict is zien wat de huidige code is en wat de inkomende veranderingen zijn. Bepaal zelf welke verandering er behouden moet worden of overleg dit met degene die dat stukje code heeft geschreven. Na het oplossen van een merge conflict moet je deze meteen committen. Vaak is het commit bericht al ingevuld. Deze hoef je niet te veranderen, want er staat dan al iets in over een merge. Als dit echter er niet staat, benoem dan een merge conflict met de commit id in het commit bericht.
-4. Om het probleem in het bovenstaande punt te minimaliseren raad ik sterk aan om altijd als eerste te fetchen en dan te pullen, voordat je gaat coderen. Je beperkt dan de impact en daarmee de fouten die een merge conflict kan veroorzaken door jouw code up-to-date te houden met de server.
-5. Ik raad je aan om altijd code te committen en te pushen wanneer je die geschreven hebt. Ongeacht of dit stukje code doet wat je wilt. Zet dit dan in je commit bericht of maak een [issue](#Bekende-problemen). Dat hangt van de situatie af. Maar houd dus altijd code up to date voor jezelf en anderen. Dus wanneer je 's avonds een stukje gecodeerd hebt, maar dit nog niet klaar is, commit dit dan gewoon. Houd de code niet op je computer.
-6. Een commit bericht is nog niet zo makkelijk om op te stellen, daarom heb ik enkele regels die je kunnen helpen. Zie [hier](https://github.com/DylanSealy/Ganzenbord/commits/master) en [hier](https://github.com/pi-hole/pi-hole/commits/master) voor respectievelijk redelijke en goede voorbeelden van commit berichten.
-    1. Houd een commit bericht kort. Je moet het zien als een titel waaraan anderen kunnen zien wat je hebt gedaan.
-    2. Gebruik duidelijke taal in je commit bericht en refereer altijd naar een andere commit als die wat te maken heeft met deze verandering. Hierbij kun je denken aan een fout die je hebt opgelost die nadrukkelijk is veroorzaakt of ingevoerd in een andere commit.
-    3. Probeer niet te veel code te committen in één keer. Hierdoor kun je minder makkelijk aangeven in het commit bericht wat je hebt gedaan. Dus houd de commit klein en zorg ervoor dat je dingen commit die met elkaar te maken hebben.
-7. Tijdens het coderen is het handig om GitHub erbij te hebben. In GitHub kun je namelijk veel dingen snel opzoeken zoals: [issues](#Bekende-problemen), commit id's en veranderingen die gemaakt zijn. Git log en de timeline drawer in VSC kun je hier ook voor gebruiken. Dat hangt van jouw voorkeur af. Voor [issues](#Bekende-problemen) moet je wel bij GitHub zijn.
-
-### JavaScript
-Jullie hebben genoeg ervaring met JavaScript. Toch zijn hier enkele adviezen:
-1. Voor het declareren van variabelen gebruik let en const in plaats van var. Het verschil tussen let en const houdt in dat de waarde van een const variabele constant is en die van een let variabele niet. Bij voorkeur gebruik const. Hiermee zorg je er namelijk voor dat de waarde van een variabele niet wordt veranderd door een ander stukje code. Daarnaast is er met let en const nog een verandering in de scope. Zie [hier](https://www.w3schools.com/js/js_let.asp) voor een uitleg daarvan.
-2. Voor het naamgeven van variabelen en functies gebruik Camel case. Dit houdt in dat elk nieuw woord begint met een hoofdletter, zoals aantalBommen en xHoogte.
-3. Zet een ; neer. In JavaScript is het niet vereist om een ; neer te zetten alleen het maakt je code overzichtelijker en makkelijker te lezen.
-4. In JavaScript wordt een punt gebruikt om een decimaal getal aan te geven en een , om dingen van elkaar te onderscheiden. Dus 0.5 en functie test(argument1, argument2).
-5. Zet comments bij dingen die je doet. Dit zorgt ervoor dat anderen je code kunnen begrijpen.
-
-# Belangrijke informatie
-De website waarin de game verwerkt wordt, is een Progressive Web App (PWA). Dit houdt in dat het een soort van downloadbare app is die je offline kunt gebruiken. Deze functionaliteit werkt als het goed is al helemaal, maar dit zorgt er echter wel voor dat de website zich lokaal anders gedraagt dan op het internet. Als je lokaal bezig bent dan zul je niets merken, want dan werkt de PWA niet. Via [deze](https://dylansealy.github.io/PO-2D-games-maken/dist/) link kun je de PWA proberen. Doormiddel van een GitHub action hoef je echter de base href niet telkens te veranderen. Deze wordt namelijk automatisch aangepast voor elke branch nadat de code is veranderd.
-
-# Handige links en bronnen
-In het bestand [Bronnen.md](/Bronnen.md) kun je handige links en gebruikte bronnen terug vinden. Vul deze aan met alle bronnen die je gebruikt hebt!
-
-# Bekende problemen
-GitHub heeft een functie waarbij je bekende problemen in de code kunt aangeven. Dit is de [issues sectie](https://github.com/DylanSealy/PO-2D-games-maken/issues) in GitHub. Ik ben van plan om dit ook te gaan gebruiken, want hiermee kun je gemakkelijk bijhouden welke problemen er zijn en welke er zijn opgelost. Daarnaast kun je het oplossen van issues aan mensen toekennen. Dus als je een bekend probleem hebt in je code, maak hier dan een issue van.
-
-# Credits
-Het originele [geluidseffect](dist/assets/audio/frightened.webm) wanneer de ghosts frightened zijn is geproduceerd door [Mike Koenig](http://soundbible.com/1258-Tick-Tock.html). Dit geluidseffect is lichtelijk aangepast om het beter bij Hoog-Man te laten passen.
+# Hoog-Man
+Hoog-Man is een [p5.js](https://p5js.org/) game gebaseerd op Pac-Man.
+## Gebruik
+Het spel is te spelen via de [GitHub Pages](https://dylansealy.github.io/Hoog-Man/dist/) of clone het project, download [Node.js](https://nodejs.org/en/download/), installeer alle dependencies via npm en voer het http-server script uit.
+## Geluidseffecten
+Alle geluidseffecten zijn aangepast voor Hoog-Man.
+* [Background](dist/assets/audio/background.webm): MAZE door Density & Time via [Free Music - YouTube](https://www.youtube.com/watch?v=OuRvOCf9mJ4&list=PLwJjxqYuirCLkq42mGw4XKGQlpZSfxsYd&index=3) (PDM).
+* [Frightened](dist/assets/audio/frightened.webm): door Mike Koenig via [SoundBible](http://soundbible.com/1258-Tick-Tock.html) (Attribution 3.0).
+* [Pellet](dist/assets/audio/pellet.webm): door SubspaceAudio via [OpenGameArt](https://opengameart.org/content/512-sound-effects-8-bit-style) (CC0).
+* [Death](dist/assets/audio/death.webm): door SubspaceAudio via [OpenGameArt](https://opengameart.org/content/512-sound-effects-8-bit-style) (CC0).
+* [Game completed](dist/assets/audio/gameCompleted.webm): Level Up door Quincas Moreira via [Red Plus TV - YouTube](https://www.youtube.com/watch?v=5FiWRmMzVbo) (PDM).
+* [Game over trombone](dist/assets/audio/gameOver.webm): via [Mixkit](https://mixkit.co/free-sound-effects/game-over) ([Mixkit Sound Effects Free License](https://mixkit.co/license/#sfxFree_)).
+## Licentie
+Dit project wordt gelicentieerd onder de [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.html). Zie het [LICENSE](LICENSE) bestand voor meer informatie.

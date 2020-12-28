@@ -6,7 +6,7 @@ export default class Pinky extends Ghost {
             if (this.mode == "chase") {
                 switch (this.v.hoogMan.movement) {
                     case "up":
-                        this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, -4));
+                        this.movementSequence(this.checkDistanceTarget("Hoog-Man", -4, -4));
                         break;
                     case "right":
                         this.movementSequence(this.checkDistanceTarget("Hoog-Man", 4, 0));
@@ -20,7 +20,7 @@ export default class Pinky extends Ghost {
                     default:
                         switch (this.v.hoogMan.previousMovement) {
                             case "up":
-                                this.movementSequence(this.checkDistanceTarget("Hoog-Man", 0, -4));
+                                this.movementSequence(this.checkDistanceTarget("Hoog-Man", -4, -4));
                                 break;
                             case "right":
                                 this.movementSequence(this.checkDistanceTarget("Hoog-Man", 4, 0));

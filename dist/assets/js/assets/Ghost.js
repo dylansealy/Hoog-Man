@@ -3,30 +3,79 @@ export default class Ghost extends Character {
     constructor(p, v) {
         super(p, v);
         this.iterationVariables = () => {
-            if (this.mode == null) {
-                if (this.pelletCounter <= 0) {
-                    setTimeout(() => {
-                        if (this.v.blinky.mode == "frightened") {
-                            this.mode = "frightened";
+            const freeGhost = (delay) => {
+                setTimeout(() => {
+                    this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
+                    if (this.v.blinky.mode == "frightened") {
+                        this.mode = "frightened";
+                    }
+                    else {
+                        this.mode = "scatter";
+                    }
+                }, delay);
+            };
+            if (this.v.hoogMan.lives == 3) {
+                if (this.mode == null) {
+                    if (this.pelletCounter <= 0) {
+                        switch (this.name) {
+                            case "Pinky":
+                                if (this.v.blinky.movement != null) {
+                                    freeGhost(500);
+                                }
+                                break;
+                            case "Inky":
+                                if (this.v.pinky.movement != null) {
+                                    freeGhost(1000);
+                                }
+                                break;
+                            case "Clyde":
+                                if (this.v.inky.movement != null) {
+                                    freeGhost(1000);
+                                }
+                                break;
                         }
-                        else {
-                            this.mode = "scatter";
+                    }
+                    else if (this.name == "Inky" || this.name == "Clyde") {
+                        if (this.name == "Inky") {
+                            this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);
                         }
-                        this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
-                    }, 400);
+                        else if (this.name == "Clyde" && this.v.inky.pelletCounter <= 0) {
+                            this.pelletCounter = this.pelletThreshold + this.v.inky.pelletThreshold - (138 - this.v.pellets.length);
+                        }
+                    }
                 }
-                else if (this.name == "Inky" || this.name == "Clyde") {
-                    if (this.name == "Inky") {
-                        this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);
-                    }
-                    else if (this.name == "Clyde" && this.v.inky.pelletCounter <= 0) {
-                        this.pelletCounter = this.pelletThreshold + this.v.inky.pelletThreshold - (138 - this.v.pellets.length);
-                    }
+            }
+            else {
+                if (this.v.pelletCounter == 5 && this.name == "Pinky") {
+                    freeGhost(0);
+                }
+                else if (this.v.pelletCounter == 15 && this.name == "Inky") {
+                    freeGhost(0);
+                }
+                else if (this.v.pelletCounter == 25 && this.name == "Clyde") {
+                    freeGhost(0);
                 }
             }
             if (this.mode == "frightened") {
                 this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
                 this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.65;
+                if (this.name == "Blinky" && this.v.frightenedCounter == 0 || this.name != "Blinky" && this.v.frightenedCounter == 1) {
+                    switch (this.movement) {
+                        case "up":
+                            this.movement = "down";
+                            break;
+                        case "right":
+                            this.movement = "left";
+                            break;
+                        case "down":
+                            this.movement = "up";
+                            break;
+                        case "left":
+                            this.movement = "right";
+                            break;
+                        case null: break;
+                    }
+                }
                 if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) == this.v.frightenedTime) {
                     if (this.previousMode != null) {
                         this.mode = this.previousMode;
@@ -47,7 +96,7 @@ export default class Ghost extends Character {
                 }
             }
             else {
-                this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
+                this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
                 if (this.mode == "scatter") {
                     if (Math.floor(this.scatterCounter / this.v.gameBoard.frameRate) == this.scatterSequence[this.scatterRound]) {
                         this.mode = "chase";
@@ -76,20 +125,42 @@ export default class Ghost extends Character {
             }
         };
         this.checkDistanceTarget = (target, xMargin, yMargin) => {
-            let xTarget = 0;
-            let yTarget = 0;
+            let xTarget, yTarget;
             if (target == "Hoog-Man") {
                 xTarget = this.v.hoogMan.xPosition + this.v.gameBoard.widthUnit * xMargin;
                 yTarget = this.v.hoogMan.yPosition + this.v.gameBoard.heightUnit * yMargin;
+                if (this.name == "Inky") {
+                    if (this.v.blinky.xPosition < xTarget) {
+                        xMargin = xTarget - this.v.blinky.xPosition;
+                    }
+                    else if (this.v.blinky.xPosition > xTarget) {
+                        xMargin = (this.v.blinky.xPosition - xTarget) * -1;
+                    }
+                    else {
+                        xMargin = 0;
+                    }
+                    if (this.v.blinky.yPosition < yTarget) {
+                        yMargin = yTarget - this.v.blinky.yPosition;
+                    }
+                    else if (this.v.blinky.yPosition > yTarget) {
+                        yMargin = (this.v.blinky.yPosition - yTarget) * -1;
+                    }
+                    else {
+                        yMargin = 0;
+                    }
+                }
+                else {
+                    xMargin = yMargin = 0;
+                }
             }
             else {
                 xTarget = this.xTargetTile;
                 yTarget = this.yTargetTile;
             }
-            const upDistance = this.p.dist(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
-            const rightDistance = this.p.dist(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
-            const downDistance = this.p.dist(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
-            const leftDistance = this.p.dist(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+            const upDistance = this.p.dist(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget + xMargin, yTarget + yMargin);
+            const rightDistance = this.p.dist(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget + xMargin, yTarget + yMargin);
+            const downDistance = this.p.dist(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget + xMargin, yTarget + yMargin);
+            const leftDistance = this.p.dist(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget + xMargin, yTarget + yMargin);
             const distance = [upDistance, rightDistance, downDistance, leftDistance];
             const movementOrder = [];
             for (let i = 0; i < distance.length; i++) {
@@ -108,7 +179,14 @@ export default class Ghost extends Character {
                         return true;
                     }
                     else if (this.previousMovement == forbiddenMovement && this.collision == true) {
-                        setTimeout(() => this.nextMovement = targetMovement, 50);
+                        let delay;
+                        if (this.mode != "frightened") {
+                            delay = 50;
+                        }
+                        else {
+                            delay = 80;
+                        }
+                        setTimeout(() => this.nextMovement = targetMovement, delay);
                         return true;
                     }
                 }
@@ -140,10 +218,10 @@ export default class Ghost extends Character {
         };
         this.chaseCounter = 0;
         this.chaseRound = 0;
-        this.chaseSequence = [20, 20, 20];
+        this.chaseSequence = [18, 19, 20];
         this.scatterCounter = 0;
         this.scatterRound = 0;
-        this.scatterSequence = [7, 7, 5, 5];
+        this.scatterSequence = [6, 5, 4, 3];
         this.previousMode = null;
         this.mode = null;
     }

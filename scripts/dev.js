@@ -13,10 +13,10 @@ const changeBaseHref = async () => {
         const files = await globber.glob();
         if (files == "") {core.setFailed("No files found!");}
         else {
-            console.log(files.length + " files found.");
+            console.log(`${files.length} files found.`);
             for (let i = 0; i < files.length; i++) {
                 const originalBaseHref = fs.readFileSync(files[i], "utf-8");
-                const updatedBaseHref = originalBaseHref.replace(/<base ([^>]*href=["'])([^'"]*)(["'][^>]*)>/, "<base href=\"./\">");
+                const updatedBaseHref = originalBaseHref.replace(/<base ([^>]*href=["']?)([^'"]*)(["']?[^>]*)>/, "<base href=\"./\">");
                 if (originalBaseHref != updatedBaseHref) {
                     fs.writeFileSync(files[i], updatedBaseHref);
                     console.log(`${files[i]} changed.`);
