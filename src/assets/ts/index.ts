@@ -65,6 +65,7 @@ const v: GameVariables = {
     frightenedTime: 0,
     // eslint-disable-next-line sort-keys
     frightenedCounter: 0,
+    pelletCounter: 0,
     // eslint-disable-next-line sort-keys
     endGame: (p: p5): void => { // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
         p.noLoop();
@@ -95,6 +96,7 @@ const v: GameVariables = {
             document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
         } // Resets de posities van alle characters.
         else {
+            v.pelletCounter = 0;
             v.deathSound.play();
             setTimeout((): void => {
                 v.blinky.resetCharacter();

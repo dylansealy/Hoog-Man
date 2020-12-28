@@ -77,6 +77,7 @@ const v = {
     pelletSound: new Audio("assets/audio/pellet.webm"),
     frightenedTime: 0,
     frightenedCounter: 0,
+    pelletCounter: 0,
     endGame: (p) => {
         p.noLoop();
         v.hoogMan.lives--;
@@ -106,6 +107,7 @@ const v = {
             document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
         }
         else {
+            v.pelletCounter = 0;
             v.deathSound.play();
             setTimeout(() => {
                 v.blinky.resetCharacter();

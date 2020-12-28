@@ -21,6 +21,7 @@ export interface GameVariables {
     inputMethod: "keyboard" | "touch" | "gestures"; // Type geeft aan dat de property alleen gelijk mag zijn aan de gedefinieerde waarden. TS(4)
     obstacleCoordinates: Array<Array<number>>; // Type geeft aan dat het dataype een array is die weer bestaat uit een array van cijfers.
     obstacles: Array<ObstacleInterface>; // Type geeft aan dat het datatype een array is die bestaat uit children van de class die gebruik maakt van de interface.
+    pelletCounter: number;
     pellets: Array<PelletInterface>;
     endGame: (p: p5) => void; // Type geeft aan dat de functie niets returned. TS(5)
 }

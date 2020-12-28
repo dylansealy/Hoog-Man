@@ -56,6 +56,7 @@ export default class Pellet implements PelletInterface {
             this.v.pelletSound.play();
             this.v.gameBoard.score += 100;
             this.v.pellets.splice(index, 1);
+            if (this.v.hoogMan.lives < 3) {this.v.pelletCounter++;}
             if (this.v.pellets.length == 0) {this.v.endGame(this.p);}
             else if (this.powerPellet) {
                 this.v.frightenedSound.pause();

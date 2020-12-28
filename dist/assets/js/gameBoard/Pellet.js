@@ -29,6 +29,9 @@ export default class Pellet {
                 this.v.pelletSound.play();
                 this.v.gameBoard.score += 100;
                 this.v.pellets.splice(index, 1);
+                if (this.v.hoogMan.lives < 3) {
+                    this.v.pelletCounter++;
+                }
                 if (this.v.pellets.length == 0) {
                     this.v.endGame(this.p);
                 }
