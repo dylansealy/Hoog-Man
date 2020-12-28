@@ -9,6 +9,6 @@ Alle geluidseffecten zijn aangepast voor Hoog-Man.
 * [Pellet](dist/assets/audio/pellet.webm): door SubspaceAudio via [OpenGameArt](https://opengameart.org/content/512-sound-effects-8-bit-style) (CC0).
 * [Death](dist/assets/audio/death.webm): door SubspaceAudio via [OpenGameArt](https://opengameart.org/content/512-sound-effects-8-bit-style) (CC0).
 * [Game completed](dist/assets/audio/gameCompleted.webm): Level Up door Quincas Moreira via [Red Plus TV - YouTube](https://www.youtube.com/watch?v=5FiWRmMzVbo) (PDM).
-* [Game over trombone](dist/assets/audio/gameOver.webm): via [Mixkit](https://mixkit.co/free-sound-effects/game-over) ((Mixkit Sound Effects Free License)[https://mixkit.co/license/#sfxFree]).
+* [Game over trombone](dist/assets/audio/gameOver.webm): via [Mixkit](https://mixkit.co/free-sound-effects/game-over) ([Mixkit Sound Effects Free License](https://mixkit.co/license/#sfxFree_)).
 ## Licentie
 Dit project wordt gelicentieerd onder de [GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.html). Zie het [LICENSE](LICENSE) bestand voor meer informatie.
