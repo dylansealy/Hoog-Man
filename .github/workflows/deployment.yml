@@ -1,7 +1,7 @@
 name: Deployment
 on:
   push:
-    branches: [master, opruiming]
+    branches: [master]
     paths:
       - "src/**/*.html"
       - "dist/**/*.html"
