@@ -93,7 +93,7 @@ const v: GameVariables = {
                 container.style.display = "none";
                 responsiveGame(true, true);
             });
-            document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+            document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/Hoog-Man/");
         } // Resets de posities van alle characters.
         else {
             v.pelletCounter = 0;
@@ -209,7 +209,7 @@ const gestureControls = (): void => {
     main.addEventListener("mouseup", (): void => resetGesture());
     main.addEventListener("touchcancel", (): void => resetGesture());
 };
-document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/PO-2D-games-maken/");
+document.querySelector("#social").addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/Hoog-Man/");
 document.querySelector("#startGame").addEventListener("click", (): void => startGame());
 // Zorgt ervoor dat de game responsive is.
 window.addEventListener("resize", (): void => {if (v.game && v.hoogMan.lives != 0) {responsiveGame(true, true);}});

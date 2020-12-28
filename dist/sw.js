@@ -1,11 +1,11 @@
 const staticCache = "staticCacheV1.0";
 const dynamicCache = "dynamicCacheV1.0";
 const cacheAssets = [
-    "/PO-2D-games-maken/dist/index.html",
-    "/PO-2D-games-maken/dist/assets/css/index.css",
-    "/PO-2D-games-maken/dist/assets/css/media.css",
-    "/PO-2D-games-maken/dist/assets/js/index.js",
-    "/PO-2D-games-maken/dist/assets/html/fallback.html"
+    "/Hoog-Man/dist/index.html",
+    "/Hoog-Man/dist/assets/css/index.css",
+    "/Hoog-Man/dist/assets/css/media.css",
+    "/Hoog-Man/dist/assets/js/index.js",
+    "/Hoog-Man/dist/assets/html/fallback.html"
 ];
 const limitCacheSize = async (name, size) => {
     try {
@@ -50,6 +50,6 @@ self.addEventListener("fetch", event => {
                     return fetchResponse;
                 });
             });
-        }).catch(() => caches.match("/PO-2D-games-maken/dist/assets/html/fallback.html"))
+        }).catch(() => caches.match("/Hoog-Man/dist/assets/html/fallback.html"))
     );
 });

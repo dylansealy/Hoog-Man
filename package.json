@@ -3,7 +3,7 @@
   "version": "0.9.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/DylanSealy/PO-2D-games-maken.git"
+    "url": "git+https://github.com/DylanSealy/Hoog-Man.git"
   },
   "scripts": {
     "http-server": "npx http-server ./dist/ -c-1",
@@ -15,9 +15,9 @@
   "author": "Dylan Sealy",
   "license": "GPLv3",
   "bugs": {
-    "url": "https://github.com/DylanSealy/PO-2D-games-maken/issues"
+    "url": "https://github.com/DylanSealy/Hoog-Man/issues"
   },
-  "homepage": "https://github.com/DylanSealy/PO-2D-games-maken#readme",
+  "homepage": "https://github.com/DylanSealy/Hoog-Man#readme",
   "dependencies": {
     "@actions/core": "^1.2.6",
     "@actions/github": "^4.0.0",

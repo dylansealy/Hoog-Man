@@ -12,6 +12,6 @@ Een referentie geformatteerd als "TS(n)" is een Hoog-Man referentie. Deze zijn i
 1. TS(5): Een functie van het type void is klaar wanneer deze het einde bereikt. Er word niets gereturnd of de return waarde is leeg.
 1. TS(6): Deze properties horen bij elke child van de class die gebruik maakt van de interface. Ze worden alleen niet gedefinieerd in de constructor van de class, maar in de constructor van een directe of indirecte child van deze class. Dit komt doordat de waarden van deze properties uniek zijn voor elke child.
 1. TS(7): Het uitbreiden (extends) van een object, class of interface houdt in dat het alles overneemt van de uitgebreide object, class of interface en deze uitbreidt met andere properties en methods die alleen bij children van dit object, class of interface horen.
-## HoogMan referenties
+## Hoog-Man referenties
 1. HG(1): Met een sketch zorg je ervoor dat je in de instance mode van p5 komt. Deze modus heeft voor deze game als belangrijkste voordeel dat de game gestart kan worden via een JavaScript functie in plaats van dat p5 automatisch start. Het argument p van de sketch functie is er om de functies en variabelen te koppelen aan p5.
 1. HG(2): Een anonieme functie is een functie die niet wordt gekoppeld aan naam en dus ook niet aanroepbaar is. Deze wordt daardoor meteen uitgevoerd na het delcareren. In dit project worden anonieme functies gebruikt om te laten zien dat regels code bij elkaar horen.
