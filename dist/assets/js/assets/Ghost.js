@@ -95,25 +95,42 @@ export default class Ghost extends Character {
             }
         };
         this.checkDistanceTarget = (target, xMargin, yMargin) => {
-            let xTarget = 0;
-            let yTarget = 0;
+            let xTarget, yTarget;
             if (target == "Hoog-Man") {
                 xTarget = this.v.hoogMan.xPosition + this.v.gameBoard.widthUnit * xMargin;
                 yTarget = this.v.hoogMan.yPosition + this.v.gameBoard.heightUnit * yMargin;
+                if (this.name == "Inky") {
+                    if (this.v.blinky.xPosition < xTarget) {
+                        xMargin = xTarget - this.v.blinky.xPosition;
+                    }
+                    else if (this.v.blinky.xPosition > xTarget) {
+                        xMargin = (this.v.blinky.xPosition - xTarget) * -1;
+                    }
+                    else {
+                        xMargin = 0;
+                    }
+                    if (this.v.blinky.yPosition < yTarget) {
+                        yMargin = yTarget - this.v.blinky.yPosition;
+                    }
+                    else if (this.v.blinky.yPosition > yTarget) {
+                        yMargin = (this.v.blinky.yPosition - yTarget) * -1;
+                    }
+                    else {
+                        yMargin = 0;
+                    }
+                }
+                else {
+                    xMargin = yMargin = 0;
+                }
             }
             else {
                 xTarget = this.xTargetTile;
                 yTarget = this.yTargetTile;
             }
-            const upDistance = this.p.dist(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
-            const rightDistance = this.p.dist(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
-            const downDistance = this.p.dist(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
-            const leftDistance = this.p.dist(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
-            this.p.stroke("white");
-            this.p.line(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
-            this.p.line(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
-            this.p.line(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget, yTarget);
-            this.p.line(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget, yTarget);
+            const upDistance = this.p.dist(this.xPosition, this.yPosition - this.v.gameBoard.heightUnit * 0.5, xTarget + xMargin, yTarget + yMargin);
+            const rightDistance = this.p.dist(this.xPosition + this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget + xMargin, yTarget + yMargin);
+            const downDistance = this.p.dist(this.xPosition, this.yPosition + this.v.gameBoard.heightUnit * 0.5, xTarget + xMargin, yTarget + yMargin);
+            const leftDistance = this.p.dist(this.xPosition - this.v.gameBoard.widthUnit * 0.5, this.yPosition, xTarget + xMargin, yTarget + yMargin);
             const distance = [upDistance, rightDistance, downDistance, leftDistance];
             const movementOrder = [];
             for (let i = 0; i < distance.length; i++) {
