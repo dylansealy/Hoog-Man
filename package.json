@@ -7,6 +7,7 @@
   },
   "scripts": {
     "http-server": "npx http-server ./dist/ -c-1",
+    "tsc": "tsc",
     "deploy": "erase dist\\assets\\js\\Types.js && git add .",
     "html-minify": "npx html-minifier -c HTMLMinifierconfig.json --input-dir ./src/ --output-dir ./dist/ --file-ext html",
     "css-minify": "npx csso -i ./src/assets/css/index.css -o ./dist/assets/css/index.css && npx csso -i ./src/assets/css/media.css -o ./dist/assets/css/media.css"

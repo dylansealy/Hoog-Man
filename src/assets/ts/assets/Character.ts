@@ -26,8 +26,8 @@ export default class Character implements CharacterInterface {
         this.movement = null;
         this.nextMovement = null;
         this.p = p;
-        this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
-    } // Tekent een character en zorgt ervoor dat de x, y positie wordt geupdatet.
+        this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
+    } // Tekent een character en zorgt ervoor dat de x, y positie wordt geüpdatet.
     draw: () => void = () => {
         let diameter: number;
         this.p.push();
@@ -79,7 +79,7 @@ export default class Character implements CharacterInterface {
                 this.yPosition + this.v.gameBoard.heightUnit * 0.5 - 1 > this.v.gameBoard.yInner + this.v.gameBoard.innerHeight
             ) {return this.resetMovement(true);}
         } return undefined;
-    } // Zorgt ervoor dat de huidige bewegingsrichting wordt geupdatet met de nieuwe.
+    } // Zorgt ervoor dat de huidige bewegingsrichting wordt geüpdatet met de nieuwe.
     checkNextMovement: () => void = () => {
         // Checkt of er geen botsing plaatsvindt, this.nextMovement niet onnodig wordt overschreven en of this.nextMovement gedefinieerd is.
         if (!this.checkCollisionInput(this.nextMovement) && this.nextMovement != this.movement && this.nextMovement != null) {
@@ -101,7 +101,7 @@ export default class Character implements CharacterInterface {
         for (const obstacle in this.v.obstacles) {
             switch (targetMovement) {
             case "up":
-                if ( // Checkt of Hoog-Man door een gat in de buitenlijn gaaat.
+                if ( // Checkt of Hoog-Man door een gat in de buitenlijn gaat.
                     this.xPosition < this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 2 &&
                     this.xPosition > this.v.gameBoard.xInner + this.v.gameBoard.widthUnit &&
                     this.yPosition < this.v.gameBoard.yInner + this.v.gameBoard.heightUnit &&
@@ -203,6 +203,7 @@ export default class Character implements CharacterInterface {
         this.xPosition = this.xStartPosition;
         this.yPosition = this.yStartPosition;
         this.previousMovement = null;
+        if (this.name != "Hoog-Man") {this.chaseRound = this.scatterRound = 0;}
         if (this.name == "Blinky") {this.movement = "left";}
         else {this.movement = null;}
         if (this.name != "Hoog-Man" && this.name != "Blinky") {this.mode = null;}

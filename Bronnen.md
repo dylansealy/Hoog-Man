@@ -12,7 +12,7 @@ Dit document heeft als doel om alle gebruikte bronnen bij te houden. Dus zet all
 * [p5 sketch](https://www.youtube.com/watch?v=Su792jEauZg&feature=youtu.be)
 * [Pac-Man design](https://www.slideshare.net/grimlockt/pac-man-6561257)
 * [Pac-Man p5 voorbeeld](https://coursescript.com/notes/interactivecomputing/game/pacman/sketch.js)
-* [Pac-Man ghost behavior](https://gameinternals.com/understanding-pac-man-ghost-behavior)
+* [Pac-Man ghost behaviour](https://gameinternals.com/understanding-pac-man-ghost-behavior)
 
 ## Audio
 * [Background](https://www.youtube.com/watch?v=OuRvOCf9mJ4&list=PLwJjxqYuirCLkq42mGw4XKGQlpZSfxsYd&index=3)

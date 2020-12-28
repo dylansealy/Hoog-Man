@@ -188,6 +188,9 @@ export default class Character {
             this.xPosition = this.xStartPosition;
             this.yPosition = this.yStartPosition;
             this.previousMovement = null;
+            if (this.name != "Hoog-Man") {
+                this.chaseRound = this.scatterRound = 0;
+            }
             if (this.name == "Blinky") {
                 this.movement = "left";
             }
@@ -205,6 +208,6 @@ export default class Character {
         this.movement = null;
         this.nextMovement = null;
         this.p = p;
-        this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
+        this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
     }
 }

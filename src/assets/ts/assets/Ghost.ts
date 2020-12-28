@@ -15,10 +15,10 @@ export default class Ghost extends Character implements GhostInterface {
         super(p, v);
         this.chaseCounter = 0;
         this.chaseRound = 0;
-        this.chaseSequence = [20, 20, 20];
+        this.chaseSequence = [18, 19, 20];
         this.scatterCounter = 0;
         this.scatterRound = 0;
-        this.scatterSequence = [7, 7, 5, 5];
+        this.scatterSequence = [6, 5, 4, 3];
         this.previousMode = null;
         this.mode = null;
     } // Updates variabelen na elke iteratie van de p5 draw functie.
@@ -38,7 +38,7 @@ export default class Ghost extends Character implements GhostInterface {
                 case "Clyde": if (this.v.inky.movement != null) {freeGhost(1000);} break;
                 }
             } else if (this.name == "Inky" || this.name == "Clyde") {
-                // Zorgt ervoor dat de plletCounter omlaag gaat.
+                // Zorgt ervoor dat de pelletCounter omlaag gaat.
                 if (this.name == "Inky") {this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);}
                 else if (this.name == "Clyde" && this.v.inky.pelletCounter <= 0) {
                     this.pelletCounter = this.pelletThreshold + this.v.inky.pelletThreshold - (138 - this.v.pellets.length);
@@ -48,6 +48,16 @@ export default class Ghost extends Character implements GhostInterface {
         if (this.mode == "frightened") {
             this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
             this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.65;
+            // Zorgt ervoor dat ghosts omdraaien nadat frightened mode is geactiveerd.
+            if (this.name == "Blinky" && this.v.frightenedCounter == 0 || this.name != "Blinky" && this.v.frightenedCounter == 1) {
+                switch (this.movement) {
+                case "up": this.movement = "down"; break;
+                case "right": this.movement = "left"; break;
+                case "down": this.movement = "up"; break;
+                case "left": this.movement = "right"; break;
+                case null: break;
+                }
+            }
             if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) == this.v.frightenedTime) { // Checkt of een ghost lang genoeg frightened is geweest.
                 if (this.previousMode != null) {this.mode = this.previousMode;}
                 else {this.mode = "scatter";}
@@ -56,10 +66,10 @@ export default class Ghost extends Character implements GhostInterface {
                 }, 1000);
                 this.v.frightenedSound.pause();
                 this.v.backgroundMusic.volume = 0.55;
-            } // Zorgt ervoor dat de counter niet te vaak wordt geupdatet.
+            } // Zorgt ervoor dat de counter niet te vaak wordt geüpdatet.
             if (this.name == "Blinky") {this.v.frightenedCounter++;}
         } else {
-            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
+            this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
             if (this.mode == "scatter") {
                 if (Math.floor(this.scatterCounter / this.v.gameBoard.frameRate) == this.scatterSequence[this.scatterRound]) {
                     this.mode = "chase";
@@ -76,7 +86,7 @@ export default class Ghost extends Character implements GhostInterface {
         }
     } // Zorgt ervoor dat de ghost altijd een nieuwe bewegingsrichting heeft die mogelijk is.
     movementSequence: (movementOrder: Array<number>) => void = movementOrder => {
-        if (!this.setNextMovement(movementOrder, 0) && this.movement == null) { // Movement check zorgt ervoor dat ghosts atlijd kan bewegen.
+        if (!this.setNextMovement(movementOrder, 0) && this.movement == null) { // Movement check zorgt ervoor dat ghosts altijd kan bewegen.
             if (!this.setNextMovement(movementOrder, 1)) {
                 if (!this.setNextMovement(movementOrder, 2)) {
                     this.setNextMovement(movementOrder, 3);
@@ -128,8 +138,11 @@ export default class Ghost extends Character implements GhostInterface {
                     this.nextMovement = targetMovement;
                     return true;
                 } else if (this.previousMovement == forbiddenMovement && this.collision == true) {
-                    // Zorgt ervoor dat de nieuwe bewegingsrichting wordt geupdatet na minimaal 50 ms. Dit voorkomt dat een ghost niet terug kan gaan.
-                    setTimeout(() => this.nextMovement = targetMovement, 50);
+                    // Zorgt ervoor dat de nieuwe bewegingsrichting wordt geüpdatet na minimaal 50 ms. Dit voorkomt dat een ghost niet terug kan gaan.
+                    let delay: number;
+                    if (this.mode != "frightened") {delay = 50;}
+                    else {delay = 80;}
+                    setTimeout(() => this.nextMovement = targetMovement, delay);
                     return true;
                 }
             } return false;

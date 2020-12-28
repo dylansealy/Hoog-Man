@@ -46,6 +46,23 @@ export default class Ghost extends Character {
             if (this.mode == "frightened") {
                 this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
                 this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.65;
+                if (this.name == "Blinky" && this.v.frightenedCounter == 0 || this.name != "Blinky" && this.v.frightenedCounter == 1) {
+                    switch (this.movement) {
+                        case "up":
+                            this.movement = "down";
+                            break;
+                        case "right":
+                            this.movement = "left";
+                            break;
+                        case "down":
+                            this.movement = "up";
+                            break;
+                        case "left":
+                            this.movement = "right";
+                            break;
+                        case null: break;
+                    }
+                }
                 if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) == this.v.frightenedTime) {
                     if (this.previousMode != null) {
                         this.mode = this.previousMode;
@@ -66,7 +83,7 @@ export default class Ghost extends Character {
                 }
             }
             else {
-                this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight;
+                this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
                 if (this.mode == "scatter") {
                     if (Math.floor(this.scatterCounter / this.v.gameBoard.frameRate) == this.scatterSequence[this.scatterRound]) {
                         this.mode = "chase";
@@ -149,7 +166,14 @@ export default class Ghost extends Character {
                         return true;
                     }
                     else if (this.previousMovement == forbiddenMovement && this.collision == true) {
-                        setTimeout(() => this.nextMovement = targetMovement, 50);
+                        let delay;
+                        if (this.mode != "frightened") {
+                            delay = 50;
+                        }
+                        else {
+                            delay = 80;
+                        }
+                        setTimeout(() => this.nextMovement = targetMovement, delay);
                         return true;
                     }
                 }
@@ -181,10 +205,10 @@ export default class Ghost extends Character {
         };
         this.chaseCounter = 0;
         this.chaseRound = 0;
-        this.chaseSequence = [20, 20, 20];
+        this.chaseSequence = [18, 19, 20];
         this.scatterCounter = 0;
         this.scatterRound = 0;
-        this.scatterSequence = [7, 7, 5, 5];
+        this.scatterSequence = [6, 5, 4, 3];
         this.previousMode = null;
         this.mode = null;
     }
