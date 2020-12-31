@@ -12,9 +12,11 @@ const sketch = (p) => {
             character.iterationVariables();
         }
         character.draw();
-        character.checkCollision();
-        character.checkNextMovement();
-        if (character.name != "Hoog-Man") {
+        if (character.name == "Hoog-Man" || character.mode != null) {
+            character.checkCollision();
+            character.checkNextMovement();
+        }
+        if (character.name != "Hoog-Man" && character.mode != null) {
             character.setMovement();
         }
     };
@@ -29,10 +31,16 @@ const sketch = (p) => {
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
         fadeIn(v.backgroundMusic, 0.55);
+        p.noFill();
+        if (v.inputMethod == "touch") {
+            touchControls();
+        }
+        else if (v.inputMethod == "gestures") {
+            gestureControls();
+        }
     };
     p.draw = () => {
         p.background("black");
-        p.noFill();
         v.gameBoard.draw();
         for (const obstacle in v.obstacles) {
             v.obstacles[obstacle].draw();
@@ -46,26 +54,6 @@ const sketch = (p) => {
         characterSequence(v.pinky);
         characterSequence(v.inky);
         characterSequence(v.clyde);
-        if (v.inputMethod == "keyboard") {
-            if (p.keyIsDown(p.UP_ARROW) || p.keyIsDown(87)) {
-                v.hoogMan.nextMovement = "up";
-            }
-            else if (p.keyIsDown(p.RIGHT_ARROW) || p.keyIsDown(68)) {
-                v.hoogMan.nextMovement = "right";
-            }
-            else if (p.keyIsDown(p.DOWN_ARROW) || p.keyIsDown(83)) {
-                v.hoogMan.nextMovement = "down";
-            }
-            else if (p.keyIsDown(p.LEFT_ARROW) || p.keyIsDown(65)) {
-                v.hoogMan.nextMovement = "left";
-            }
-        }
-        else if (v.inputMethod == "touch") {
-            touchControls();
-        }
-        else {
-            gestureControls();
-        }
     };
 };
 const v = {
@@ -314,9 +302,22 @@ const fadeIn = (audio, threshold) => {
     }, 110);
 };
 const keyCheck = (event) => {
-    if (event.code === "Enter") {
+    if (event.code == "Enter" && v.game == undefined) {
         startGame();
-        window.removeEventListener("keydown", keyCheck);
+    }
+    if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
+        if (event.code == "ArrowUp" || event.code == "KeyW") {
+            v.hoogMan.nextMovement = "up";
+        }
+        else if (event.code == "ArrowRight" || event.code == "KeyD") {
+            v.hoogMan.nextMovement = "right";
+        }
+        else if (event.code == "ArrowDown" || event.code == "KeyS") {
+            v.hoogMan.nextMovement = "down";
+        }
+        else if (event.code == "ArrowLeft" || event.code == "KeyA") {
+            v.hoogMan.nextMovement = "left";
+        }
     }
 };
 (() => {

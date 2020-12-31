@@ -12,9 +12,11 @@ const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5
     const characterSequence = (character: GhostInterface | HoogManInterface) => { // Zorgt voor de volgorde waarin acties van characters gebeuren.
         if (character.name != "Hoog-Man") {character.iterationVariables();}
         character.draw();
-        character.checkCollision();
-        character.checkNextMovement();
-        if (character.name != "Hoog-Man") {character.setMovement();}
+        if (character.name == "Hoog-Man" || character.mode != null) {
+            character.checkCollision();
+            character.checkNextMovement();
+        }
+        if (character.name != "Hoog-Man" && character.mode != null) {character.setMovement();}
     }; // Stelt bepaalde instellingen in en zorgt ervoor dat de game kan beginnen.
     p.setup = (): void => {
         initializeVars(p);
@@ -27,10 +29,13 @@ const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
         fadeIn(v.backgroundMusic, 0.55);
+        p.noFill();
+        // Zorgt ervoor dat alleen de gekozen input methode werkt.
+        if (v.inputMethod == "touch") {touchControls();}
+        else if (v.inputMethod == "gestures") {gestureControls();}
     }; // Zorgt ervoor dat alles getekend wordt en dat alle besturingselementen worden aangeroepen.
     p.draw = (): void => {
         p.background("black");
-        p.noFill();
         v.gameBoard.draw();
         for (const obstacle in v.obstacles) {v.obstacles[obstacle].draw();}
         for (const pellet in v.pellets) {
@@ -42,16 +47,6 @@ const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5
         characterSequence(v.pinky);
         characterSequence(v.inky);
         characterSequence(v.clyde);
-        // Zorgt ervoor dat alleen de gekozen input methode werkt.
-        if (v.inputMethod == "keyboard") {
-            // eslint-disable-next-line capitalized-comments
-            // p.keyIsDown(n) zorgt ervoor dat de WASD knoppen werken.
-            if (p.keyIsDown(p.UP_ARROW) || p.keyIsDown(87)) {v.hoogMan.nextMovement = "up";}
-            else if (p.keyIsDown(p.RIGHT_ARROW) || p.keyIsDown(68)) {v.hoogMan.nextMovement = "right";}
-            else if (p.keyIsDown(p.DOWN_ARROW) || p.keyIsDown(83)) {v.hoogMan.nextMovement = "down";}
-            else if (p.keyIsDown(p.LEFT_ARROW) || p.keyIsDown(65)) {v.hoogMan.nextMovement = "left";}
-        } else if (v.inputMethod == "touch") {touchControls();}
-        else {gestureControls();}
     };
 }; // Object waarin alle variabelen in de game worden opgeslagen.
 const v: GameVariables = {
@@ -295,9 +290,12 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
 };
 // Checkt welke toets wordt ingedrukt.
 const keyCheck = (event: KeyboardEvent) => {
-    if (event.code === "Enter") {
-        startGame();
-        window.removeEventListener("keydown", keyCheck);
+    if (event.code == "Enter" && v.game == undefined) {startGame();}
+    if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
+        if (event.code == "ArrowUp" || event.code == "KeyW") {v.hoogMan.nextMovement = "up";}
+        else if (event.code == "ArrowRight" || event.code == "KeyD") {v.hoogMan.nextMovement = "right";}
+        else if (event.code == "ArrowDown" || event.code == "KeyS") {v.hoogMan.nextMovement = "down";}
+        else if (event.code == "ArrowLeft" || event.code == "KeyA") {v.hoogMan.nextMovement = "left";}
     }
 };
 ((): void => { // Zorgt voor het correcte copyright jaar.
