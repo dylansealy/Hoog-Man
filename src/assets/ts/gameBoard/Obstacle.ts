@@ -15,9 +15,10 @@ export default class Obstacle implements ObstacleInterface {
         this.width = this.v.gameBoard.yInner + this.v.gameBoard.widthUnit * xMax - this.xPosition;
         this.p = p;
     }
-    draw: () => void = () => {
+    draw: (index: number) => void = (index) => {
         this.p.push();
-        this.p.stroke("#2121DE");
+        if (index != 5) {this.p.fill("#7092BE")}
+        this.p.stroke("#7092BE");
         this.p.strokeWeight(2);
         this.p.rect(this.xPosition, this.yPosition, this.width, this.height, 4);
         this.p.pop();
