@@ -1,8 +1,11 @@
 export default class Obstacle {
     constructor(p, v, xMin, yMin, xMax, yMax) {
-        this.draw = () => {
+        this.draw = (index) => {
             this.p.push();
-            this.p.stroke("#2121DE");
+            if (index != 5) {
+                this.p.fill("#7092BE");
+            }
+            this.p.stroke("#7092BE");
             this.p.strokeWeight(2);
             this.p.rect(this.xPosition, this.yPosition, this.width, this.height, 4);
             this.p.pop();

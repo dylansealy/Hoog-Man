@@ -37,7 +37,7 @@ const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5
     p.draw = (): void => {
         p.background("black");
         v.gameBoard.draw();
-        for (const obstacle in v.obstacles) {v.obstacles[obstacle].draw();}
+        for (const obstacle in v.obstacles) {v.obstacles[obstacle].draw(obstacle);}
         for (const pellet in v.pellets) {
             v.pellets[pellet].draw();
             v.pellets[pellet].checkEaten(pellet);

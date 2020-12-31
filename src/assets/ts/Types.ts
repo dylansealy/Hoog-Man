@@ -65,7 +65,7 @@ export interface ObstacleInterface {
     v: GameVariables;
     xPosition: number;
     yPosition: number;
-    draw: () => void;
+    draw: (index: number) => void;
 }
 export interface CharacterInterface {
     collision: boolean;

@@ -43,7 +43,7 @@ const sketch = (p) => {
         p.background("black");
         v.gameBoard.draw();
         for (const obstacle in v.obstacles) {
-            v.obstacles[obstacle].draw();
+            v.obstacles[obstacle].draw(obstacle);
         }
         for (const pellet in v.pellets) {
             v.pellets[pellet].draw();
