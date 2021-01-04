@@ -325,9 +325,11 @@ const keyCheck = (event) => {
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
 })();
 (() => {
-    const userAgent = navigator.userAgent;
-    if (userAgent.indexOf("Mobile") != -1) {
-        const inputMethod = document.getElementsByName("controls");
+    const inputMethod = document.getElementsByName("controls");
+    if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {
+        inputMethod[2].checked = true;
+    }
+    else if (navigator.userAgent.indexOf("Mobile") != -1) {
         inputMethod[2].checked = true;
     }
 })();

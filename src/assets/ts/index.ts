@@ -302,12 +302,10 @@ const keyCheck = (event: KeyboardEvent) => {
     const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
 })();
-((): void => { // Checkt of het een mobiel apparaat is zet de aanbevolen input method.
-    const userAgent = navigator.userAgent;
-    if (userAgent.indexOf("Mobile") != -1) {
-        const inputMethod = document.getElementsByName("controls");
-        inputMethod[2].checked = true;
-    }
+((): void => { // Checkt of het een mobiel apparaat is en zet de aanbevolen input method.
+    const inputMethod = document.getElementsByName("controls");
+    if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {inputMethod[2].checked = true;}
+    else if (navigator.userAgent.indexOf("Mobile") != -1) {inputMethod[2].checked = true;}
 })();
 // Checkt of er op een toets wordt gedrukt.
 window.addEventListener("keydown", keyCheck);
