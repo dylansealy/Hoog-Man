@@ -15,25 +15,9 @@ export default class Ghost extends Character {
                 }, delay);
             };
             if (this.v.hoogMan.lives == 3) {
-                if (this.mode == null) {
+                if (this.mode == null && this.movement == null && this.previousMovement == null) {
                     if (this.pelletCounter <= 0) {
-                        switch (this.name) {
-                            case "Pinky":
-                                if (this.v.blinky.movement != null) {
-                                    freeGhost(500);
-                                }
-                                break;
-                            case "Inky":
-                                if (this.v.pinky.movement != null) {
-                                    freeGhost(1000);
-                                }
-                                break;
-                            case "Clyde":
-                                if (this.v.inky.movement != null) {
-                                    freeGhost(1000);
-                                }
-                                break;
-                        }
+                        freeGhost(500);
                     }
                     else if (this.name == "Inky" || this.name == "Clyde") {
                         if (this.name == "Inky") {
@@ -45,16 +29,14 @@ export default class Ghost extends Character {
                     }
                 }
             }
-            else {
-                if (this.v.pelletCounter == 5 && this.name == "Pinky") {
-                    freeGhost(0);
-                }
-                else if (this.v.pelletCounter == 15 && this.name == "Inky") {
-                    freeGhost(0);
-                }
-                else if (this.v.pelletCounter == 25 && this.name == "Clyde") {
-                    freeGhost(0);
-                }
+            else if (this.v.pelletCounter == 5 && this.name == "Pinky") {
+                freeGhost(500);
+            }
+            else if (this.v.pelletCounter == 15 && this.name == "Inky") {
+                freeGhost(500);
+            }
+            else if (this.v.pelletCounter == 25 && this.name == "Clyde") {
+                freeGhost(500);
             }
             if (this.mode == "frightened") {
                 this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;

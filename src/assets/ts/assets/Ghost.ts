@@ -31,14 +31,10 @@ export default class Ghost extends Character implements GhostInterface {
             }, delay);
         };
         if (this.v.hoogMan.lives == 3) {
-            if (this.mode == null) {
-                if (this.pelletCounter <= 0) { // Checkt of een ghost het huis mag verlaten.
-                    switch (this.name) {
-                    case "Pinky": if (this.v.blinky.movement != null) {freeGhost(500);} break;
-                    case "Inky": if (this.v.pinky.movement != null) {freeGhost(1000);} break;
-                    case "Clyde": if (this.v.inky.movement != null) {freeGhost(1000);} break;
-                    }
-                } else if (this.name == "Inky" || this.name == "Clyde") {
+            if (this.mode == null && this.movement == null && this.previousMovement == null) {
+                // Checkt of een ghost het huis mag verlaten.
+                if (this.pelletCounter <= 0) {freeGhost(500);}
+                else if (this.name == "Inky" || this.name == "Clyde") {
                     // Zorgt ervoor dat de pelletCounter omlaag gaat.
                     if (this.name == "Inky") {this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);}
                     else if (this.name == "Clyde" && this.v.inky.pelletCounter <= 0) {
@@ -46,11 +42,10 @@ export default class Ghost extends Character implements GhostInterface {
                     }
                 }
             }
-        } else {
-            if (this.v.pelletCounter == 5 && this.name == "Pinky") {freeGhost(0);}
-            else if (this.v.pelletCounter == 15 && this.name == "Inky") {freeGhost(0);}
-            else if (this.v.pelletCounter == 25 && this.name == "Clyde") {freeGhost(0);}
         }
+        else if (this.v.pelletCounter == 5 && this.name == "Pinky") {freeGhost(500);}
+        else if (this.v.pelletCounter == 15 && this.name == "Inky") {freeGhost(500);}
+        else if (this.v.pelletCounter == 25 && this.name == "Clyde") {freeGhost(500);}
         if (this.mode == "frightened") {
             this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
             this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.65;

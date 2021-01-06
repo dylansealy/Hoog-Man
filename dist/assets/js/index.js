@@ -301,25 +301,6 @@ const fadeIn = (audio, threshold) => {
         }
     }, 110);
 };
-const keyCheck = (event) => {
-    if (event.code == "Enter" && v.game == undefined) {
-        startGame();
-    }
-    if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
-        if (event.code == "ArrowUp" || event.code == "KeyW") {
-            v.hoogMan.nextMovement = "up";
-        }
-        else if (event.code == "ArrowRight" || event.code == "KeyD") {
-            v.hoogMan.nextMovement = "right";
-        }
-        else if (event.code == "ArrowDown" || event.code == "KeyS") {
-            v.hoogMan.nextMovement = "down";
-        }
-        else if (event.code == "ArrowLeft" || event.code == "KeyA") {
-            v.hoogMan.nextMovement = "left";
-        }
-    }
-};
 (() => {
     const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
@@ -333,4 +314,22 @@ const keyCheck = (event) => {
         inputMethod[2].checked = true;
     }
 })();
-window.addEventListener("keydown", keyCheck);
+window.addEventListener("keydown", event => {
+    if (event.code == "Enter" && v.game == undefined) {
+        startGame();
+    }
+    else if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
+        if (event.code == "ArrowUp" || event.code == "KeyW") {
+            v.hoogMan.nextMovement = "up";
+        }
+        else if (event.code == "ArrowRight" || event.code == "KeyD") {
+            v.hoogMan.nextMovement = "right";
+        }
+        else if (event.code == "ArrowDown" || event.code == "KeyS") {
+            v.hoogMan.nextMovement = "down";
+        }
+        else if (event.code == "ArrowLeft" || event.code == "KeyA") {
+            v.hoogMan.nextMovement = "left";
+        }
+    }
+});

@@ -154,7 +154,6 @@ const touchControls = (): void => {
     // Checkt of er gedrukt wordt op een knop en zet de volgende bewegingsrichting van Hoog-Man.
     upTouch.addEventListener("click", () => v.hoogMan.nextMovement = "up");
     upTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "up");
-
     const rightTouch: HTMLLIElement = document.querySelector("#rightTouch");
     rightTouch.addEventListener("click", () => v.hoogMan.nextMovement = "right");
     rightTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "right");
@@ -288,16 +287,6 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
         }
     }, 110);
 };
-// Checkt welke toets wordt ingedrukt.
-const keyCheck = (event: KeyboardEvent) => {
-    if (event.code == "Enter" && v.game == undefined) {startGame();}
-    if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
-        if (event.code == "ArrowUp" || event.code == "KeyW") {v.hoogMan.nextMovement = "up";}
-        else if (event.code == "ArrowRight" || event.code == "KeyD") {v.hoogMan.nextMovement = "right";}
-        else if (event.code == "ArrowDown" || event.code == "KeyS") {v.hoogMan.nextMovement = "down";}
-        else if (event.code == "ArrowLeft" || event.code == "KeyA") {v.hoogMan.nextMovement = "left";}
-    }
-};
 ((): void => { // Zorgt voor het correcte copyright jaar.
     const year = new Date().getFullYear();
     document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
@@ -308,4 +297,13 @@ const keyCheck = (event: KeyboardEvent) => {
     else if (navigator.userAgent.indexOf("Mobile") != -1) {inputMethod[2].checked = true;}
 })();
 // Checkt of er op een toets wordt gedrukt.
-window.addEventListener("keydown", keyCheck);
+window.addEventListener("keydown", event => {
+    // Checkt welke toets wordt ingedrukt.
+    if (event.code == "Enter" && v.game == undefined) {startGame();}
+    else if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
+        if (event.code == "ArrowUp" || event.code == "KeyW") {v.hoogMan.nextMovement = "up";}
+        else if (event.code == "ArrowRight" || event.code == "KeyD") {v.hoogMan.nextMovement = "right";}
+        else if (event.code == "ArrowDown" || event.code == "KeyS") {v.hoogMan.nextMovement = "down";}
+        else if (event.code == "ArrowLeft" || event.code == "KeyA") {v.hoogMan.nextMovement = "left";}
+    }
+});
