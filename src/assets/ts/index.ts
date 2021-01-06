@@ -289,7 +289,7 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
 };
 ((): void => { // Zorgt voor het correcte copyright jaar.
     const year = new Date().getFullYear();
-    document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
+    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.1)`;
 })();
 ((): void => { // Checkt of het een mobiel apparaat is en zet de aanbevolen input method.
     const inputMethod = document.getElementsByName("controls");

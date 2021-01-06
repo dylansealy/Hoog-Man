@@ -303,7 +303,7 @@ const fadeIn = (audio, threshold) => {
 };
 (() => {
     const year = new Date().getFullYear();
-    document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
+    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.1)`;
 })();
 (() => {
     const inputMethod = document.getElementsByName("controls");
