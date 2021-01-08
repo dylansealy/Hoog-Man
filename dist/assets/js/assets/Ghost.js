@@ -198,13 +198,10 @@ export default class Ghost extends Character {
                 }
             }
         };
-        this.chaseCounter = 0;
-        this.chaseRound = 0;
+        this.chaseCounter = this.chaseRound = 0;
         this.chaseSequence = [18, 19, 20];
-        this.scatterCounter = 0;
-        this.scatterRound = 0;
+        this.scatterCounter = this.scatterRound = 0;
         this.scatterSequence = [6, 5, 4, 3];
-        this.previousMode = null;
-        this.mode = null;
+        this.previousMode = this.mode = null;
     }
 }

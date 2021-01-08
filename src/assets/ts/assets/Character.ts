@@ -22,9 +22,7 @@ export default class Character implements CharacterInterface {
         this.v = v;
         this.collision = false;
         this.diameter = this.v.gameBoard.heightUnit / 2;
-        this.previousMovement = null;
-        this.movement = null;
-        this.nextMovement = null;
+        this.previousMovement = this.movement = this.nextMovement = null;
         this.p = p;
         this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
     } // Tekent een character en zorgt ervoor dat de x, y positie wordt geüpdatet.
@@ -93,8 +91,7 @@ export default class Character implements CharacterInterface {
     resetMovement: (afterCollision: boolean) => void = afterCollision => {
         if (this.movement != null) {this.previousMovement = this.movement;}
         this.collision = true;
-        this.movement = null;
-        this.nextMovement = null;
+        this.movement = this.nextMovement = null;
         if (afterCollision) {this.constrainPosition();}
     } // Checkt of er niet een botsing plaatsvindt na de nieuwe bewegingsrichting.
     checkCollisionInput: (targetMovement: Movement) => boolean = targetMovement => {

@@ -77,8 +77,7 @@ export default class Character {
                 this.previousMovement = this.movement;
             }
             this.collision = true;
-            this.movement = null;
-            this.nextMovement = null;
+            this.movement = this.nextMovement = null;
             if (afterCollision) {
                 this.constrainPosition();
             }
@@ -204,9 +203,7 @@ export default class Character {
         this.v = v;
         this.collision = false;
         this.diameter = this.v.gameBoard.heightUnit / 2;
-        this.previousMovement = null;
-        this.movement = null;
-        this.nextMovement = null;
+        this.previousMovement = this.movement = this.nextMovement = null;
         this.p = p;
         this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
     }

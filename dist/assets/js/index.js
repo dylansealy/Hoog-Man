@@ -24,8 +24,6 @@ const sketch = (p) => {
         initializeVars(p);
         getInputMethod();
         p.createCanvas(v.gameBoard.canvasDimension, v.gameBoard.canvasDimension);
-        p.frameRate();
-        p.colorMode(p.RGB, 255);
         p.textFont("Roboto");
         p.textSize(v.gameBoard.widthUnit / 1.5);
         p.noCursor();
@@ -42,13 +40,11 @@ const sketch = (p) => {
     p.draw = () => {
         p.background("black");
         v.gameBoard.draw();
-        for (const obstacle in v.obstacles) {
-            v.obstacles[obstacle].draw(obstacle);
-        }
-        for (const pellet in v.pellets) {
-            v.pellets[pellet].draw();
-            v.pellets[pellet].checkEaten(pellet);
-        }
+        v.obstacles.forEach((obstacle, index) => obstacle.draw(index));
+        v.pellets.forEach((pellet, index) => {
+            pellet.draw();
+            pellet.checkEaten(index);
+        });
         characterSequence(v.hoogMan);
         characterSequence(v.blinky);
         characterSequence(v.pinky);
@@ -71,9 +67,7 @@ const v = {
         v.hoogMan.lives--;
         responsiveGame(false, false);
         if (v.hoogMan.lives == 0 || v.pellets.length == 0) {
-            let container;
-            let paragraph;
-            let index;
+            let container, index, paragraph;
             if (v.hoogMan.lives == 0) {
                 v.gameOverSound.play();
                 index = 0;
@@ -128,10 +122,10 @@ const initializeVars = (p) => {
             [8, 12, 9, 13], [12, 9, 13, 12], [14, 9, 17, 10], [4, 13, 7, 14], [10, 12, 11, 14], [11, 13, 14, 14], [14, 11, 16, 12], [15, 12, 16, 13]
         ];
         v.obstacles = [];
-        for (const coordinates in v.obstacleCoordinates) {
-            const obstacle = new Obstacle(p, v, v.obstacleCoordinates[coordinates][0], v.obstacleCoordinates[coordinates][1], v.obstacleCoordinates[coordinates][2], v.obstacleCoordinates[coordinates][3]);
+        v.obstacleCoordinates.forEach(coordinates => {
+            const obstacle = new Obstacle(p, v, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
             v.obstacles.push(obstacle);
-        }
+        });
     })();
     (() => {
         v.pellets = [];
@@ -278,12 +272,8 @@ const responsiveGame = (resetAudio, newGame) => {
     v.gameOverSound.pause();
     v.pelletSound.pause();
     if (resetAudio) {
-        v.backgroundMusic.currentTime = 0;
-        v.deathSound.currentTime = 0;
-        v.frightenedSound.currentTime = 0;
-        v.gameCompletedSound.currentTime = 0;
-        v.gameOverSound.currentTime = 0;
-        v.pelletSound.currentTime = 0;
+        v.backgroundMusic.currentTime = v.deathSound.currentTime = v.frightenedSound.currentTime = 0;
+        v.gameCompletedSound.currentTime = v.gameOverSound.currentTime = v.pelletSound.currentTime = 0;
     }
     if (newGame) {
         v.game.remove();
