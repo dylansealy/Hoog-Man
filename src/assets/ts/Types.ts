@@ -15,6 +15,7 @@ export interface GameVariables {
     pinky: GhostInterface;
     frightenedCounter: number;
     frightenedTime: number;
+    frightenedEnding: boolean;
     frightenedImage: Image;
     game: p5;
     gameBoard: GameBoardInterface;

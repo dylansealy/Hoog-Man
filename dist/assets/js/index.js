@@ -60,6 +60,7 @@ const v = {
     gameCompletedSound: new Audio("assets/audio/gameCompleted.webm"),
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
+    frightenedEnding: false,
     frightenedTime: 0,
     frightenedCounter: 0,
     pelletCounter: 0,
@@ -295,7 +296,7 @@ const fadeIn = (audio, threshold) => {
 };
 (() => {
     const year = new Date().getFullYear();
-    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.1)`;
+    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.2)`;
 })();
 (() => {
     const inputMethod = document.getElementsByName("controls");

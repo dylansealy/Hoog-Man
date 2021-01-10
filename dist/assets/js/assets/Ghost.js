@@ -58,6 +58,9 @@ export default class Ghost extends Character {
                         case null: break;
                     }
                 }
+                if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) >= this.v.frightenedTime - 2) {
+                    this.v.frightenedEnding = true;
+                }
                 if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) == this.v.frightenedTime) {
                     if (this.previousMode != null) {
                         this.mode = this.previousMode;
@@ -72,6 +75,7 @@ export default class Ghost extends Character {
                     }, 1000);
                     this.v.frightenedSound.pause();
                     this.v.backgroundMusic.volume = 0.55;
+                    this.v.frightenedEnding = false;
                 }
                 if (this.name == "Blinky") {
                     this.v.frightenedCounter++;

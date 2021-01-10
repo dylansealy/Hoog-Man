@@ -56,6 +56,8 @@ const v: GameVariables = {
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
     // eslint-disable-next-line sort-keys
+    frightenedEnding: false,
+    // eslint-disable-next-line sort-keys
     frightenedTime: 0,
     // eslint-disable-next-line sort-keys
     frightenedCounter: 0,
@@ -280,7 +282,7 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
 };
 ((): void => { // Zorgt voor het correcte copyright jaar.
     const year = new Date().getFullYear();
-    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.1)`;
+    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.2)`;
 })();
 ((): void => { // Checkt of het een mobiel apparaat is en zet de aanbevolen input method.
     const inputMethod = document.getElementsByName("controls");

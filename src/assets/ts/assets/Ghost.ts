@@ -56,6 +56,7 @@ export default class Ghost extends Character implements GhostInterface {
                 case null: break;
                 }
             }
+            if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) >= this.v.frightenedTime - 2) {this.v.frightenedEnding = true;}
             if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) == this.v.frightenedTime) { // Checkt of een ghost lang genoeg frightened is geweest.
                 if (this.previousMode != null) {this.mode = this.previousMode;}
                 else {this.mode = "scatter";}
@@ -64,6 +65,7 @@ export default class Ghost extends Character implements GhostInterface {
                 }, 1000);
                 this.v.frightenedSound.pause();
                 this.v.backgroundMusic.volume = 0.55;
+                this.v.frightenedEnding = false;
             } // Zorgt ervoor dat de counter niet te vaak wordt geüpdatet.
             if (this.name == "Blinky") {this.v.frightenedCounter++;}
         } else {
