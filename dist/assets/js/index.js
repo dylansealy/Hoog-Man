@@ -24,10 +24,11 @@ const sketch = (p) => {
         initializeVars(p);
         getInputMethod();
         p.createCanvas(v.gameBoard.canvasDimension, v.gameBoard.canvasDimension);
-        p.textFont("Roboto");
-        p.textSize(v.gameBoard.widthUnit / 1.5);
+        p.imageMode(p.CENTER);
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
+        p.textFont("Roboto");
+        p.textSize(v.gameBoard.widthUnit / 1.5);
         fadeIn(v.backgroundMusic, 0.55);
         p.noFill();
         if (v.inputMethod == "touch") {
@@ -107,6 +108,7 @@ const initializeVars = (p) => {
     v.backgroundMusic.loop = v.frightenedSound.loop = true;
     v.backgroundMusic.volume = v.deathSound.volume = v.gameOverSound.volume = v.pelletSound.volume = 0.55;
     v.gameCompletedSound.volume = 0.60;
+    v.frightenedImage = p.loadImage("assets/images/frightened.png");
     v.gameBoard = new GameBoard(p, v);
     v.blinky = new Blinky(p, v);
     v.clyde = new Clyde(p, v);

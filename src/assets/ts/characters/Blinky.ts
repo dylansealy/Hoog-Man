@@ -1,9 +1,10 @@
 import {Color, GameVariables, GhostInterface, GhostMode, Name} from "../Types";
+import p5, {Image} from "p5";
 import Ghost from "../assets/Ghost.js";
-import p5 from "p5";
 
 export default class Blinky extends Ghost implements GhostInterface {
     color: Color;
+    image: Image;
     mode: GhostMode;
     name: Name;
     pelletCounter: number;
@@ -17,6 +18,7 @@ export default class Blinky extends Ghost implements GhostInterface {
     constructor(p: p5, v: GameVariables) {
         super(p, v);
         this.color = "red";
+        this.image = this.p.loadImage("assets/images/blinky.png");
         this.mode = "scatter";
         this.movement = "left";
         this.name = "Blinky";
