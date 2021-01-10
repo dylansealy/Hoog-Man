@@ -39,7 +39,7 @@ export default class Ghost extends Character {
                 freeGhost(500);
             }
             if (this.mode == "frightened") {
-                this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
+                this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 2;
                 this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.65;
                 if (this.name == "Blinky" && this.v.frightenedCounter == 0 || this.name != "Blinky" && this.v.frightenedCounter == 1) {
                     switch (this.movement) {

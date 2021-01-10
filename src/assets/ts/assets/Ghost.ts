@@ -44,7 +44,7 @@ export default class Ghost extends Character implements GhostInterface {
         else if (this.v.pelletCounter == 15 && this.name == "Inky") {freeGhost(500);}
         else if (this.v.pelletCounter == 25 && this.name == "Clyde") {freeGhost(500);}
         if (this.mode == "frightened") {
-            this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
+            this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 2;
             this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.65;
             // Zorgt ervoor dat ghosts omdraaien nadat frightened mode is geactiveerd.
             if (this.name == "Blinky" && this.v.frightenedCounter == 0 || this.name != "Blinky" && this.v.frightenedCounter == 1) {
