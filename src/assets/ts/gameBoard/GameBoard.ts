@@ -44,7 +44,8 @@ export default class GameBoard implements GameBoardInterface {
         this.frameRate = Math.round(this.p.frameRate());
         this.p.push();
         // Tekent de buitenlijnen.
-        this.p.stroke("#7092BE");
+        if (this.v.frightenedEnding == true) {this.p.stroke("red");}
+        else {this.p.stroke("#7092BE");}
         this.p.strokeWeight(3);
         this.p.rect(this.xInner, this.yInner, this.innerWidth, this.innerHeight, 4);
         this.p.rect(this.xOuter, this.yOuter, this.outerWidth, this.outerHeight, 10);

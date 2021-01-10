@@ -46,6 +46,7 @@ export default class Inky extends Ghost {
             }
         };
         this.color = "blue";
+        this.image = this.p.loadImage("assets/images/inky.png");
         this.name = "Inky";
         this.pelletCounter = this.pelletThreshold = 25;
         this.xPosition = this.xStartPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 15.5;

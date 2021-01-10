@@ -22,12 +22,11 @@ const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5
         initializeVars(p);
         getInputMethod();
         p.createCanvas(v.gameBoard.canvasDimension, v.gameBoard.canvasDimension);
-        p.frameRate();
-        p.colorMode(p.RGB, 255);
-        p.textFont("Roboto");
-        p.textSize(v.gameBoard.widthUnit / 1.5);
+        p.imageMode(p.CENTER);
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
+        p.textFont("Roboto");
+        p.textSize(v.gameBoard.widthUnit / 1.5);
         fadeIn(v.backgroundMusic, 0.55);
         p.noFill();
         // Zorgt ervoor dat alleen de gekozen input methode werkt.
@@ -37,11 +36,11 @@ const sketch = (p: p5): void => { // Sketch wordt gebruikt voor instance mode p5
     p.draw = (): void => {
         p.background("black");
         v.gameBoard.draw();
-        for (const obstacle in v.obstacles) {v.obstacles[obstacle].draw(obstacle);}
-        for (const pellet in v.pellets) {
-            v.pellets[pellet].draw();
-            v.pellets[pellet].checkEaten(pellet);
-        }
+        v.obstacles.forEach((obstacle, index) => obstacle.draw(index));
+        v.pellets.forEach((pellet, index) => {
+            pellet.draw();
+            pellet.checkEaten(index);
+        });
         characterSequence(v.hoogMan);
         characterSequence(v.blinky);
         characterSequence(v.pinky);
@@ -57,6 +56,8 @@ const v: GameVariables = {
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
     // eslint-disable-next-line sort-keys
+    frightenedEnding: false,
+    // eslint-disable-next-line sort-keys
     frightenedTime: 0,
     // eslint-disable-next-line sort-keys
     frightenedCounter: 0,
@@ -68,9 +69,7 @@ const v: GameVariables = {
         responsiveGame(false, false);
         // Laat het laatste scherm zien.
         if (v.hoogMan.lives == 0 || v.pellets.length == 0) {
-            let container: HTMLElement;
-            let paragraph: HTMLElement;
-            let index: number;
+            let container: HTMLElement, index: number, paragraph: HTMLElement;
             if (v.hoogMan.lives == 0) {
                 v.gameOverSound.play();
                 index = 0;
@@ -110,6 +109,7 @@ const initializeVars = (p: p5): void => {
     v.backgroundMusic.loop = v.frightenedSound.loop = true;
     v.backgroundMusic.volume = v.deathSound.volume = v.gameOverSound.volume = v.pelletSound.volume = 0.55;
     v.gameCompletedSound.volume = 0.60;
+    v.frightenedImage = p.loadImage("assets/images/frightened.png");
     v.gameBoard = new GameBoard(p, v);
     v.blinky = new Blinky(p, v);
     v.clyde = new Clyde(p, v);
@@ -125,13 +125,10 @@ const initializeVars = (p: p5): void => {
             [8, 12, 9, 13], [12, 9, 13, 12], [14, 9, 17, 10], [4, 13, 7, 14], [10, 12, 11, 14], [11, 13, 14, 14], [14, 11, 16, 12], [15, 12, 16, 13]
         ];
         v.obstacles = [];
-        for (const coordinates in v.obstacleCoordinates) {
-            const obstacle = new Obstacle(
-                p, v, v.obstacleCoordinates[coordinates][0], v.obstacleCoordinates[coordinates][1],
-                v.obstacleCoordinates[coordinates][2], v.obstacleCoordinates[coordinates][3]
-            );
-            v.obstacles.push(obstacle); // Zorgt ervoor dat de barrière gepusht wordt naar de obstacle array.
-        }
+        v.obstacleCoordinates.forEach(coordinates => {
+            const obstacle = new Obstacle(p, v, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
+            v.obstacles.push(obstacle);
+        });
     })();
     ((): void => { // Zorgt ervoor dat alle pellets gecreëerd worden.
         v.pellets = [];
@@ -154,7 +151,6 @@ const touchControls = (): void => {
     // Checkt of er gedrukt wordt op een knop en zet de volgende bewegingsrichting van Hoog-Man.
     upTouch.addEventListener("click", () => v.hoogMan.nextMovement = "up");
     upTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "up");
-
     const rightTouch: HTMLLIElement = document.querySelector("#rightTouch");
     rightTouch.addEventListener("click", () => v.hoogMan.nextMovement = "right");
     rightTouch.addEventListener("touchstart", () => v.hoogMan.nextMovement = "right");
@@ -265,12 +261,8 @@ const responsiveGame = (resetAudio: boolean, newGame: boolean): void => {
     v.gameOverSound.pause();
     v.pelletSound.pause();
     if (resetAudio) { // Zorgt ervoor dat de audio bij het begin is.
-        v.backgroundMusic.currentTime = 0;
-        v.deathSound.currentTime = 0;
-        v.frightenedSound.currentTime = 0;
-        v.gameCompletedSound.currentTime = 0;
-        v.gameOverSound.currentTime = 0;
-        v.pelletSound.currentTime = 0;
+        v.backgroundMusic.currentTime = v.deathSound.currentTime = v.frightenedSound.currentTime = 0;
+        v.gameCompletedSound.currentTime = v.gameOverSound.currentTime = v.pelletSound.currentTime = 0;
     }
     if (newGame) { // Creëert een nieuwe game.
         v.game.remove();
@@ -288,19 +280,9 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
         }
     }, 110);
 };
-// Checkt welke toets wordt ingedrukt.
-const keyCheck = (event: KeyboardEvent) => {
-    if (event.code == "Enter" && v.game == undefined) {startGame();}
-    if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
-        if (event.code == "ArrowUp" || event.code == "KeyW") {v.hoogMan.nextMovement = "up";}
-        else if (event.code == "ArrowRight" || event.code == "KeyD") {v.hoogMan.nextMovement = "right";}
-        else if (event.code == "ArrowDown" || event.code == "KeyS") {v.hoogMan.nextMovement = "down";}
-        else if (event.code == "ArrowLeft" || event.code == "KeyA") {v.hoogMan.nextMovement = "left";}
-    }
-};
 ((): void => { // Zorgt voor het correcte copyright jaar.
     const year = new Date().getFullYear();
-    document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
+    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.2)`;
 })();
 ((): void => { // Checkt of het een mobiel apparaat is en zet de aanbevolen input method.
     const inputMethod = document.getElementsByName("controls");
@@ -308,4 +290,13 @@ const keyCheck = (event: KeyboardEvent) => {
     else if (navigator.userAgent.indexOf("Mobile") != -1) {inputMethod[2].checked = true;}
 })();
 // Checkt of er op een toets wordt gedrukt.
-window.addEventListener("keydown", keyCheck);
+window.addEventListener("keydown", event => {
+    // Checkt welke toets wordt ingedrukt.
+    if (event.code == "Enter" && v.game == undefined) {startGame();}
+    else if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
+        if (event.code == "ArrowUp" || event.code == "KeyW") {v.hoogMan.nextMovement = "up";}
+        else if (event.code == "ArrowRight" || event.code == "KeyD") {v.hoogMan.nextMovement = "right";}
+        else if (event.code == "ArrowDown" || event.code == "KeyS") {v.hoogMan.nextMovement = "down";}
+        else if (event.code == "ArrowLeft" || event.code == "KeyA") {v.hoogMan.nextMovement = "left";}
+    }
+});

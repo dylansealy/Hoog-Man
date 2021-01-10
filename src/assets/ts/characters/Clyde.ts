@@ -1,9 +1,10 @@
 import {Color, GameVariables, GhostInterface, Name} from "../Types";
+import p5, {Image} from "p5";
 import Ghost from "../assets/Ghost.js";
-import p5 from "p5";
 
 export default class Clyde extends Ghost implements GhostInterface {
     color: Color;
+    image: Image;
     name: Name;
     pelletCounter: number;
     pelletThreshold: number;
@@ -16,6 +17,7 @@ export default class Clyde extends Ghost implements GhostInterface {
     constructor(p: p5, v: GameVariables) {
         super(p, v);
         this.color = "orange";
+        this.image = this.p.loadImage("assets/images/clyde.png");
         this.name = "Clyde";
         this.pelletCounter = this.pelletThreshold = 50;
         this.xPosition = this.xStartPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 16.5;

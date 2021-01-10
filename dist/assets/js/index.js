@@ -24,12 +24,11 @@ const sketch = (p) => {
         initializeVars(p);
         getInputMethod();
         p.createCanvas(v.gameBoard.canvasDimension, v.gameBoard.canvasDimension);
-        p.frameRate();
-        p.colorMode(p.RGB, 255);
-        p.textFont("Roboto");
-        p.textSize(v.gameBoard.widthUnit / 1.5);
+        p.imageMode(p.CENTER);
         p.noCursor();
         p.textAlign(p.LEFT, p.CENTER);
+        p.textFont("Roboto");
+        p.textSize(v.gameBoard.widthUnit / 1.5);
         fadeIn(v.backgroundMusic, 0.55);
         p.noFill();
         if (v.inputMethod == "touch") {
@@ -42,13 +41,11 @@ const sketch = (p) => {
     p.draw = () => {
         p.background("black");
         v.gameBoard.draw();
-        for (const obstacle in v.obstacles) {
-            v.obstacles[obstacle].draw(obstacle);
-        }
-        for (const pellet in v.pellets) {
-            v.pellets[pellet].draw();
-            v.pellets[pellet].checkEaten(pellet);
-        }
+        v.obstacles.forEach((obstacle, index) => obstacle.draw(index));
+        v.pellets.forEach((pellet, index) => {
+            pellet.draw();
+            pellet.checkEaten(index);
+        });
         characterSequence(v.hoogMan);
         characterSequence(v.blinky);
         characterSequence(v.pinky);
@@ -63,6 +60,7 @@ const v = {
     gameCompletedSound: new Audio("assets/audio/gameCompleted.webm"),
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
+    frightenedEnding: false,
     frightenedTime: 0,
     frightenedCounter: 0,
     pelletCounter: 0,
@@ -71,9 +69,7 @@ const v = {
         v.hoogMan.lives--;
         responsiveGame(false, false);
         if (v.hoogMan.lives == 0 || v.pellets.length == 0) {
-            let container;
-            let paragraph;
-            let index;
+            let container, index, paragraph;
             if (v.hoogMan.lives == 0) {
                 v.gameOverSound.play();
                 index = 0;
@@ -113,6 +109,7 @@ const initializeVars = (p) => {
     v.backgroundMusic.loop = v.frightenedSound.loop = true;
     v.backgroundMusic.volume = v.deathSound.volume = v.gameOverSound.volume = v.pelletSound.volume = 0.55;
     v.gameCompletedSound.volume = 0.60;
+    v.frightenedImage = p.loadImage("assets/images/frightened.png");
     v.gameBoard = new GameBoard(p, v);
     v.blinky = new Blinky(p, v);
     v.clyde = new Clyde(p, v);
@@ -128,10 +125,10 @@ const initializeVars = (p) => {
             [8, 12, 9, 13], [12, 9, 13, 12], [14, 9, 17, 10], [4, 13, 7, 14], [10, 12, 11, 14], [11, 13, 14, 14], [14, 11, 16, 12], [15, 12, 16, 13]
         ];
         v.obstacles = [];
-        for (const coordinates in v.obstacleCoordinates) {
-            const obstacle = new Obstacle(p, v, v.obstacleCoordinates[coordinates][0], v.obstacleCoordinates[coordinates][1], v.obstacleCoordinates[coordinates][2], v.obstacleCoordinates[coordinates][3]);
+        v.obstacleCoordinates.forEach(coordinates => {
+            const obstacle = new Obstacle(p, v, coordinates[0], coordinates[1], coordinates[2], coordinates[3]);
             v.obstacles.push(obstacle);
-        }
+        });
     })();
     (() => {
         v.pellets = [];
@@ -278,12 +275,8 @@ const responsiveGame = (resetAudio, newGame) => {
     v.gameOverSound.pause();
     v.pelletSound.pause();
     if (resetAudio) {
-        v.backgroundMusic.currentTime = 0;
-        v.deathSound.currentTime = 0;
-        v.frightenedSound.currentTime = 0;
-        v.gameCompletedSound.currentTime = 0;
-        v.gameOverSound.currentTime = 0;
-        v.pelletSound.currentTime = 0;
+        v.backgroundMusic.currentTime = v.deathSound.currentTime = v.frightenedSound.currentTime = 0;
+        v.gameCompletedSound.currentTime = v.gameOverSound.currentTime = v.pelletSound.currentTime = 0;
     }
     if (newGame) {
         v.game.remove();
@@ -301,11 +294,24 @@ const fadeIn = (audio, threshold) => {
         }
     }, 110);
 };
-const keyCheck = (event) => {
+(() => {
+    const year = new Date().getFullYear();
+    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.2)`;
+})();
+(() => {
+    const inputMethod = document.getElementsByName("controls");
+    if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {
+        inputMethod[2].checked = true;
+    }
+    else if (navigator.userAgent.indexOf("Mobile") != -1) {
+        inputMethod[2].checked = true;
+    }
+})();
+window.addEventListener("keydown", event => {
     if (event.code == "Enter" && v.game == undefined) {
         startGame();
     }
-    if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
+    else if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
         if (event.code == "ArrowUp" || event.code == "KeyW") {
             v.hoogMan.nextMovement = "up";
         }
@@ -319,18 +325,4 @@ const keyCheck = (event) => {
             v.hoogMan.nextMovement = "left";
         }
     }
-};
-(() => {
-    const year = new Date().getFullYear();
-    document.querySelector("footer").innerText = `© ${year} Hoog-Man`;
-})();
-(() => {
-    const inputMethod = document.getElementsByName("controls");
-    if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {
-        inputMethod[2].checked = true;
-    }
-    else if (navigator.userAgent.indexOf("Mobile") != -1) {
-        inputMethod[2].checked = true;
-    }
-})();
-window.addEventListener("keydown", keyCheck);
+});

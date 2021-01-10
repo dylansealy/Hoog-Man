@@ -14,6 +14,7 @@ export default class Blinky extends Ghost {
             }
         };
         this.color = "red";
+        this.image = this.p.loadImage("assets/images/blinky.png");
         this.mode = "scatter";
         this.movement = "left";
         this.name = "Blinky";

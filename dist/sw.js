@@ -1,17 +1,20 @@
-const staticCache = "staticCacheV1.0.1";
-const dynamicCache = "dynamicCacheV1.0.1";
+const staticCache = "staticCacheV1.0.2";
+const dynamicCache = "dynamicCacheV1.0.2";
 const cacheAssets = [
     "/Hoog-Man/dist/index.html",
+    "/Hoog-Man/dist/assets/html/fallback.html",
     "/Hoog-Man/dist/assets/css/index.css",
     "/Hoog-Man/dist/assets/css/media.css",
-    "/Hoog-Man/dist/assets/js/index.js",
-    "/Hoog-Man/dist/assets/html/fallback.html",
     "/Hoog-Man/dist/assets/audio/background.webm",
     "/Hoog-Man/dist/assets/audio/death.webm",
     "/Hoog-Man/dist/assets/audio/frightened.webm",
     "/Hoog-Man/dist/assets/audio/gameCompleted.webm",
     "/Hoog-Man/dist/assets/audio/gameOver.webm",
-    "/Hoog-Man/dist/assets/audio/pellet.webm"
+    "/Hoog-Man/dist/assets/audio/pellet.webm",
+    "/Hoog-Man/dist/assets/images/blinky.png",
+    "/Hoog-Man/dist/assets/images/clyde.png",
+    "/Hoog-Man/dist/assets/images/inky.png",
+    "/Hoog-Man/dist/assets/images/pinky.png"
 ];
 const limitCacheSize = async (name, size) => {
     try {

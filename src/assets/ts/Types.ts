@@ -1,5 +1,5 @@
 // Import om fouten in de TSC te voorkomen. TS(1)
-import p5 from "p5";
+import p5, {Image} from "p5";
 // Definieert aan welke vorm een class/object minimaal moet voldoen. TS(2)
 export interface GameVariables {
     backgroundMusic: HTMLAudioElement;
@@ -15,6 +15,8 @@ export interface GameVariables {
     pinky: GhostInterface;
     frightenedCounter: number;
     frightenedTime: number;
+    frightenedEnding: boolean;
+    frightenedImage: Image;
     game: p5;
     gameBoard: GameBoardInterface;
     gesturePosition: Array<number>; // Type geeft aan dat het datatype een array is bestaande uit alleen maar cijfers.
@@ -100,6 +102,7 @@ export interface GhostInterface extends CharacterInterface {
     scatterCounter: number;
     scatterRound: number;
     scatterSequence: Array<number>;
+    image: Image;
     previousMode: GhostMode;
     mode: GhostMode; // Property wordt voor Blinky gedefinieerd in zijn eigen class. TS(6)
     // Properties en method worden gedefinieerd in de ghosts hun eigen class. TS(6)

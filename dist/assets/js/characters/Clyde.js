@@ -22,6 +22,7 @@ export default class Clyde extends Ghost {
             }
         };
         this.color = "orange";
+        this.image = this.p.loadImage("assets/images/clyde.png");
         this.name = "Clyde";
         this.pelletCounter = this.pelletThreshold = 50;
         this.xPosition = this.xStartPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 16.5;

@@ -13,14 +13,11 @@ export default class Ghost extends Character implements GhostInterface {
     mode: GhostMode;
     constructor(p: p5, v: GameVariables) {
         super(p, v);
-        this.chaseCounter = 0;
-        this.chaseRound = 0;
+        this.chaseCounter = this.chaseRound = 0;
         this.chaseSequence = [18, 19, 20];
-        this.scatterCounter = 0;
-        this.scatterRound = 0;
+        this.scatterCounter = this.scatterRound = 0;
         this.scatterSequence = [6, 5, 4, 3];
-        this.previousMode = null;
-        this.mode = null;
+        this.previousMode = this.mode = null;
     } // Updates variabelen na elke iteratie van de p5 draw functie.
     iterationVariables: () => void = () => {
         const freeGhost = (delay: number) => {
@@ -31,14 +28,10 @@ export default class Ghost extends Character implements GhostInterface {
             }, delay);
         };
         if (this.v.hoogMan.lives == 3) {
-            if (this.mode == null) {
-                if (this.pelletCounter <= 0) { // Checkt of een ghost het huis mag verlaten.
-                    switch (this.name) {
-                    case "Pinky": if (this.v.blinky.movement != null) {freeGhost(500);} break;
-                    case "Inky": if (this.v.pinky.movement != null) {freeGhost(1000);} break;
-                    case "Clyde": if (this.v.inky.movement != null) {freeGhost(1000);} break;
-                    }
-                } else if (this.name == "Inky" || this.name == "Clyde") {
+            if (this.mode == null && this.movement == null && this.previousMovement == null) {
+                // Checkt of een ghost het huis mag verlaten.
+                if (this.pelletCounter <= 0) {freeGhost(500);}
+                else if (this.name == "Inky" || this.name == "Clyde") {
                     // Zorgt ervoor dat de pelletCounter omlaag gaat.
                     if (this.name == "Inky") {this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);}
                     else if (this.name == "Clyde" && this.v.inky.pelletCounter <= 0) {
@@ -46,11 +39,10 @@ export default class Ghost extends Character implements GhostInterface {
                     }
                 }
             }
-        } else {
-            if (this.v.pelletCounter == 5 && this.name == "Pinky") {freeGhost(0);}
-            else if (this.v.pelletCounter == 15 && this.name == "Inky") {freeGhost(0);}
-            else if (this.v.pelletCounter == 25 && this.name == "Clyde") {freeGhost(0);}
         }
+        else if (this.v.pelletCounter == 5 && this.name == "Pinky") {freeGhost(500);}
+        else if (this.v.pelletCounter == 15 && this.name == "Inky") {freeGhost(500);}
+        else if (this.v.pelletCounter == 25 && this.name == "Clyde") {freeGhost(500);}
         if (this.mode == "frightened") {
             this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 1;
             this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.65;
@@ -64,6 +56,7 @@ export default class Ghost extends Character implements GhostInterface {
                 case null: break;
                 }
             }
+            if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) >= this.v.frightenedTime - 2) {this.v.frightenedEnding = true;}
             if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) == this.v.frightenedTime) { // Checkt of een ghost lang genoeg frightened is geweest.
                 if (this.previousMode != null) {this.mode = this.previousMode;}
                 else {this.mode = "scatter";}
@@ -72,6 +65,7 @@ export default class Ghost extends Character implements GhostInterface {
                 }, 1000);
                 this.v.frightenedSound.pause();
                 this.v.backgroundMusic.volume = 0.55;
+                this.v.frightenedEnding = false;
             } // Zorgt ervoor dat de counter niet te vaak wordt geüpdatet.
             if (this.name == "Blinky") {this.v.frightenedCounter++;}
         } else {

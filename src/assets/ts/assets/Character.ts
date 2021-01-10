@@ -22,9 +22,7 @@ export default class Character implements CharacterInterface {
         this.v = v;
         this.collision = false;
         this.diameter = this.v.gameBoard.heightUnit / 2;
-        this.previousMovement = null;
-        this.movement = null;
-        this.nextMovement = null;
+        this.previousMovement = this.movement = this.nextMovement = null;
         this.p = p;
         this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
     } // Tekent een character en zorgt ervoor dat de x, y positie wordt geüpdatet.
@@ -39,8 +37,35 @@ export default class Character implements CharacterInterface {
             this.p.noStroke();
             diameter = this.diameter;
         }
-        this.p.fill(this.color);
-        this.p.ellipse(this.xPosition, this.yPosition, diameter);
+        if (this.name == "Hoog-Man") {
+            this.p.translate(this.xPosition, this.yPosition);
+            this.p.scale(diameter / 50);
+            this.p.noStroke();
+            this.p.fill("indianred");
+            this.p.ellipse(0, 0, 50);
+            this.p.fill("slategray");
+            this.p.ellipse(-7, -10, 17);
+            this.p.ellipse(7, -10, 17);
+            this.p.fill("white");
+            this.p.ellipse(-7, -8, 7, 13);
+            this.p.ellipse(7, -8, 7, 13);
+            this.p.fill("orange");
+            this.p.ellipse(0, 3, 17);
+            this.p.stroke("slategray");
+            this.p.strokeWeight(3);
+            this.p.fill("white");
+            this.p.arc(0, 13, 26, 13, 0, this.p.PI, this.p.CHORD);
+        } else if (this.mode != "frightened") {
+            this.p.image(
+                this.image, this.xPosition, this.yPosition,
+                diameter / this.image.width * this.image.width, diameter / this.image.height * this.image.height
+            );
+        } else {
+            this.p.image(
+                this.v.frightenedImage, this.xPosition, this.yPosition,
+                diameter / this.v.frightenedImage.width * this.v.frightenedImage.width, diameter / this.v.frightenedImage.height * this.v.frightenedImage.height
+            );
+        }
         this.p.pop();
         switch (this.movement) {
         case "up": this.yPosition -= this.speed; break;
@@ -53,10 +78,10 @@ export default class Character implements CharacterInterface {
         this.collision = false;
         if (this.name != "Hoog-Man") { // Checkt of een ghost in aanraking komt met Hoog-Man.
             if ( // / 2, of / 3 als marge.
-                this.xPosition + this.diameter / 3 >= this.v.hoogMan.xPosition - this.v.hoogMan.diameter / 3 &&
-                this.xPosition - this.diameter / 3 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 3 &&
-                this.yPosition + this.diameter / 3 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 3 &&
-                this.yPosition - this.diameter / 3 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 3
+                this.xPosition + this.diameter / 3.5 >= this.v.hoogMan.xPosition - this.v.hoogMan.diameter / 3.5 &&
+                this.xPosition - this.diameter / 3.5 <= this.v.hoogMan.xPosition + this.v.hoogMan.diameter / 3.5 &&
+                this.yPosition + this.diameter / 3.5 >= this.v.hoogMan.yPosition - this.v.hoogMan.diameter / 3.5 &&
+                this.yPosition - this.diameter / 3.5 <= this.v.hoogMan.yPosition + this.v.hoogMan.diameter / 3.5
             ) {
                 if (this.mode == "frightened") {
                     this.v.gameBoard.score += 1000;
@@ -93,8 +118,7 @@ export default class Character implements CharacterInterface {
     resetMovement: (afterCollision: boolean) => void = afterCollision => {
         if (this.movement != null) {this.previousMovement = this.movement;}
         this.collision = true;
-        this.movement = null;
-        this.nextMovement = null;
+        this.movement = this.nextMovement = null;
         if (afterCollision) {this.constrainPosition();}
     } // Checkt of er niet een botsing plaatsvindt na de nieuwe bewegingsrichting.
     checkCollisionInput: (targetMovement: Movement) => boolean = targetMovement => {

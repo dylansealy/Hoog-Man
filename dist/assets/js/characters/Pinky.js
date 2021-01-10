@@ -46,6 +46,7 @@ export default class Pinky extends Ghost {
             }
         };
         this.color = "pink";
+        this.image = this.p.loadImage("assets/images/pinky.png");
         this.name = "Pinky";
         this.pelletCounter = this.pelletThreshold = 0;
         this.xPosition = this.xStartPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 14.5;
