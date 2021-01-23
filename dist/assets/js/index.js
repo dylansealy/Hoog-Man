@@ -25,18 +25,15 @@ const sketch = (p) => {
         getInputMethod();
         p.createCanvas(v.gameBoard.canvasDimension, v.gameBoard.canvasDimension);
         p.imageMode(p.CENTER);
-        p.noCursor();
+        if (v.inputMethod != "gestures") {
+            p.noCursor();
+        }
         p.textAlign(p.LEFT, p.CENTER);
         p.textFont("Roboto");
         p.textSize(v.gameBoard.widthUnit / 1.5);
         fadeIn(v.backgroundMusic, 0.55);
         p.noFill();
-        if (v.inputMethod == "touch") {
-            touchControls();
-        }
-        else if (v.inputMethod == "gestures") {
-            gestureControls();
-        }
+        v.inputMethod == "touch" ? touchControls() : v.inputMethod == "gestures" ? gestureControls() : null;
     };
     p.draw = () => {
         p.background("black");
@@ -64,24 +61,17 @@ const v = {
     frightenedTime: 0,
     frightenedCounter: 0,
     pelletCounter: 0,
-    endGame: (p) => {
+    endGame: (p, death) => {
         p.noLoop();
-        v.hoogMan.lives--;
         responsiveGame(false, false);
+        if (death) {
+            v.hoogMan.lives--;
+        }
         if (v.hoogMan.lives == 0 || v.pellets.length == 0) {
-            let container, index, paragraph;
-            if (v.hoogMan.lives == 0) {
-                v.gameOverSound.play();
-                index = 0;
-                container = document.querySelector("#gameEndContainer");
-                paragraph = document.querySelector("#gameEndContainer p");
-            }
-            else {
-                v.gameCompletedSound.play();
-                index = 1;
-                container = document.querySelector("#gameFinishedContainer");
-                paragraph = document.querySelector("#gameFinishedContainer p");
-            }
+            v.hoogMan.lives == 0 ? v.gameOverSound.play() : v.gameCompletedSound.play();
+            const container = v.hoogMan.lives == 0 ? document.querySelector("#gameEndContainer") : document.querySelector("#gameFinishedContainer");
+            const index = v.hoogMan.lives == 0 ? 0 : 1;
+            const paragraph = v.hoogMan.lives == 0 ? document.querySelector("#gameEndContainer p") : document.querySelector("#gameFinishedContainer p");
             container.style.display = "flex";
             paragraph.innerText += ` ${v.gameBoard.score}`;
             document.querySelectorAll(".again")[index].addEventListener("click", () => {
@@ -134,15 +124,8 @@ const initializeVars = (p) => {
         v.pellets = [];
         for (let xPosition = 0; xPosition < 17; xPosition++) {
             for (let yPosition = 0; yPosition < 14; yPosition++) {
-                let pellet;
-                if (xPosition == 16 && yPosition == 13 ||
-                    xPosition == 13 && yPosition == 0 ||
-                    xPosition == 4 && yPosition == 6) {
-                    pellet = new Pellet(p, v, xPosition, yPosition, true);
-                }
-                else {
-                    pellet = new Pellet(p, v, xPosition, yPosition, false);
-                }
+                const pellet = xPosition == 16 && yPosition == 13 || xPosition == 13 && yPosition == 0 || xPosition == 4 && yPosition == 6
+                    ? new Pellet(p, v, xPosition, yPosition, true) : new Pellet(p, v, xPosition, yPosition, false);
                 if (!pellet.checkCollisionObstacle()) {
                     v.pellets.push(pellet);
                 }
@@ -167,18 +150,10 @@ const touchControls = () => {
 const gestureControls = () => {
     const checkGesture = () => {
         if (v.gesturePosition[0] != null && v.gesturePosition[1] != null) {
-            if (v.gesturePosition[3] < v.gesturePosition[1] - v.gameBoard.heightUnit) {
-                v.hoogMan.nextMovement = "up";
-            }
-            else if (v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.heightUnit) {
-                v.hoogMan.nextMovement = "right";
-            }
-            else if (v.gesturePosition[3] > v.gesturePosition[1] + v.gameBoard.heightUnit) {
-                v.hoogMan.nextMovement = "down";
-            }
-            else if (v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.heightUnit) {
-                v.hoogMan.nextMovement = "left";
-            }
+            v.hoogMan.nextMovement = v.gesturePosition[3] < v.gesturePosition[1] - v.gameBoard.heightUnit ? "up" :
+                v.gesturePosition[2] > v.gesturePosition[0] + v.gameBoard.heightUnit ? "right" :
+                    v.gesturePosition[3] > v.gesturePosition[1] + v.gameBoard.heightUnit ? "down" :
+                        v.gesturePosition[2] < v.gesturePosition[0] - v.gameBoard.heightUnit ? "left" : null;
         }
     };
     const resetGesture = () => { v.gesturePosition = [null, null, null, null]; };
@@ -213,20 +188,15 @@ document.querySelector("#startGame").addEventListener("click", () => startGame()
 window.addEventListener("resize", () => { if (v.game && v.hoogMan.lives != 0) {
     responsiveGame(true, true);
 } });
-const startGame = () => {
-    (() => {
-        const main = document.querySelector("main");
-        main.requestFullscreen();
-        main.style.height = "100%";
-        main.style.width = "100%";
-        main.style.position = "absolute";
-        main.style.top = "0";
-        main.style.left = "0";
-        main.style.backgroundColor = "black";
-    })();
+const startGame = async () => {
+    const main = document.querySelector("main");
+    await main.requestFullscreen();
+    main.style.height = main.style.width = "100%";
+    main.style.position = "absolute";
+    main.style.top = main.style.left = "0";
+    main.style.backgroundColor = "black";
     v.game = new p5(sketch);
-    const gameStartupContainer = document.querySelector("#gameStartupContainer");
-    gameStartupContainer.style.display = "none";
+    document.querySelector("#gameStartupContainer").style.display = "none";
 };
 const getInputMethod = () => {
     const inputMethod = document.getElementsByName("controls");
@@ -312,17 +282,9 @@ window.addEventListener("keydown", event => {
         startGame();
     }
     else if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
-        if (event.code == "ArrowUp" || event.code == "KeyW") {
-            v.hoogMan.nextMovement = "up";
-        }
-        else if (event.code == "ArrowRight" || event.code == "KeyD") {
-            v.hoogMan.nextMovement = "right";
-        }
-        else if (event.code == "ArrowDown" || event.code == "KeyS") {
-            v.hoogMan.nextMovement = "down";
-        }
-        else if (event.code == "ArrowLeft" || event.code == "KeyA") {
-            v.hoogMan.nextMovement = "left";
-        }
+        v.hoogMan.nextMovement = event.code == "ArrowUp" || event.code == "KeyW" ? "up" :
+            event.code == "ArrowRight" || event.code == "KeyD" ? "right" :
+                event.code == "ArrowDown" || event.code == "KeyS" ? "down" :
+                    event.code == "ArrowLeft" || event.code == "KeyA" ? "left" : null;
     }
 });

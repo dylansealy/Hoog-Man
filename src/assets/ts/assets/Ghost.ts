@@ -23,8 +23,7 @@ export default class Ghost extends Character implements GhostInterface {
         const freeGhost = (delay: number) => {
             setTimeout(() => { // Zorgt ervoor dat een ghost uit het huis gaat na een bepaalde tijd.
                 this.xPosition = this.v.gameBoard.xInner + this.v.gameBoard.widthUnit * 13.5;
-                if (this.v.blinky.mode == "frightened") {this.mode = "frightened";}
-                else {this.mode = "scatter";}
+                this.mode = this.v.blinky.mode == "frightened" ? "frightened" : "scatter";
             }, delay);
         };
         if (this.v.hoogMan.lives == 3) {
@@ -58,8 +57,7 @@ export default class Ghost extends Character implements GhostInterface {
             }
             if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) >= this.v.frightenedTime - 2) {this.v.frightenedEnding = true;}
             if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) == this.v.frightenedTime) { // Checkt of een ghost lang genoeg frightened is geweest.
-                if (this.previousMode != null) {this.mode = this.previousMode;}
-                else {this.mode = "scatter";}
+                this.mode = this.previousMode != null ? this.previousMode : "scatter";
                 setTimeout(() => {
                     if (this.v.blinky.mode != "frightened") {this.v.frightenedCounter = 0;}
                 }, 1000);
@@ -139,9 +137,7 @@ export default class Ghost extends Character implements GhostInterface {
                     return true;
                 } else if (this.previousMovement == forbiddenMovement && this.collision == true) {
                     // Zorgt ervoor dat de nieuwe bewegingsrichting wordt geüpdatet na minimaal 50 ms. Dit voorkomt dat een ghost niet terug kan gaan.
-                    let delay: number;
-                    if (this.mode != "frightened") {delay = 50;}
-                    else {delay = 80;}
+                    const delay = this.mode != "frightened" ? 50 : 80;
                     setTimeout(() => this.nextMovement = targetMovement, delay);
                     return true;
                 }

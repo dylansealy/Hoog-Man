@@ -33,7 +33,7 @@ export default class Pellet {
                     this.v.pelletCounter++;
                 }
                 if (this.v.pellets.length == 0) {
-                    this.v.endGame(this.p);
+                    this.v.endGame(this.p, false);
                 }
                 else if (this.powerPellet) {
                     this.v.frightenedSound.pause();
@@ -57,14 +57,8 @@ export default class Pellet {
         };
         this.powerPellet = powerPellet;
         this.v = v;
-        if (this.powerPellet) {
-            this.color = "#1eadd9";
-            this.diameter = this.v.gameBoard.widthUnit * 0.35;
-        }
-        else {
-            this.color = "yellow";
-            this.diameter = this.v.gameBoard.widthUnit * 0.15;
-        }
+        this.color = this.powerPellet ? "#1eadd9" : "yellow";
+        this.diameter = this.powerPellet ? this.v.gameBoard.widthUnit * 0.35 : this.v.gameBoard.widthUnit * 0.15;
         this.p = p;
         this.xMargin = this.v.gameBoard.widthUnit * 0.2;
         this.yMargin = this.v.gameBoard.heightUnit * 0.2;

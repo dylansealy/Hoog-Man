@@ -13,13 +13,8 @@ export default class Pellet implements PelletInterface {
     constructor(p: p5, v: GameVariables, xPosition: number, yPosition: number, powerPellet: boolean) {
         this.powerPellet = powerPellet;
         this.v = v;
-        if (this.powerPellet) {
-            this.color = "#1eadd9";
-            this.diameter = this.v.gameBoard.widthUnit * 0.35;
-        } else {
-            this.color = "yellow";
-            this.diameter = this.v.gameBoard.widthUnit * 0.15;
-        }
+        this.color = this.powerPellet ? "#1eadd9" : "yellow";
+        this.diameter = this.powerPellet ? this.v.gameBoard.widthUnit * 0.35 : this.v.gameBoard.widthUnit * 0.15;
         this.p = p;
         this.xMargin = this.v.gameBoard.widthUnit * 0.2;
         this.yMargin = this.v.gameBoard.heightUnit * 0.2;
@@ -57,7 +52,7 @@ export default class Pellet implements PelletInterface {
             this.v.gameBoard.score += 100;
             this.v.pellets.splice(index, 1);
             if (this.v.hoogMan.lives < 3) {this.v.pelletCounter++;}
-            if (this.v.pellets.length == 0) {this.v.endGame(this.p);}
+            if (this.v.pellets.length == 0) {this.v.endGame(this.p, false);}
             else if (this.powerPellet) {
                 this.v.frightenedSound.pause();
                 this.v.frightenedSound.currentTime = 0;

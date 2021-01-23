@@ -25,7 +25,7 @@ export interface GameVariables {
     obstacles: Array<ObstacleInterface>; // Type geeft aan dat het datatype een array is die bestaat uit children van de class die gebruik maakt van de interface.
     pelletCounter: number;
     pellets: Array<PelletInterface>;
-    endGame: (p: p5) => void; // Type geeft aan dat de functie niets returned. TS(5)
+    endGame: (p: p5, death: boolean) => void; // Type geeft aan dat de functie niets returned. TS(5)
 }
 export interface GameBoardInterface {
     canvasDimension: number;

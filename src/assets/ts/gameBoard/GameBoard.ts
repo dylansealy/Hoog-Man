@@ -21,13 +21,9 @@ export default class GameBoard implements GameBoardInterface {
         this.p = p;
         const height = document.querySelector("main").offsetHeight;
         const width = document.querySelector("main").offsetWidth;
-        if (height > width) {
-            this.canvasDimension = width - 1;
-            this.orientation = "portrait";
-        } else {
-            this.canvasDimension = height - 1;
-            this.orientation = "landscape";
-        } // Bepaalt de frame rate. Hierdoor weet je hoeveel tikken er in een seconde zitten.
+        this.canvasDimension = height > width ? this.canvasDimension = width - 1 : this.canvasDimension = height - 1;
+        this.orientation = height > width ? "portrait" : "landscape";
+        // Bepaalt de frame rate. Hierdoor weet je hoeveel tikken er in een seconde zitten.
         this.frameRate = Math.round(this.p.frameRate());
         this.xOuter = this.yOuter = this.canvasDimension / 60;
         this.xInner = this.yInner = this.xOuter * 2;
@@ -44,8 +40,7 @@ export default class GameBoard implements GameBoardInterface {
         this.frameRate = Math.round(this.p.frameRate());
         this.p.push();
         // Tekent de buitenlijnen.
-        if (this.v.frightenedEnding == true) {this.p.stroke("red");}
-        else {this.p.stroke("#7092BE");}
+        this.v.frightenedEnding == true ? this.p.stroke("red") : this.p.stroke("#7092BE");
         this.p.strokeWeight(3);
         this.p.rect(this.xInner, this.yInner, this.innerWidth, this.innerHeight, 4);
         this.p.rect(this.xOuter, this.yOuter, this.outerWidth, this.outerHeight, 10);
