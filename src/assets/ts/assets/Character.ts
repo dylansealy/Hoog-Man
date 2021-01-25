@@ -27,16 +27,12 @@ export default class Character implements CharacterInterface {
         this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
     } // Tekent een character en zorgt ervoor dat de x, y positie wordt geüpdatet.
     draw: () => void = () => {
-        let diameter: number;
+        const diameter = this.mode == "frightened" ? this.diameter * 0.75 : this.diameter;
         this.p.push();
         if (this.mode == "frightened") {
             this.p.stroke("white");
             this.p.strokeWeight(3);
-            diameter = this.diameter * 0.75;
-        } else {
-            this.p.noStroke();
-            diameter = this.diameter;
-        }
+        } else {this.p.noStroke();}
         if (this.name == "Hoog-Man") {
             this.p.translate(this.xPosition, this.yPosition);
             this.p.scale(diameter / 50);
@@ -88,7 +84,7 @@ export default class Character implements CharacterInterface {
                     return this.resetCharacter();
                 }
                 this.v.gameBoard.score -= 1000;
-                return this.v.endGame(this.p);}
+                return this.v.endGame(this.p, true);}
         }
         for (const obstacle in this.v.obstacles) {
             if ( // Checkt of een character botst met een barrière. 1 als marge, want anders is deze statement altijd waar.
@@ -228,8 +224,7 @@ export default class Character implements CharacterInterface {
         this.yPosition = this.yStartPosition;
         this.previousMovement = null;
         if (this.name != "Hoog-Man") {this.chaseRound = this.scatterRound = 0;}
-        if (this.name == "Blinky") {this.movement = "left";}
-        else {this.movement = null;}
+        this.movement = this.name == "Blinky" ? "left" : null;
         if (this.name != "Hoog-Man" && this.name != "Blinky") {this.mode = null;}
     }
 }

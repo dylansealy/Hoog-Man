@@ -1,16 +1,14 @@
 export default class Character {
     constructor(p, v) {
         this.draw = () => {
-            let diameter;
+            const diameter = this.mode == "frightened" ? this.diameter * 0.75 : this.diameter;
             this.p.push();
             if (this.mode == "frightened") {
                 this.p.stroke("white");
                 this.p.strokeWeight(3);
-                diameter = this.diameter * 0.75;
             }
             else {
                 this.p.noStroke();
-                diameter = this.diameter;
             }
             if (this.name == "Hoog-Man") {
                 this.p.translate(this.xPosition, this.yPosition);
@@ -65,7 +63,7 @@ export default class Character {
                         return this.resetCharacter();
                     }
                     this.v.gameBoard.score -= 1000;
-                    return this.v.endGame(this.p);
+                    return this.v.endGame(this.p, true);
                 }
             }
             for (const obstacle in this.v.obstacles) {
@@ -213,12 +211,7 @@ export default class Character {
             if (this.name != "Hoog-Man") {
                 this.chaseRound = this.scatterRound = 0;
             }
-            if (this.name == "Blinky") {
-                this.movement = "left";
-            }
-            else {
-                this.movement = null;
-            }
+            this.movement = this.name == "Blinky" ? "left" : null;
             if (this.name != "Hoog-Man" && this.name != "Blinky") {
                 this.mode = null;
             }

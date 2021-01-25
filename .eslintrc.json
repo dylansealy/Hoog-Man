@@ -79,7 +79,10 @@
         ],
         "no-script-url": ["error"],
         "no-self-compare": ["error"],
-        "no-unused-expressions": ["error"],
+        "no-unused-expressions": [
+            "error",
+            {"allowTernary": true}
+        ],
         "no-useless-concat": ["error"],
         "no-useless-return": ["error"],
         "require-await": ["error"],
