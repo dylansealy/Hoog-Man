@@ -57,10 +57,8 @@ const v: GameVariables = {
     pelletSound: new Audio("assets/audio/pellet.webm"),
     // eslint-disable-next-line sort-keys
     frightenedEnding: false,
-    // eslint-disable-next-line sort-keys
-    frightenedTime: 0,
-    // eslint-disable-next-line sort-keys
-    frightenedCounter: 0,
+    frightenedStage: 0,
+    frightenedTimeStamp: 0,
     pelletCounter: 0,
     // eslint-disable-next-line sort-keys
     endGame: (p: p5, death: boolean): void => { // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
@@ -69,16 +67,24 @@ const v: GameVariables = {
         if (death) {v.hoogMan.lives--;}
         // Laat het laatste scherm zien.
         if (v.hoogMan.lives == 0 || v.pellets.length == 0) {
+            const endGameEventHandler = async (event: Event) => {
+                if (event.type == "click" || event.code == "Enter") {
+                    await document.querySelector("main").requestFullscreen();
+                    container.style.display = "none";
+                    responsiveGame(true, true);
+                    window.removeEventListener("keydown", endGameEventHandler);
+                    window.removeEventListener("keyup", endGameEventHandler);
+                } else if (event.code == "Escape") {window.location.href = "https://github.com/DylanSealy/Hoog-Man/";}
+            };
             v.hoogMan.lives == 0 ? v.gameOverSound.play() : v.gameCompletedSound.play();
             const container: HTMLElement = v.hoogMan.lives == 0 ? document.querySelector("#gameEndContainer") : document.querySelector("#gameFinishedContainer");
             const index = v.hoogMan.lives == 0 ? 0 : 1;
             const paragraph: HTMLParagraphElement = v.hoogMan.lives == 0 ? document.querySelector("#gameEndContainer p") : document.querySelector("#gameFinishedContainer p");
             container.style.display = "flex";
-            paragraph.innerText += ` ${v.gameBoard.score}`;
-            document.querySelectorAll(".again")[index].addEventListener("click", () => {
-                container.style.display = "none";
-                responsiveGame(true, true);
-            });
+            paragraph.innerText = `Jouw score is: ${v.gameBoard.score}`;
+            window.addEventListener("keydown", endGameEventHandler);
+            window.addEventListener("keyup", endGameEventHandler);
+            document.querySelectorAll(".again")[index].addEventListener("click", endGameEventHandler);
             document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/Hoog-Man/");
         } // Resets de posities van alle characters.
         else {
@@ -193,6 +199,7 @@ document.querySelector("#startGame").addEventListener("click", (): void => start
 window.addEventListener("resize", (): void => {if (v.game && v.hoogMan.lives != 0) {responsiveGame(true, true);}});
 // Functie voor het starten van de game.
 const startGame = async () => {
+    window.removeEventListener("keydown", startGameEventHandler);
     // Zorgt ervoor dat de container van de game even groot wordt als het scherm.
     const main = document.querySelector("main");
     // Wacht totdat requestFullscreen is voltooid.
@@ -256,7 +263,7 @@ const responsiveGame = (resetAudio: boolean, newGame: boolean): void => {
 const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
     audio.volume = 0.00;
     audio.play();
-    const fade = setInterval((): void => { // Zorgt ervoor dat het volume omhoog gaat na een interval.
+    const fade = setInterval((): void => { // Zorgt ervoor dat het volume omhoog gaat na elk interval.
         audio.volume += 0.03;
         if (audio.volume >= threshold) {
             clearInterval(fade);
@@ -264,23 +271,23 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
         }
     }, 110);
 };
-((): void => { // Zorgt voor het correcte copyright jaar.
-    const year = new Date().getFullYear();
-    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.2)`;
-})();
-((): void => { // Checkt of het een mobiel apparaat is en zet de aanbevolen input method.
-    const inputMethod = document.getElementsByName("controls");
-    if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {inputMethod[2].checked = true;}
-    else if (navigator.userAgent.indexOf("Mobile") != -1) {inputMethod[2].checked = true;}
-})();
-// Checkt of er op een toets wordt gedrukt.
+// Zorgt voor het correcte copyright jaar.
+document.querySelector("footer").innerText = `© ${new Date().getFullYear()} Hoog-Man (1.0.3)`;
+// Checkt of de client een mobiel apparaat is en zet de aanbevolen inputMethod.
+const inputMethod = document.getElementsByName("controls");
+if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {inputMethod[2].checked = true;}
+else if (navigator.userAgent.indexOf("Mobile") != -1) {inputMethod[2].checked = true;}
+// Zorgt voor de besturing van Hoog-Man.
 window.addEventListener("keydown", event => {
-    // Checkt welke toets wordt ingedrukt.
-    if (event.code == "Enter" && v.game == undefined) {startGame();}
-    else if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
+    if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
         v.hoogMan.nextMovement = event.code == "ArrowUp" || event.code == "KeyW" ? "up" :
             event.code == "ArrowRight" || event.code == "KeyD" ? "right" :
                 event.code == "ArrowDown" || event.code == "KeyS" ? "down" :
                     event.code == "ArrowLeft" || event.code == "KeyA" ? "left" : null;
     }
 });
+// Start de game wanneer er op enter wordt gedrukt.
+const startGameEventHandler = (event: KeyboardEvent) => {if (event.code == "Enter") {startGame();}};
+window.addEventListener("keydown", startGameEventHandler);
+// Sluit het spel wanneer fullscreen mode wordt gesloten.
+document.addEventListener("fullscreenchange", () => {if (!document.fullscreenElement) {window.location.href = "https://github.com/DylanSealy/Hoog-Man/";}});

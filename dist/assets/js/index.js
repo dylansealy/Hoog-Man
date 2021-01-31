@@ -58,8 +58,8 @@ const v = {
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
     frightenedEnding: false,
-    frightenedTime: 0,
-    frightenedCounter: 0,
+    frightenedStage: 0,
+    frightenedTimeStamp: 0,
     pelletCounter: 0,
     endGame: (p, death) => {
         p.noLoop();
@@ -68,16 +68,27 @@ const v = {
             v.hoogMan.lives--;
         }
         if (v.hoogMan.lives == 0 || v.pellets.length == 0) {
+            const endGameEventHandler = async (event) => {
+                if (event.type == "click" || event.code == "Enter") {
+                    await document.querySelector("main").requestFullscreen();
+                    container.style.display = "none";
+                    responsiveGame(true, true);
+                    window.removeEventListener("keydown", endGameEventHandler);
+                    window.removeEventListener("keyup", endGameEventHandler);
+                }
+                else if (event.code == "Escape") {
+                    window.location.href = "https://github.com/DylanSealy/Hoog-Man/";
+                }
+            };
             v.hoogMan.lives == 0 ? v.gameOverSound.play() : v.gameCompletedSound.play();
             const container = v.hoogMan.lives == 0 ? document.querySelector("#gameEndContainer") : document.querySelector("#gameFinishedContainer");
             const index = v.hoogMan.lives == 0 ? 0 : 1;
             const paragraph = v.hoogMan.lives == 0 ? document.querySelector("#gameEndContainer p") : document.querySelector("#gameFinishedContainer p");
             container.style.display = "flex";
-            paragraph.innerText += ` ${v.gameBoard.score}`;
-            document.querySelectorAll(".again")[index].addEventListener("click", () => {
-                container.style.display = "none";
-                responsiveGame(true, true);
-            });
+            paragraph.innerText = `Jouw score is: ${v.gameBoard.score}`;
+            window.addEventListener("keydown", endGameEventHandler);
+            window.addEventListener("keyup", endGameEventHandler);
+            document.querySelectorAll(".again")[index].addEventListener("click", endGameEventHandler);
             document.querySelectorAll(".stop")[index].addEventListener("click", () => window.location.href = "https://github.com/DylanSealy/Hoog-Man/");
         }
         else {
@@ -189,6 +200,7 @@ window.addEventListener("resize", () => { if (v.game && v.hoogMan.lives != 0) {
     responsiveGame(true, true);
 } });
 const startGame = async () => {
+    window.removeEventListener("keydown", startGameEventHandler);
     const main = document.querySelector("main");
     await main.requestFullscreen();
     main.style.height = main.style.width = "100%";
@@ -264,27 +276,26 @@ const fadeIn = (audio, threshold) => {
         }
     }, 110);
 };
-(() => {
-    const year = new Date().getFullYear();
-    document.querySelector("footer").innerText = `© ${year} Hoog-Man (1.0.2)`;
-})();
-(() => {
-    const inputMethod = document.getElementsByName("controls");
-    if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {
-        inputMethod[2].checked = true;
-    }
-    else if (navigator.userAgent.indexOf("Mobile") != -1) {
-        inputMethod[2].checked = true;
-    }
-})();
+document.querySelector("footer").innerText = `© ${new Date().getFullYear()} Hoog-Man (1.0.3)`;
+const inputMethod = document.getElementsByName("controls");
+if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {
+    inputMethod[2].checked = true;
+}
+else if (navigator.userAgent.indexOf("Mobile") != -1) {
+    inputMethod[2].checked = true;
+}
 window.addEventListener("keydown", event => {
-    if (event.code == "Enter" && v.game == undefined) {
-        startGame();
-    }
-    else if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
+    if (v.inputMethod != undefined && v.inputMethod == "keyboard") {
         v.hoogMan.nextMovement = event.code == "ArrowUp" || event.code == "KeyW" ? "up" :
             event.code == "ArrowRight" || event.code == "KeyD" ? "right" :
                 event.code == "ArrowDown" || event.code == "KeyS" ? "down" :
                     event.code == "ArrowLeft" || event.code == "KeyA" ? "left" : null;
     }
 });
+const startGameEventHandler = (event) => { if (event.code == "Enter") {
+    startGame();
+} };
+window.addEventListener("keydown", startGameEventHandler);
+document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement) {
+    window.location.href = "https://github.com/DylanSealy/Hoog-Man/";
+} });
