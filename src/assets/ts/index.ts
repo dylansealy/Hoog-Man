@@ -57,10 +57,8 @@ const v: GameVariables = {
     pelletSound: new Audio("assets/audio/pellet.webm"),
     // eslint-disable-next-line sort-keys
     frightenedEnding: false,
-    // eslint-disable-next-line sort-keys
-    frightenedTime: 0,
-    // eslint-disable-next-line sort-keys
-    frightenedCounter: 0,
+    frightenedStage: 0,
+    frightenedTimeStamp: 0,
     pelletCounter: 0,
     // eslint-disable-next-line sort-keys
     endGame: (p: p5, death: boolean): void => { // Functie voor de actie nadat Hoog-Man in contact komt met een ghost.
@@ -274,7 +272,7 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
     }, 110);
 };
 // Zorgt voor het correcte copyright jaar.
-document.querySelector("footer").innerText = `© ${new Date().getFullYear()} Hoog-Man (1.0.2)`;
+document.querySelector("footer").innerText = `© ${new Date().getFullYear()} Hoog-Man (1.0.3)`;
 // Checkt of de client een mobiel apparaat is en zet de aanbevolen inputMethod.
 const inputMethod = document.getElementsByName("controls");
 if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {inputMethod[2].checked = true;}

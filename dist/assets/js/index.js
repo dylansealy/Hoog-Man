@@ -58,8 +58,8 @@ const v = {
     gameOverSound: new Audio("assets/audio/gameOver.webm"),
     pelletSound: new Audio("assets/audio/pellet.webm"),
     frightenedEnding: false,
-    frightenedTime: 0,
-    frightenedCounter: 0,
+    frightenedStage: 0,
+    frightenedTimeStamp: 0,
     pelletCounter: 0,
     endGame: (p, death) => {
         p.noLoop();
@@ -276,7 +276,7 @@ const fadeIn = (audio, threshold) => {
         }
     }, 110);
 };
-document.querySelector("footer").innerText = `© ${new Date().getFullYear()} Hoog-Man (1.0.2)`;
+document.querySelector("footer").innerText = `© ${new Date().getFullYear()} Hoog-Man (1.0.3)`;
 const inputMethod = document.getElementsByName("controls");
 if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {
     inputMethod[2].checked = true;

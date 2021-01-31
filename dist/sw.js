@@ -1,5 +1,5 @@
-const staticCache = "staticCacheV1.0.2";
-const dynamicCache = "dynamicCacheV1.0.2";
+const staticCache = "staticCacheV1.0.3";
+const dynamicCache = "dynamicCacheV1.0.3";
 const cacheAssets = [
     "/Hoog-Man/dist/index.html",
     "/Hoog-Man/dist/assets/html/fallback.html",

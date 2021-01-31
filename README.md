@@ -1,7 +1,7 @@
 # Hoog-Man
 Hoog-Man is een [p5.js](https://p5js.org/) game gebaseerd op Pac-Man.
 ## Gebruik
-Het spel is te spelen via de [GitHub Pages](https://dylansealy.github.io/Hoog-Man/dist/) of clone het project, download [Node.js](https://nodejs.org/en/download/), installeer alle dependencies via npm en voer het http-server script uit. Indien je het spel speelt via GitHub Pages check of je de laatste versie hebt (1.0.2).
+Het spel is te spelen via de [GitHub Pages](https://dylansealy.github.io/Hoog-Man/dist/) of clone het project, download [Node.js](https://nodejs.org/en/download/), installeer alle dependencies via npm en voer het http-server script uit. Indien je het spel speelt via GitHub Pages check of je de laatste versie hebt (1.0.3).
 ## Geluidseffecten
 Alle geluidseffecten zijn aangepast voor Hoog-Man.
 * [Background](dist/assets/audio/background.webm): MAZE door Density & Time via [Free Music - YouTube](https://www.youtube.com/watch?v=OuRvOCf9mJ4&list=PLwJjxqYuirCLkq42mGw4XKGQlpZSfxsYd&index=3) (PDM).

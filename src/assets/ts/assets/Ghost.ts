@@ -29,7 +29,7 @@ export default class Ghost extends Character implements GhostInterface {
         if (this.v.hoogMan.lives == 3) {
             if (this.mode == null && this.movement == null && this.previousMovement == null) {
                 // Checkt of een ghost het huis mag verlaten.
-                if (this.pelletCounter <= 0) {freeGhost(500);}
+                if (this.pelletCounter <= 0) {freeGhost(750);}
                 else if (this.name == "Inky" || this.name == "Clyde") {
                     // Zorgt ervoor dat de pelletCounter omlaag gaat.
                     if (this.name == "Inky") {this.pelletCounter = this.pelletThreshold - (138 - this.v.pellets.length);}
@@ -39,14 +39,13 @@ export default class Ghost extends Character implements GhostInterface {
                 }
             }
         }
-        else if (this.v.pelletCounter == 5 && this.name == "Pinky") {freeGhost(500);}
-        else if (this.v.pelletCounter == 15 && this.name == "Inky") {freeGhost(500);}
-        else if (this.v.pelletCounter == 25 && this.name == "Clyde") {freeGhost(500);}
+        else if (this.v.pelletCounter == 5 && this.name == "Pinky") {freeGhost(750);}
+        else if (this.v.pelletCounter == 15 && this.name == "Inky") {freeGhost(750);}
+        else if (this.v.pelletCounter == 25 && this.name == "Clyde") {freeGhost(750);}
         if (this.mode == "frightened") {
-            this.v.frightenedTime = Math.round(this.v.pellets.length * 0.05) + 2;
             this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 0.65;
             // Zorgt ervoor dat ghosts omdraaien nadat frightened mode is geactiveerd.
-            if (this.name == "Blinky" && this.v.frightenedCounter == 0 || this.name != "Blinky" && this.v.frightenedCounter == 1) {
+            if (this.v.frightenedStage == 1 || this.v.frightenedStage == 2 && this.name != "Blinky") {
                 switch (this.movement) {
                 case "up": this.movement = "down"; break;
                 case "right": this.movement = "left"; break;
@@ -55,17 +54,15 @@ export default class Ghost extends Character implements GhostInterface {
                 case null: break;
                 }
             }
-            if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) >= this.v.frightenedTime - 2) {this.v.frightenedEnding = true;}
-            if (Math.floor(this.v.frightenedCounter / this.v.gameBoard.frameRate) == this.v.frightenedTime) { // Checkt of een ghost lang genoeg frightened is geweest.
+            this.v.frightenedStage = this.name == "Blinky" && this.v.frightenedStage == 1 ? 2 :
+                this.name == "Blinky" && this.v.frightenedStage == 2 ? 0 : this.v.frightenedStage;
+            if (Date.now() >= this.v.frightenedTimeStamp - 2000) {this.v.frightenedEnding = true;}
+            if (Date.now() >= this.v.frightenedTimeStamp) {
                 this.mode = this.previousMode != null ? this.previousMode : "scatter";
-                setTimeout(() => {
-                    if (this.v.blinky.mode != "frightened") {this.v.frightenedCounter = 0;}
-                }, 1000);
                 this.v.frightenedSound.pause();
                 this.v.backgroundMusic.volume = 0.55;
                 this.v.frightenedEnding = false;
-            } // Zorgt ervoor dat de counter niet te vaak wordt geüpdatet.
-            if (this.name == "Blinky") {this.v.frightenedCounter++;}
+            }
         } else {
             this.speed = 88 / 60 / 650 * this.v.gameBoard.innerHeight * 1.2;
             if (this.mode == "scatter") {

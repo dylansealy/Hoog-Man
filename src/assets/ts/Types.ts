@@ -13,8 +13,8 @@ export interface GameVariables {
     hoogMan: HoogManInterface;
     inky: GhostInterface;
     pinky: GhostInterface;
-    frightenedCounter: number;
-    frightenedTime: number;
+    frightenedTimeStamp: number;
+    frightenedStage: 0 | 1 | 2;
     frightenedEnding: boolean;
     frightenedImage: Image;
     game: p5;
