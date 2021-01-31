@@ -13,7 +13,7 @@
     "css-minify": "npx csso -i ./src/assets/css/index.css -o ./dist/assets/css/index.css && npx csso -i ./src/assets/css/media.css -o ./dist/assets/css/media.css"
   },
   "author": "Dylan Sealy",
-  "license": "GPLv3",
+  "license": "GPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/DylanSealy/Hoog-Man/issues"
   },

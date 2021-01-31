@@ -276,7 +276,6 @@ const fadeIn = (audio, threshold) => {
         }
     }, 110);
 };
-document.querySelector("footer").innerText = `© ${new Date().getFullYear()} Hoog-Man (1.0.3)`;
 const inputMethod = document.getElementsByName("controls");
 if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {
     inputMethod[2].checked = true;

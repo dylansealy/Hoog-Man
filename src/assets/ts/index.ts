@@ -271,8 +271,6 @@ const fadeIn = (audio: HTMLAudioElement, threshold: number): void => {
         }
     }, 110);
 };
-// Zorgt voor het correcte copyright jaar.
-document.querySelector("footer").innerText = `© ${new Date().getFullYear()} Hoog-Man (1.0.3)`;
 // Checkt of de client een mobiel apparaat is en zet de aanbevolen inputMethod.
 const inputMethod = document.getElementsByName("controls");
 if (navigator.userAgentData != undefined && navigator.userAgentData.mobile == true) {inputMethod[2].checked = true;}
