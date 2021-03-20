@@ -12,4 +12,4 @@ Alle geluidseffecten zijn aangepast voor Hoog-Man.
 * [Pellet](dist/assets/audio/pellet.webm): door SubspaceAudio via [OpenGameArt](https://opengameart.org/content/512-sound-effects-8-bit-style) (CC0).
 * [Ghost images](dist/assets/images/): door OpenClipart-Vectors via [pixabay](https://pixabay.com/images/search/pacman/) ([Pixabay License](https://pixabay.com/service/license/)).
 ## Licentie
-Dit project wordt gelicentieerd onder de [GPL-3.0-or-later](https://spdx.org/licenses/LGPL-3.0-or-later.html). Zie het [LICENSE](LICENSE) bestand voor meer informatie.
+Dit project wordt gelicentieerd onder de [GPL-3.0-or-later](https://spdx.org/licenses/GPL-3.0-or-later.html). Zie het [LICENSE](LICENSE) bestand voor meer informatie.
