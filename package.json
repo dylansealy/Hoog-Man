@@ -20,7 +20,7 @@
   "homepage": "https://github.com/DylanSealy/Hoog-Man#readme",
   "dependencies": {
     "@actions/core": "^1.2.6",
-    "@actions/github": "^4.0.0",
+    "@actions/github": "^5.0.0",
     "@actions/glob": "^0.1.1",
     "csso-cli": "^3.0.0",
     "html-minifier": "^4.0.0"
